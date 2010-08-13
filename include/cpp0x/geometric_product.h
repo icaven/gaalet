@@ -29,16 +29,6 @@ struct multiplication_sum_list
          *((BitCount<(L::metric::signature_bitmap|R::metric::signature_bitmap)&(left&right)>::value % 2) ? -1 : 1)
          + tail::product_sum(l, r);
    }
-
-   template<class L, class R>
-   static element_t fast_product_sum()
-   {
-      return
-         L::template fast_element<left>()*R::template fast_element<right>()
-         *CanonicalReorderingSign<left, right>::value
-         *((BitCount<(L::metric::signature_bitmap|R::metric::signature_bitmap)&(left&right)>::value % 2) ? -1 : 1)
-         + tail::template fast_product_sum<L, R>();
-   }
 };
 
 struct msl_null
@@ -47,12 +37,6 @@ struct msl_null
 
    template<class L, class R>
    static element_t product_sum(const L&, const R&)
-   {
-      return 0.0;
-   }
-
-   template<class L, class R>
-   static element_t fast_product_sum()
    {
       return 0.0;
    }
@@ -75,12 +59,6 @@ struct multiplication_element_list
    {
       return head::product_sum(l, r);
    }
-
-   template<class L, class R>
-   static element_t fast_product_sum()
-   {
-      return head::template fast_product_sum<L, R>();
-   }
 };
 
 struct mel_null
@@ -92,12 +70,6 @@ struct mel_null
 
    template<class L, class R>
    static element_t product_sum(const L&, const R&)
-   {
-      return 0.0;
-   }
-
-   template<class L, class R>
-   static element_t fast_product_sum()
    {
       return 0.0;
    }
@@ -191,11 +163,6 @@ struct geometric_product : public expression<geometric_product<L, R>>
    template<conf_t conf>
    element_t element() const {
       return gp::search_conf_in_melist<conf, melist>::melist::product_sum(l, r);
-   }
-
-   template<conf_t conf>
-   static element_t fast_element() {
-      return gp::search_conf_in_melist<conf, melist>::melist::template fast_product_sum<L, R>();
    }
 
 protected:

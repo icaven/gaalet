@@ -1,4 +1,5 @@
 #include "gaalet.h"
+#include <cmath>
 
 int main()
 {

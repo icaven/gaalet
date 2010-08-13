@@ -21,11 +21,6 @@ struct reverse : public expression<reverse<A>>
       return a.element<conf>() * Power<-1, BitCount<conf>::value*(BitCount<conf>::value-1)/2>::value;
    }
 
-   template<conf_t conf>
-   static element_t fast_element() {
-      return A::template fast_element<conf>() * Power<-1, BitCount<conf>::value*(BitCount<conf>::value-1)/2>::value;
-   }
-
 protected:
    const A& a;
 };

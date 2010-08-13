@@ -2,7 +2,6 @@
 #define __GAALET_ALGEBRA_H
 
 #include "multivector.h"
-#include "fast_multivector.h"
 #include "utility.h"
 
 namespace gaalet
@@ -61,25 +60,6 @@ struct algebra
    {
       typedef multivector<configuration_list<head, cl_null>, metric> type;
    };
-
-   template<unsigned int ID>
-   struct fast
-   {
-      static const unsigned int id = ID;
-
-      template<conf_t... elements>
-      struct mv;
-      template<conf_t head, conf_t... tail>
-      struct mv<head, tail...>
-      {
-         typedef fast_multivector<id, typename insert_element<head, typename mv<tail...>::type::clist>::clist, metric> type;
-      };
-      template<conf_t head>
-      struct mv<head>
-      {
-         typedef fast_multivector<id, configuration_list<head, cl_null>, metric> type;
-      };
-   };
 };
 
 //default multivector: euclidean space (in signature bitmap, P part won't matter if Q part equals zero)
@@ -87,32 +67,6 @@ template<conf_t... elements>
 struct mv
 {
    typedef typename algebra<signature<0,0>>::mv<elements...>::type type;
-};
-template<unsigned int ID>
-struct fast
-{
-   static const unsigned int id = ID;
-
-   template<conf_t... elements>
-   struct mv
-   {
-      typedef typename algebra<signature<0,0>>::fast<id>::template mv<elements...>::type type;
-   };
-};
-
-//fast_multivector configuration elements unpacking --- deprecated, use algebra::fast
-template<conf_t id, conf_t... elements>
-struct fast_mv;
-
-template<conf_t id, conf_t head, conf_t... tail>
-struct fast_mv<id, head, tail...>
-{
-   typedef fast_multivector<id, typename insert_element<head, typename fast_mv<id, tail...>::type::clist>::clist, signature<0,0>> type;
-};
-template<conf_t id, conf_t head>
-struct fast_mv<id, head>
-{
-   typedef fast_multivector<id, configuration_list<head, cl_null>, signature<0,0>> type;
 };
 
 

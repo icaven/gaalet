@@ -3,7 +3,6 @@
 
 
 #include "multivector.h"
-#include "fast_multivector.h"
 #include "algebra.h"
 
 #include "addition.h"

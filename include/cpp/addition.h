@@ -20,11 +20,6 @@ struct addition : public expression<addition<L, R> >
       return l.element<conf>() + r.element<conf>();
    }
 
-   template<conf_t conf>
-   static element_t fast_element() {
-      return L::template fast_element<conf>() + R::template fast_element<conf>();
-   }
-
 protected:
    const L& l;
    const R& r;
@@ -44,11 +39,6 @@ struct subtraction : public expression<subtraction<L, R> >
    template<conf_t conf>
    element_t element() const {
       return l.element<conf>() - r.element<conf>();
-   }
-
-   template<conf_t conf>
-   static element_t fast_element() {
-      return L::template fast_element<conf>() - R::template fast_element<conf>();
    }
 
 protected:
