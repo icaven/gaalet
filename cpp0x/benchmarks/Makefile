@@ -18,3 +18,6 @@ benchmarkVectorMultiply_fast: benchmarkVectorMultiply_fast.cpp $(DEPENDS)
 benchmarkVectorAdd_omp: benchmarkVectorAdd.cpp $(DEPENDS)
 	g++45 -o benchmarkVectorAdd_omp benchmarkVectorAdd.cpp -std=c++0x -O3 -fopenmp -lgomp $(INCLUDE)
 
+benchmarkInverse: benchmarkInverse.cpp $(DEPENDS)
+	g++45 -o benchmarkInverse benchmarkInverse.cpp -std=c++0x -O3 $(INCLUDE)
+
