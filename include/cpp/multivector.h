@@ -2,47 +2,46 @@
 #define __GAALET_MULTIVECTOR_H
 
 #include "configuration_list.h"
-#include "signature_list.h"
 #include "expression.h"
 
 #include <algorithm>
+//C++0x only: #include <array>
 
 
 namespace gaalet
 {
 
-//multivector coefficients type
-typedef double element_t;
-
 //multivector struct
 //template<typename CL, typename SL=sl::sl_null>
 //struct multivector : public expression<multivector<CL, SL>>
-template<typename CL, conf_t S = 0x00>
-struct multivector : public expression<multivector<CL, S> >
+template<typename CL, typename M>
+struct multivector : public expression<multivector<CL, M> >
 {
    typedef CL clist;
    static const conf_t size = clist::size;
    
-   //typedef SL slist;
-   static const conf_t signature = S;
+   typedef M metric;
 
    //initialization
    multivector()
    {
       std::fill(data, data+size, 0.0);
+      //std::fill(data.begin(), data.end(), 0.0);
    }
 
-   multivector(const element_t& e_)
+   multivector(const element_t& c0)
    {
-      std::fill(data+1, data+size, 0.0);
-      data[0] = e_;
+      std::fill(data, data+size, 0.0);
+      data[0] = c0;
+      //std::fill(data.begin(), data.end(), 0.0);
    }
 
-
-   /*multivector(std::initializer_list<element_t> s)
+   /*C++0x only: multivector(std::initializer_list<element_t> s)
    {
       element_t* last = std::copy(s.begin(), (s.size()<=size) ? s.end() : (s.begin()+size), data);
+      //C++0x only: typename std::array<element_t, size>::iterator last = std::copy(s.begin(), (s.size()<=size) ? s.end() : (s.begin()+size), data.begin());
       std::fill(last, data+size, 0.0);
+      //std::fill(last, data.end(), 0.0);
    }*/
 
    //return element by index, index known at runtime
@@ -76,6 +75,10 @@ struct multivector : public expression<multivector<CL, S> >
          data[index] = e.element<get_element<index, clist>::value>();
          ElementEvaluation<E, index+1>::eval(data, e);
       }
+      /*C++0x only: static void eval(std::array<element_t, size>& data, const E& e) {
+         std::get<index>(data) = e.element<get_element<index, clist>::value>();
+         ElementEvaluation<E, index+1>::eval(data, e);
+      }*/
    };
    template<typename E>
    struct ElementEvaluation<E, size-1>
@@ -83,6 +86,9 @@ struct multivector : public expression<multivector<CL, S> >
       static void eval(element_t* const data, const E& e) {
          data[size-1] = e.element<get_element<size-1, clist>::value>();
       }
+      /*C++0x only: static void eval(std::array<element_t, size>& data, const E& e) {
+         std::get<size-1>(data) = e.element<get_element<size-1, clist>::value>();
+      }*/
    };
 
    //   constructor evaluation
@@ -92,26 +98,53 @@ struct multivector : public expression<multivector<CL, S> >
       ElementEvaluation<E>::eval(data, e);
    }
 
-   //   assignment evaluation
+   //copy --- seems slower with global eval function (overrides rvalue reference assignment operator?)
+   /*void operator=(const multivector& mv)
+   {
+      std::copy(mv.data, mv.data+size, data);
+   }*/
+
+   //assignment evaluation
    template<class E>
    void operator=(const expression<E>& e_) {
+      //const E& e(e_);
+      //ElementEvaluation<E>::eval(data, e);
+      //multivector mv(e_);
+      //*this = std::move(mv);
+      *this = multivector(e_);
+      //data = std::move(mv.data);
+      //std::copy(mv.data, mv.data+size, data);
+
+      //element_t temp_data[size];
+      //std::copy(temp_data, temp_data+size, data);
+      //
+      //std::array<element_t, size> temp_data;
+      //ElementEvaluation<E>::eval(temp_data, e);
+      //std::copy(temp_data.begin(), temp_data.end(), data.begin());
+      //data = std::move(temp_data);
+   }
+
+   //assignment without temporary
+   template<class E>
+   void assign(const expression<E>& e_) {
       const E& e(e_);
       ElementEvaluation<E>::eval(data, e);
    }
 
+
 protected:
    element_t data[size];
+   //C++0x only: std::array<element_t, size> data;
 };
 
 //specialization for scalar multivector type
-template<conf_t S>
-struct multivector<configuration_list<0x00, cl_null>, S> : public expression<multivector<configuration_list<0x00, cl_null>, S> >
+template<typename M>
+struct multivector<configuration_list<0x00, cl_null>, M> : public expression<multivector<configuration_list<0x00, cl_null>, M> >
 {
    typedef configuration_list<0x00, cl_null> clist;
    static const conf_t size = clist::size;
    
-   //typedef SL slist;
-   static const conf_t signature = S;
+   typedef M metric;
 
    //initialization
    multivector()
@@ -122,12 +155,12 @@ struct multivector<configuration_list<0x00, cl_null>, S> : public expression<mul
       :  value(setValue)
    { }
 
-   /*multivector(std::initializer_list<element_t> s)
+   /*C++0x only: multivector(std::initializer_list<element_t> s)
       :  value(*s.begin())
    { }*/
 
-   operator element_t()
-   {
+   //conversion operator
+   operator element_t() {
       return value;
    }
 
@@ -173,184 +206,12 @@ protected:
 };
 
 
-//multivector configuration elements unpacking
-//template<conf_t... elements>
-//struct mv;
-
-//no cpp0x template aliases supported by gcc yet
-/*template<conf_t head, conf_t... tail>
-using mv = multivector<typename insert_element<head, typename mv<tail...>::clist>::clist>;
-
-template<>
-using mv = multivector<cl_null>;*/
-
-/*template<conf_t head, conf_t... tail>
-struct mv<head, tail...>
-{
-   typedef multivector<typename insert_element<head, typename mv<tail...>::type::clist>::clist> type;
-};
-template<>
-struct mv<>
-{
-   typedef multivector<cl_null> type;
-};*/
-
-template<conf_t S>
-struct metric
-{
-   static const conf_t signature = S;
-
-   template<conf_t e1=-1, conf_t e2=-1, conf_t e3=-1, conf_t e4=-1, conf_t e5=-1, conf_t e6=-1, conf_t e7=-1, conf_t e8=-1, conf_t e9=-1, conf_t e10=-1, conf_t e11=-1, conf_t e12=-1>
-   struct mv
-   {
-      typedef multivector<typename insert_element<e1,
-                          typename insert_element<e2,
-                          typename insert_element<e3,
-                          typename insert_element<e4,
-                          typename insert_element<e5,
-                          typename insert_element<e6,
-                          typename insert_element<e7,
-                          typename insert_element<e8,
-                          typename insert_element<e9,
-                          typename insert_element<e10,
-                          typename insert_element<e11,
-                          typename insert_element<e12,
-                          cl_null>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist, signature> type;
-   };
-   template<conf_t e1, conf_t e2, conf_t e3, conf_t e4, conf_t e5, conf_t e6, conf_t e7, conf_t e8, conf_t e9, conf_t e10, conf_t e11>
-   struct mv<e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, -1>
-   {
-      typedef multivector<typename insert_element<e1,
-                          typename insert_element<e2,
-                          typename insert_element<e3,
-                          typename insert_element<e4,
-                          typename insert_element<e5,
-                          typename insert_element<e6,
-                          typename insert_element<e7,
-                          typename insert_element<e8,
-                          typename insert_element<e9,
-                          typename insert_element<e10,
-                          typename insert_element<e11,
-                          cl_null>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist, signature> type;
-   };
-   template<conf_t e1, conf_t e2, conf_t e3, conf_t e4, conf_t e5, conf_t e6, conf_t e7, conf_t e8, conf_t e9, conf_t e10>
-   struct mv<e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, -1, -1>
-   {
-      typedef multivector<typename insert_element<e1,
-                          typename insert_element<e2,
-                          typename insert_element<e3,
-                          typename insert_element<e4,
-                          typename insert_element<e5,
-                          typename insert_element<e6,
-                          typename insert_element<e7,
-                          typename insert_element<e8,
-                          typename insert_element<e9,
-                          typename insert_element<e10,
-                          cl_null>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist, signature> type;
-   };
-   template<conf_t e1, conf_t e2, conf_t e3, conf_t e4, conf_t e5, conf_t e6, conf_t e7, conf_t e8, conf_t e9>
-   struct mv<e1, e2, e3, e4, e5, e6, e7, e8, e9, -1, -1, -1>
-   {
-      typedef multivector<typename insert_element<e1,
-                          typename insert_element<e2,
-                          typename insert_element<e3,
-                          typename insert_element<e4,
-                          typename insert_element<e5,
-                          typename insert_element<e6,
-                          typename insert_element<e7,
-                          typename insert_element<e8,
-                          typename insert_element<e9,
-                          cl_null>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist, signature> type;
-   };
-   template<conf_t e1, conf_t e2, conf_t e3, conf_t e4, conf_t e5, conf_t e6, conf_t e7, conf_t e8>
-   struct mv<e1, e2, e3, e4, e5, e6, e7, e8, -1, -1, -1, -1>
-   {
-      typedef multivector<typename insert_element<e1,
-                          typename insert_element<e2,
-                          typename insert_element<e3,
-                          typename insert_element<e4,
-                          typename insert_element<e5,
-                          typename insert_element<e6,
-                          typename insert_element<e7,
-                          typename insert_element<e8,
-                          cl_null>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist, signature> type;
-   };
-   template<conf_t e1, conf_t e2, conf_t e3, conf_t e4, conf_t e5, conf_t e6, conf_t e7>
-   struct mv<e1, e2, e3, e4, e5, e6, e7, -1, -1, -1, -1, -1>
-   {
-      typedef multivector<typename insert_element<e1,
-                          typename insert_element<e2,
-                          typename insert_element<e3,
-                          typename insert_element<e4,
-                          typename insert_element<e5,
-                          typename insert_element<e6,
-                          typename insert_element<e7,
-                          cl_null>::clist>::clist>::clist>::clist>::clist>::clist>::clist, signature> type;
-   };
-   template<conf_t e1, conf_t e2, conf_t e3, conf_t e4, conf_t e5, conf_t e6>
-   struct mv<e1, e2, e3, e4, e5, e6, -1, -1, -1, -1, -1, -1>
-   {
-      typedef multivector<typename insert_element<e1,
-                          typename insert_element<e2,
-                          typename insert_element<e3,
-                          typename insert_element<e4,
-                          typename insert_element<e5,
-                          typename insert_element<e6,
-                          cl_null>::clist>::clist>::clist>::clist>::clist>::clist, signature> type;
-   };
-   template<conf_t e1, conf_t e2, conf_t e3, conf_t e4, conf_t e5>
-   struct mv<e1, e2, e3, e4, e5, -1, -1, -1, -1, -1, -1, -1>
-   {
-      typedef multivector<typename insert_element<e1,
-                          typename insert_element<e2,
-                          typename insert_element<e3,
-                          typename insert_element<e4,
-                          typename insert_element<e5,
-                          cl_null>::clist>::clist>::clist>::clist>::clist, signature> type;
-   };
-   template<conf_t e1, conf_t e2, conf_t e3, conf_t e4>
-   struct mv<e1, e2, e3, e4, -1, -1, -1, -1, -1, -1, -1, -1>
-   {
-      typedef multivector<typename insert_element<e1,
-                          typename insert_element<e2,
-                          typename insert_element<e3,
-                          typename insert_element<e4,
-                          cl_null>::clist>::clist>::clist>::clist, signature> type;
-   };
-   template<conf_t e1, conf_t e2, conf_t e3>
-   struct mv<e1, e2, e3, -1, -1, -1, -1, -1, -1, -1, -1, -1>
-   {
-      typedef multivector<typename insert_element<e1,
-                          typename insert_element<e2,
-                          typename insert_element<e3,
-                          cl_null>::clist>::clist>::clist, signature> type;
-   };
-   template<conf_t e1, conf_t e2>
-   struct mv<e1, e2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1>
-   {
-      typedef multivector<typename insert_element<e1,
-                          typename insert_element<e2,
-                          cl_null>::clist>::clist, signature> type;
-   };
-   template<conf_t e1>
-   struct mv<e1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1>
-   {
-      typedef multivector<typename insert_element<e1,
-                          cl_null>::clist, signature> type;
-   };
-   /*template<>
-   struct mv<-1, -1>
-   {
-      typedef multivector<cl_null, signature> type;
-   };*/
-};
-
 } //end namespace gaalet
 
 template<class A> inline
-gaalet::multivector<typename A::clist, A::signature>
+gaalet::multivector<typename A::clist, typename A::metric>
 eval(const gaalet::expression<A>& a) {
-   return gaalet::multivector<typename A::clist, A::signature>(a);
+   return gaalet::multivector<typename A::clist, typename A::metric>(a);
 }
 
 

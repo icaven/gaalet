@@ -5,12 +5,12 @@
 
 namespace gaalet {
 
-/*template<class A, conf_t... elements>
+/*C++0x only: template<class A, conf_t... elements>
 struct part : public expression<part<A, elements...> >
 {
    typedef typename mv<elements...>::type::clist clist;
 
-   static const conf_t signature = A::signature;
+   typedef typename A::metric metric;
 
    part(const A& a_)
       :  a(a_)
@@ -30,7 +30,7 @@ struct part_type: public expression<part_type<T, A> >
 {
    typedef typename T::clist clist;
 
-   static const conf_t signature = A::signature;
+   typedef typename A::metric metric;
 
    part_type(const A& a_)
       :  a(a_)
@@ -48,7 +48,7 @@ protected:
 
 }  //end namespace gaalet
 
-/*template<gaalet::conf_t... elements, class A> inline
+/*C++0x only: template<gaalet::conf_t... elements, class A> inline
 gaalet::part<A, elements...>
 part(const gaalet::expression<A>& a) {
    return gaalet::part<A, elements...>(a);

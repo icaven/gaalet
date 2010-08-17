@@ -10,7 +10,7 @@ struct reverse : public expression<reverse<A> >
 {
    typedef typename A::clist clist;
 
-   static const conf_t signature = A::signature;
+   typedef typename A::metric metric;
 
    reverse(const A& a_)
       :  a(a_)

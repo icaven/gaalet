@@ -3,6 +3,7 @@
 
 
 #include "multivector.h"
+#include "algebra.h"
 
 #include "addition.h"
 #include "multiplication.h"
@@ -11,11 +12,5 @@
 #include "part.h"
 #include "inverse.h"
 
-
-namespace gaalet
-{
-   typedef metric<0x10> cm;
-
-}  //end namespace gaalet
 
 #endif

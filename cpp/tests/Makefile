@@ -1,4 +1,4 @@
-INCLUDE_DIR = ../../include
+INCLUDE_DIR = ../../include/cpp
 INCLUDE = -I$(INCLUDE_DIR)
 
 DEPENDS = $(INCLUDE_DIR) Makefile
@@ -30,4 +30,6 @@ testConfModel: testConfModel.cpp $(DEPENDS)
 testSpringCGA: testSpringCGA.cpp $(DEPENDS)
 	g++45 -O3 -o testSpringCGA testSpringCGA.cpp -losg -losgViewer -Wfatal-errors $(INCLUDE)
 
+testConfModelCuda: testConfModelCuda.cu $(DEPENDS)
+	nvcc -o testConfModelCuda testConfModelCuda.cu $(INCLUDE)
 

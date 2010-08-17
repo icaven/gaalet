@@ -11,6 +11,9 @@
 namespace gaalet
 {
 
+//multivector coefficients type
+typedef double element_t;
+
 //Wrapper class for CRTP
 template <class E>
 struct expression {

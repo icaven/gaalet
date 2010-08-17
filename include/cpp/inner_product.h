@@ -26,7 +26,7 @@ struct multiplication_sum_list
       return
          l.template element<left>()*r.template element<right>()
          *CanonicalReorderingSign<left, right>::value
-         *((BitCount<(L::signature|R::signature)&(left&right)>::value % 2) ? -1 : 1)
+         *((BitCount<(L::metric::signature_bitmap|R::metric::signature_bitmap)&(left&right)>::value % 2) ? -1 : 1)
          + tail::product_sum(l, r);
    }
 };
@@ -169,7 +169,7 @@ struct inner_product : public expression<inner_product<L, R> >
    typedef typename ip::build_multiplication_element_list<typename L::clist, typename R::clist>::melist melist;
    typedef typename melist::clist clist;
 
-   static const conf_t signature = L::signature | R::signature;
+   typedef typename metric_combination_traits<typename L::metric, typename R::metric>::metric metric;
 
    inner_product(const L& l_ , const R& r_)
       :  l(l_), r(r_)

@@ -28,7 +28,7 @@ struct cl_null
 template<conf_t index, typename list>
 struct get_element
 {
-   //static_assert(index < list::size, "get_element<index, list>: index not less than list size");
+   //C++0x only: static_assert(index < list::size, "get_element<index, list>: index not less than list size");
 
    static const conf_t value = get_element<index - 1, typename list::tail>::value;
 };
@@ -36,7 +36,7 @@ struct get_element
 template<typename list>
 struct get_element<0, list>
 {
-   //static_assert(0 < list::size, "get_element<index, list>: index not less than list size");
+   //C++0x only: static_assert(0 < list::size, "get_element<index, list>: index not less than list size");
 
    static const conf_t value = list::head;
 };

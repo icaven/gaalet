@@ -26,7 +26,7 @@ struct multiplication_sum_list
       return
          l.template element<left>()*r.template element<right>()
          *CanonicalReorderingSign<left, right>::value
-         *((BitCount<(L::signature|R::signature)&(left&right)>::value % 2) ? -1 : 1)
+         *((BitCount<(L::metric::signature_bitmap|R::metric::signature_bitmap)&(left&right)>::value % 2) ? -1 : 1)
          + tail::product_sum(l, r);
    }
 };
@@ -154,7 +154,7 @@ struct geometric_product : public expression<geometric_product<L, R> >
    typedef typename gp::build_multiplication_element_list<typename L::clist, typename R::clist>::melist melist;
    typedef typename melist::clist clist;
 
-   static const conf_t signature = L::signature | R::signature;
+   typedef typename metric_combination_traits<typename L::metric, typename R::metric>::metric metric;
 
    geometric_product(const L& l_ , const R& r_)
       :  l(l_), r(r_)
@@ -175,7 +175,7 @@ struct scalar_multivector_product : public expression<scalar_multivector_product
 {
    typedef typename A::clist clist;
 
-   static const conf_t signature = A::signature;
+   typedef typename A::metric metric;
 
    scalar_multivector_product(const element_t& s_, const A& a_)
       :  s(s_), a(a_)

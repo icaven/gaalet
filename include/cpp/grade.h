@@ -32,7 +32,7 @@ struct grade : public expression<grade<G, A> >
 {
    typedef typename filter_clist_for_grade<typename A::clist, G>::clist clist;
 
-   static const conf_t signature = A::signature;
+   typedef typename A::metric metric;
 
    grade(const A& a_)
       :  a(a_)
