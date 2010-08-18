@@ -27,6 +27,9 @@ testSpringCGA: testSpringCGA.cpp $(DEPENDS)
 testNumericVersor: testNumericVersor.cpp $(DEPENDS)
 	g++45 -o testNumericVersor testNumericVersor.cpp -std=c++0x $(INCLUDE)
 
+testMonteCarloPi: testMonteCarloPi.cpp $(DEPENDS)
+	g++45 -o testMonteCarloPi testMonteCarloPi.cpp -O3 -std=c++0x -fno-signed-zeros $(INCLUDE)
+
 testHorizon: testHorizon.cpp $(DEPENDS)
 	g++45 -o testHorizon testHorizon.cpp -O3 -std=c++0x -fno-signed-zeros $(INCLUDE)
 
