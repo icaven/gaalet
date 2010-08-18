@@ -5,6 +5,7 @@
 #include "expression.h"
 
 #include <algorithm>
+#include <cstring>
 //C++0x only: #include <array>
 
 
@@ -26,14 +27,16 @@ struct multivector : public expression<multivector<CL, M> >
    GAALET_CUDA_HOST_DEVICE
    multivector()
    {
-      std::fill(data, data+size, 0.0);
+      memset(data, 0, size);
+      //std::fill(data, data+size, 0.0);
       //std::fill(data.begin(), data.end(), 0.0);
    }
 
    GAALET_CUDA_HOST_DEVICE
    multivector(const element_t& c0)
    {
-      std::fill(data, data+size, 0.0);
+      memset(data, 0, size-1);
+      //std::fill(data, data+size, 0.0);
       data[0] = c0;
       //std::fill(data.begin(), data.end(), 0.0);
    }
@@ -77,6 +80,7 @@ struct multivector : public expression<multivector<CL, M> >
    template<typename E, conf_t index = 0>
    struct ElementEvaluation
    {                          //v no reference to pointer *& with gcc4.5 possible... What's going on?
+      GAALET_CUDA_HOST_DEVICE
       static void eval(element_t* const data, const E& e) {
          data[index] = e.template element<get_element<index, clist>::value>();
          ElementEvaluation<E, index+1>::eval(data, e);
@@ -89,6 +93,7 @@ struct multivector : public expression<multivector<CL, M> >
    template<typename E>
    struct ElementEvaluation<E, size-1>
    {
+      GAALET_CUDA_HOST_DEVICE
       static void eval(element_t* const data, const E& e) {
          data[size-1] = e.template element<get_element<size-1, clist>::value>();
       }

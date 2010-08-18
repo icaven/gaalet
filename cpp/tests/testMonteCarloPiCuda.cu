@@ -1,12 +1,14 @@
-#include "gaalet.h"
+//#include "gaalet.h"
 #include <iostream>
 #include <cstdlib>
 
-typedef gaalet::algebra<gaalet::signature<4,1> > cm;
+//typedef gaalet::algebra<gaalet::signature<4,1> > cm;
+
+__device__ long d_pi;
 
 __global__ void test()
 {
-   double r = (double)blockDim.x;
+   /*double r = (double)blockDim.x;
    
    unsigned int n_q = blockDim.x*blockDim.y*blockDim.z;
    __shared__ unsigned int n_s;
@@ -32,7 +34,10 @@ __global__ void test()
    if(d>=0.0) {
       atomicAdd(&n_s, 1);
    }
-   __syncthreads();
+   __syncthreads();*/
+   
+   //if(threadIdx.x == 0 && threadIdx.y==0 && threadIdx.z==0) d_pi = 6.0*(double)n_s/(double)n_q;
+   d_pi = 6;
 }
 
 
@@ -40,13 +45,15 @@ int main()
 {
    std::cout << "Hello Gaalet Monte Carlo on Cuda!" << std::endl;
 
-   cudaSetDevice( 0 );
 
-   dim3 threads( 10, 10, 10 );
+   //dim3 threads( 10, 10, 10 );
 
-   test <<< 1, threads >>>();
+   //test <<< 1, threads >>>();
+   test<<<1,1>>>();
 
+   long pi;
+   cudaMemcpyFromSymbol(&pi, "d_pi", sizeof(pi), 0, cudaMemcpyDeviceToHost);
+   std::cout << "Pi: " << pi << std::endl;
+   
    cudaThreadExit();
-
-   //std::cout << "Pi: " << 6.0*(double)n_s/(double)n_q << std::endl;
 }

@@ -16,6 +16,7 @@ struct addition : public expression<addition<L, R> >
    { }
 
    template<conf_t conf>
+   GAALET_CUDA_HOST_DEVICE
    element_t element() const {
       return l.template element<conf>() + r.template element<conf>();
    }
@@ -37,6 +38,7 @@ struct subtraction : public expression<subtraction<L, R> >
    { }
 
    template<conf_t conf>
+   GAALET_CUDA_HOST_DEVICE
    element_t element() const {
       return l.template element<conf>() - r.template element<conf>();
    }

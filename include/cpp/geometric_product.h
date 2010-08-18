@@ -21,6 +21,7 @@ struct multiplication_sum_list
    static const conf_t size = T::size + 1;
 
    template<class L, class R>
+   GAALET_CUDA_HOST_DEVICE
    static element_t product_sum(const L& l, const R& r)
    {
       return
@@ -36,6 +37,7 @@ struct msl_null
    static const conf_t size = 0;
 
    template<class L, class R>
+   GAALET_CUDA_HOST_DEVICE
    static element_t product_sum(const L&, const R&)
    {
       return 0.0;
@@ -55,6 +57,7 @@ struct multiplication_element_list
    static const conf_t size = T::size + 1;
 
    template<class L, class R>
+   GAALET_CUDA_HOST_DEVICE
    static element_t product_sum(const L& l, const R& r)
    {
       return head::product_sum(l, r);
@@ -69,6 +72,7 @@ struct mel_null
    static const conf_t size = 0;
 
    template<class L, class R>
+   GAALET_CUDA_HOST_DEVICE
    static element_t product_sum(const L&, const R&)
    {
       return 0.0;
@@ -161,6 +165,7 @@ struct geometric_product : public expression<geometric_product<L, R> >
    { }
 
    template<conf_t conf>
+   GAALET_CUDA_HOST_DEVICE
    element_t element() const {
       return gp::search_conf_in_melist<conf, melist>::melist::product_sum(l, r);
    }
@@ -182,6 +187,7 @@ struct scalar_multivector_product : public expression<scalar_multivector_product
    { }
 
    template<conf_t conf>
+   GAALET_CUDA_HOST_DEVICE
    element_t element() const {
       return s*a.template element<conf>();
    }
