@@ -50,7 +50,7 @@ struct inverse<A, 1> : public expression<inverse<A> >
 
    template<conf_t conf>
    element_t element() const {
-      return a.element<conf>() * div;
+      return a.template element<conf>() * div;
    }
 
 protected:

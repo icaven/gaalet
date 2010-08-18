@@ -38,7 +38,7 @@ struct part_type: public expression<part_type<T, A> >
 
    template<conf_t conf>
    element_t element() const {
-      return a.element<conf>();
+      return a.template element<conf>();
    }
 
 protected:

@@ -40,7 +40,7 @@ struct grade : public expression<grade<G, A> >
 
    template<conf_t conf>
    element_t element() const {
-      return a.element<conf>();
+      return a.template element<conf>();
    }
 
 protected:

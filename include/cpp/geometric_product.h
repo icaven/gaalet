@@ -183,7 +183,7 @@ struct scalar_multivector_product : public expression<scalar_multivector_product
 
    template<conf_t conf>
    element_t element() const {
-      return s*a.element<conf>();
+      return s*a.template element<conf>();
    }
 
 protected:

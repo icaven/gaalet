@@ -17,7 +17,7 @@ struct addition : public expression<addition<L, R> >
 
    template<conf_t conf>
    element_t element() const {
-      return l.element<conf>() + r.element<conf>();
+      return l.template element<conf>() + r.template element<conf>();
    }
 
 protected:
@@ -38,7 +38,7 @@ struct subtraction : public expression<subtraction<L, R> >
 
    template<conf_t conf>
    element_t element() const {
-      return l.element<conf>() - r.element<conf>();
+      return l.template element<conf>() - r.template element<conf>();
    }
 
 protected:

@@ -18,7 +18,7 @@ struct reverse : public expression<reverse<A> >
 
    template<conf_t conf>
    element_t element() const {
-      return a.element<conf>() * Power<-1, BitCount<conf>::value*(BitCount<conf>::value-1)/2>::value;
+      return a.template element<conf>() * Power<-1, BitCount<conf>::value*(BitCount<conf>::value-1)/2>::value;
    }
 
 protected:
