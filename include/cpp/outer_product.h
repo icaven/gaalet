@@ -187,6 +187,7 @@ protected:
 
 
 template <class L, class R> inline
+GAALET_CUDA_HOST_DEVICE
 gaalet::outer_product<L, R>
 operator^(const gaalet::expression<L>& l, const gaalet::expression<R>& r) {
    return gaalet::outer_product<L, R>(l, r);

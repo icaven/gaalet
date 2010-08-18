@@ -23,12 +23,14 @@ struct multivector : public expression<multivector<CL, M> >
    typedef M metric;
 
    //initialization
+   GAALET_CUDA_HOST_DEVICE
    multivector()
    {
       std::fill(data, data+size, 0.0);
       //std::fill(data.begin(), data.end(), 0.0);
    }
 
+   GAALET_CUDA_HOST_DEVICE
    multivector(const element_t& c0)
    {
       std::fill(data, data+size, 0.0);
@@ -45,15 +47,18 @@ struct multivector : public expression<multivector<CL, M> >
    }*/
 
    //return element by index, index known at runtime
+   GAALET_CUDA_HOST_DEVICE
    const element_t& operator[](const conf_t& index) const {
       return data[index];
    }
+   GAALET_CUDA_HOST_DEVICE
    element_t& operator[](const conf_t& index) {
       return data[index];
    }
 
    //return element by index, index known at compile time
    template<conf_t index>
+   GAALET_CUDA_HOST_DEVICE
    const element_t& get() const {
       return data[index];
    }
@@ -61,8 +66,9 @@ struct multivector : public expression<multivector<CL, M> >
    //return element by configuration (basis vector), configuration known at compile time
    template<conf_t conf>
    ////reference return (const element_t& element() const) not applicable because of possible return of 0.0;
+   GAALET_CUDA_HOST_DEVICE
    element_t element() const {
-      static const conf_t index = search_element<conf, clist>::index;
+      const conf_t index = search_element<conf, clist>::index;
       //static_assert(index<size, "element<conf_t>(): no such element in configuration list");
       return (index<size) ? data[index] : 0.0;
    }
@@ -93,6 +99,7 @@ struct multivector : public expression<multivector<CL, M> >
 
    //   constructor evaluation
    template<class E>
+   GAALET_CUDA_HOST_DEVICE
    multivector(const expression<E>& e_) {
       const E& e(e_);
       ElementEvaluation<E>::eval(data, e);
@@ -106,6 +113,7 @@ struct multivector : public expression<multivector<CL, M> >
 
    //assignment evaluation
    template<class E>
+   GAALET_CUDA_HOST_DEVICE
    void operator=(const expression<E>& e_) {
       //const E& e(e_);
       //ElementEvaluation<E>::eval(data, e);
@@ -126,6 +134,7 @@ struct multivector : public expression<multivector<CL, M> >
 
    //assignment without temporary
    template<class E>
+   GAALET_CUDA_HOST_DEVICE
    void assign(const expression<E>& e_) {
       const E& e(e_);
       ElementEvaluation<E>::eval(data, e);
@@ -147,10 +156,12 @@ struct multivector<configuration_list<0x00, cl_null>, M> : public expression<mul
    typedef M metric;
 
    //initialization
+   GAALET_CUDA_HOST_DEVICE
    multivector()
       :  value(0.0)
    { }
 
+   GAALET_CUDA_HOST_DEVICE
    multivector(const element_t& setValue)
       :  value(setValue)
    { }
@@ -160,20 +171,24 @@ struct multivector<configuration_list<0x00, cl_null>, M> : public expression<mul
    { }*/
 
    //conversion operator
+   GAALET_CUDA_HOST_DEVICE
    operator element_t() {
       return value;
    }
 
    //return element by index, index known at runtime
+   GAALET_CUDA_HOST_DEVICE
    const element_t& operator[](const conf_t&) const {
       return value;
    }
+   GAALET_CUDA_HOST_DEVICE
    element_t& operator[](const conf_t& index) {
       return value;
    }
 
    //return element by index, index known at compile time
    template<conf_t index>
+   GAALET_CUDA_HOST_DEVICE
    const element_t& get() const {
       return value;
    }
@@ -181,6 +196,7 @@ struct multivector<configuration_list<0x00, cl_null>, M> : public expression<mul
    //return element by configuration (basis vector), configuration known at compile time
    template<conf_t conf>
    ////reference return (const element_t& element() const) not applicable because of possible return of 0.0;
+   GAALET_CUDA_HOST_DEVICE
    element_t element() const {
       //static const conf_t index = search_element<conf, clist>::index;
       //static_assert(index<size, "element<conf_t>(): no such element in configuration list");
@@ -189,6 +205,7 @@ struct multivector<configuration_list<0x00, cl_null>, M> : public expression<mul
 
    //   constructor evaluation
    template<class E>
+   GAALET_CUDA_HOST_DEVICE
    multivector(const expression<E>& e_) {
       const E& e(e_);
       value = e.template element<0x00>();
@@ -196,6 +213,7 @@ struct multivector<configuration_list<0x00, cl_null>, M> : public expression<mul
 
    //   assignment evaluation
    template<class E>
+   GAALET_CUDA_HOST_DEVICE
    void operator=(const expression<E>& e_) {
       const E& e(e_);
       value = e.template element<0x00>();
@@ -208,7 +226,9 @@ protected:
 
 } //end namespace gaalet
 
+
 template<class A> inline
+GAALET_CUDA_HOST_DEVICE
 gaalet::multivector<typename A::clist, typename A::metric>
 eval(const gaalet::expression<A>& a) {
    return gaalet::multivector<typename A::clist, typename A::metric>(a);

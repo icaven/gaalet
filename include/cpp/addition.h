@@ -49,12 +49,14 @@ protected:
 } //end namespace gaalet
 
 template <class L, class R> inline
+GAALET_CUDA_HOST_DEVICE
 gaalet::addition<L, R>
 operator+(const gaalet::expression<L>& l, const gaalet::expression<R>& r) {
    return gaalet::addition<L, R>(l, r);
 }
 
 template <class L, class R> inline
+GAALET_CUDA_HOST_DEVICE
 gaalet::subtraction<L, R>
 operator-(const gaalet::expression<L>& l, const gaalet::expression<R>& r) {
    return gaalet::subtraction<L, R>(l, r);

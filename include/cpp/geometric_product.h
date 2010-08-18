@@ -195,18 +195,21 @@ protected:
 
 
 template <class L, class R> inline
+GAALET_CUDA_HOST_DEVICE
 gaalet::geometric_product<L, R>
 operator*(const gaalet::expression<L>& l, const gaalet::expression<R>& r) {
    return gaalet::geometric_product<L, R>(l, r);
 }
 
 template <class A> inline
+GAALET_CUDA_HOST_DEVICE
 gaalet::scalar_multivector_product<A>
 operator*(const gaalet::element_t& s, const gaalet::expression<A>& a) {
    return gaalet::scalar_multivector_product<A>(s, a);
 }
 
 template <class A> inline
+GAALET_CUDA_HOST_DEVICE
 gaalet::scalar_multivector_product<A>
 operator*(const gaalet::expression<A>& a, const gaalet::element_t& s) {
    return gaalet::scalar_multivector_product<A>(s, a);

@@ -36,3 +36,7 @@ testSpringCGA: testSpringCGA.cpp $(DEPENDS)
 testConfModelCuda: testConfModelCuda.cu $(DEPENDS)
 	nvcc -o testConfModelCuda testConfModelCuda.cu $(INCLUDE)
 
+testMonteCarloPiCuda: testMonteCarloPiCuda.cu $(DEPENDS)
+	nvcc -o testMonteCarloPiCuda testMonteCarloPiCuda.cu -O3 -arch=sm_12 $(INCLUDE)
+
+

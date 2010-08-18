@@ -1,9 +1,11 @@
 #include "gaalet.h"
 #include <cmath>
 
-int main()
+typedef gaalet::algebra<gaalet::signature<4,1> > cm;
+
+__global__ void test()
 {
-   typedef gaalet::algebra<gaalet::signature<4,1> > cm;
+   //int i = threadIdx.x;
 
    cm::mv<0x01>::type e1(1.0);
    cm::mv<0x02>::type e2(1.0);
@@ -12,30 +14,21 @@ int main()
    cm::mv<0x10>::type em(1.0);
 
    cm::mv<0x00>::type one(1.0);
-   std::cout << "sin(one): " << sin(one) << std::endl;
 
    cm::mv<0x08, 0x10>::type e0 = 0.5*(em-ep);
    cm::mv<0x08, 0x10>::type einf = em+ep;
+}
 
-   cm::mv<0x18>::type E = ep*em;
+int main()
+{
+   std::cout << "Hello Gaalet on cuda!" << std::endl;
 
-   cm::mv<0x1f>::type I = e1*e2*e3*ep*em;
-   //auto I_expr = e1*e2*e3*ep*em;
-   //auto I_mv = eval(e1*e2*e3*ep*em);
-   //std::cout << "I_expr: " << I_expr << ", I_mv[0]: " << I_mv[0] << std::endl;
-   cm::mv<0x07>::type i = e1*e2*e3;
+   cudaSetDevice( 0 );
 
-   std::cout << "e0*e0: " << e0*e0 << std::endl;
-   std::cout << "einf*einf: " << einf*einf << std::endl;
-   std::cout << "ep*ep: " << ep*ep << std::endl;
-   std::cout << "em*em: " << em*em << std::endl;
-   std::cout << "E: " << E << std::endl;
-   std::cout << "ep*em: " << ep*em << std::endl;
-   std::cout << "em*ep: " << em*ep << std::endl;
-   std::cout << "e0*einf: " << e0*einf << std::endl;
-   std::cout << "einf*e0: " << einf*e0 << std::endl;
-   std::cout << "e0&einf: " << (e0&einf) << std::endl;
-   std::cout << "einf&e0: " << (einf&e0) << std::endl;
-   std::cout << "e0^einf: " << (e0^einf) << std::endl;
-   std::cout << "einf^e0: " << (einf^e0) << std::endl;
+   unsigned int num_threads = 4;
+   dim3 threads( num_threads );
+
+   test <<< 1, threads >>>();
+
+   cudaThreadExit();
 }
