@@ -1,14 +1,14 @@
-//#include "gaalet.h"
+#include "gaalet.h"
 #include <iostream>
 #include <cstdlib>
 
-//typedef gaalet::algebra<gaalet::signature<4,1> > cm;
+typedef gaalet::algebra<gaalet::signature<4,1> > cm;
 
-__device__ long d_pi;
+__device__ float d_pi = 0.0;
 
 __global__ void test()
 {
-   /*double r = (double)blockDim.x;
+   double r = (double)blockDim.x;
    
    unsigned int n_q = blockDim.x*blockDim.y*blockDim.z;
    __shared__ unsigned int n_s;
@@ -25,19 +25,19 @@ __global__ void test()
    cm::mv<0x08, 0x10>::type e0 = 0.5*(em-ep);
    cm::mv<0x08, 0x10>::type einf = em+ep;
 
-   cm::mv<0x08, 0x10>::type S = eval(e0 - 0.5*r*r*einf);
+   cm::mv<0x08, 0x10>::type S = e0 - 0.5*r*r*einf;
 
 
-   cm::mv<0x01, 0x02, 0x04>::type x = eval(((double)threadIdx.x*e1 + (double)threadIdx.y*e2 + (double)threadIdx.z*e3)*r);
+   cm::mv<0x01, 0x02, 0x04>::type x = ((double)threadIdx.x*e1 + (double)threadIdx.y*e2 + (double)threadIdx.z*e3)*r;
    cm::mv<0x01, 0x02, 0x04, 0x08, 0x10>::type P = x + 0.5*(x&x)*einf + e0;
    double d = eval(S&P);
    if(d>=0.0) {
-      atomicAdd(&n_s, 1);
+      //atomicAdd(&n_s, 1);
+      ++n_s;
    }
-   __syncthreads();*/
+   __syncthreads();
    
-   //if(threadIdx.x == 0 && threadIdx.y==0 && threadIdx.z==0) d_pi = 6.0*(double)n_s/(double)n_q;
-   d_pi = 6;
+   if(threadIdx.x == 0 && threadIdx.y==0 && threadIdx.z==0) d_pi = 6.0*(float)n_s/(float)n_q;
 }
 
 
@@ -46,13 +46,14 @@ int main()
    std::cout << "Hello Gaalet Monte Carlo on Cuda!" << std::endl;
 
 
-   //dim3 threads( 10, 10, 10 );
+   dim3 threads( 1, 1, 1 );
 
-   //test <<< 1, threads >>>();
-   test<<<1,1>>>();
+   test <<< 1, threads >>>();
 
-   long pi;
-   cudaMemcpyFromSymbol(&pi, "d_pi", sizeof(pi), 0, cudaMemcpyDeviceToHost);
+   float pi;
+   if(cudaMemcpyFromSymbol(&pi, "d_pi", sizeof(pi), 0, cudaMemcpyDeviceToHost) != cudaSuccess) {
+      std::cout << "cudaMemcpyFromSymbol() not succeded!" << std::endl;
+   }
    std::cout << "Pi: " << pi << std::endl;
    
    cudaThreadExit();

@@ -39,6 +39,7 @@ struct grade : public expression<grade<G, A> >
    { }
 
    template<conf_t conf>
+   GAALET_CUDA_HOST_DEVICE
    element_t element() const {
       return a.template element<conf>();
    }
@@ -51,6 +52,7 @@ protected:
 }  //end namespace gaalet
 
 template <gaalet::conf_t G, class A> inline
+GAALET_CUDA_HOST_DEVICE
 gaalet::grade<G, A>
 grade(const gaalet::expression<A>& a) {
    return gaalet::grade<G, A>(a);
