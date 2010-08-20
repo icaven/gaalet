@@ -39,4 +39,6 @@ testConfModelCuda: testConfModelCuda.cu $(DEPENDS)
 testMonteCarloPiCuda: testMonteCarloPiCuda.cu $(DEPENDS)
 	nvcc -o testMonteCarloPiCuda testMonteCarloPiCuda.cu -O3 -arch=sm_11 $(INCLUDE)
 
+testRotationCuda: testRotationCuda.cu $(DEPENDS)
+	nvcc -o testRotationCuda testRotationCuda.cu -O3 $(INCLUDE)
 
