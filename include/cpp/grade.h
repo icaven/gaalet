@@ -27,14 +27,15 @@ struct filter_clist_for_grade<cl_null, grade, false>
    typedef cl_null clist;
 };
 
+//NVCC has problems with struct grade having same name than function grade, although in different namescopes, thus capitel letter for struct Grade
 template<conf_t G, class A>
-struct grade : public expression<grade<G, A> >
+struct Grade : public expression<Grade<G, A> >
 {
    typedef typename filter_clist_for_grade<typename A::clist, G>::clist clist;
 
    typedef typename A::metric metric;
 
-   grade(const A& a_)
+   Grade(const A& a_)
       :  a(a_)
    { }
 
@@ -53,9 +54,9 @@ protected:
 
 template <gaalet::conf_t G, class A> inline
 GAALET_CUDA_HOST_DEVICE
-gaalet::grade<G, A>
+gaalet::Grade<G, A>
 grade(const gaalet::expression<A>& a) {
-   return gaalet::grade<G, A>(a);
+   return gaalet::Grade<G, A>(a);
 }
 
 #endif

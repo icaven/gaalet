@@ -50,6 +50,10 @@ struct multivector : public expression<multivector<CL, M>>
    const element_t& get() const {
       return data[index];
    }
+   template<conf_t index>
+   element_t& get() {
+      return data[index];
+   }
 
    //return element by configuration (basis vector), configuration known at compile time
    template<conf_t conf>

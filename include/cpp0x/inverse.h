@@ -50,7 +50,7 @@ struct inverse<A, 1> : public expression<inverse<A>>
 
    template<conf_t conf>
    element_t element() const {
-      return a.element<conf>() * div;
+      return a.element<conf>() * div * Power<-1, BitCount<conf>::value*(BitCount<conf>::value-1)/2>::value;
    }
 
 protected:

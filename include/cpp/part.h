@@ -37,6 +37,7 @@ struct part_type: public expression<part_type<T, A> >
    { }
 
    template<conf_t conf>
+   GAALET_CUDA_HOST_DEVICE
    element_t element() const {
       return a.template element<conf>();
    }
@@ -55,6 +56,7 @@ part(const gaalet::expression<A>& a) {
 }*/
 
 template<class T, class A> inline
+GAALET_CUDA_HOST_DEVICE
 gaalet::part_type<T, A>
 part_type(const gaalet::expression<A>& a) {
    return gaalet::part_type<T, A>(a);

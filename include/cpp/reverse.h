@@ -17,6 +17,7 @@ struct reverse : public expression<reverse<A> >
    { }
 
    template<conf_t conf>
+   GAALET_CUDA_HOST_DEVICE
    element_t element() const {
       return a.template element<conf>() * Power<-1, BitCount<conf>::value*(BitCount<conf>::value-1)/2>::value;
    }
@@ -29,6 +30,7 @@ protected:
 }  //end namespace gaalet
 
 template <class A> inline
+GAALET_CUDA_HOST_DEVICE
 gaalet::reverse<A>
 operator~(const gaalet::expression<A>& a) {
    return gaalet::reverse<A>(a);
