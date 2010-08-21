@@ -40,6 +40,72 @@ struct multivector : public expression<multivector<CL, M> >
       data[0] = c0;
       //std::fill(data.begin(), data.end(), 0.0);
    }
+   GAALET_CUDA_HOST_DEVICE
+   multivector(const element_t& c0, const element_t& c1)
+   {
+      memset(data, 0, (size-2)*sizeof(element_t));
+      data[0] = c0; data[1] = c1;
+   }
+   GAALET_CUDA_HOST_DEVICE
+   multivector(const element_t& c0, const element_t& c1, const element_t& c2)
+   {
+      memset(data, 0, (size-3)*sizeof(element_t));
+      data[0] = c0; data[1] = c1; data[2] = c2;
+   }
+   GAALET_CUDA_HOST_DEVICE
+   multivector(const element_t& c0, const element_t& c1, const element_t& c2, const element_t& c3)
+   {
+      memset(data, 0, (size-4)*sizeof(element_t));
+      data[0] = c0; data[1] = c1; data[2] = c2; data[3] = c3;
+   }
+   GAALET_CUDA_HOST_DEVICE
+   multivector(const element_t& c0, const element_t& c1, const element_t& c2, const element_t& c3, const element_t& c4)
+   {
+      memset(data, 0, (size-5)*sizeof(element_t));
+      data[0] = c0; data[1] = c1; data[2] = c2; data[3] = c3; data[4] = c4;
+   }
+   GAALET_CUDA_HOST_DEVICE
+   multivector(const element_t& c0, const element_t& c1, const element_t& c2, const element_t& c3, const element_t& c4, const element_t& c5)
+   {
+      memset(data, 0, (size-6)*sizeof(element_t));
+      data[0] = c0; data[1] = c1; data[2] = c2; data[3] = c3; data[4] = c4; data[5] = c5;
+   }
+   GAALET_CUDA_HOST_DEVICE
+   multivector(const element_t& c0, const element_t& c1, const element_t& c2, const element_t& c3, const element_t& c4, const element_t& c5, const element_t& c6)
+   {
+      memset(data, 0, (size-7)*sizeof(element_t));
+      data[0] = c0; data[1] = c1; data[2] = c2; data[3] = c3; data[4] = c4; data[5] = c5; data[6] = c6;
+   }
+   GAALET_CUDA_HOST_DEVICE
+   multivector(const element_t& c0, const element_t& c1, const element_t& c2, const element_t& c3, const element_t& c4, const element_t& c5, const element_t& c6, const element_t& c7)
+   {
+      memset(data, 0, (size-8)*sizeof(element_t));
+      data[0] = c0; data[1] = c1; data[2] = c2; data[3] = c3; data[4] = c4; data[5] = c5; data[6] = c6; data[7] = c7;
+   }
+   GAALET_CUDA_HOST_DEVICE
+   multivector(const element_t& c0, const element_t& c1, const element_t& c2, const element_t& c3, const element_t& c4, const element_t& c5, const element_t& c6, const element_t& c7, const element_t& c8)
+   {
+      memset(data, 0, (size-9)*sizeof(element_t));
+      data[0] = c0; data[1] = c1; data[2] = c2; data[3] = c3; data[4] = c4; data[5] = c5; data[6] = c6; data[7] = c7; data[8] = c8;
+   }
+   GAALET_CUDA_HOST_DEVICE
+   multivector(const element_t& c0, const element_t& c1, const element_t& c2, const element_t& c3, const element_t& c4, const element_t& c5, const element_t& c6, const element_t& c7, const element_t& c8, const element_t& c9)
+   {
+      memset(data, 0, (size-10)*sizeof(element_t));
+      data[0] = c0; data[1] = c1; data[2] = c2; data[3] = c3; data[4] = c4; data[5] = c5; data[6] = c6; data[7] = c7; data[8] = c8; data[9] = c9;
+   }
+   GAALET_CUDA_HOST_DEVICE
+   multivector(const element_t& c0, const element_t& c1, const element_t& c2, const element_t& c3, const element_t& c4, const element_t& c5, const element_t& c6, const element_t& c7, const element_t& c8, const element_t& c9, const element_t& c10)
+   {
+      memset(data, 0, (size-11)*sizeof(element_t));
+      data[0] = c0; data[1] = c1; data[2] = c2; data[3] = c3; data[4] = c4; data[5] = c5; data[6] = c6; data[7] = c7; data[8] = c8; data[9] = c9; data[10] = c10;
+   }
+   GAALET_CUDA_HOST_DEVICE
+   multivector(const element_t& c0, const element_t& c1, const element_t& c2, const element_t& c3, const element_t& c4, const element_t& c5, const element_t& c6, const element_t& c7, const element_t& c8, const element_t& c9, const element_t& c10, const element_t& c11)
+   {
+      memset(data, 0, (size-12)*sizeof(element_t));
+      data[0] = c0; data[1] = c1; data[2] = c2; data[3] = c3; data[4] = c4; data[5] = c5; data[6] = c6; data[7] = c7; data[8] = c8; data[9] = c9; data[10] = c10; data[11] = c11;
+   }
 
    /*C++0x only: multivector(std::initializer_list<element_t> s)
    {
