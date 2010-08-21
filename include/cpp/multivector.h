@@ -27,7 +27,7 @@ struct multivector : public expression<multivector<CL, M> >
    GAALET_CUDA_HOST_DEVICE
    multivector()
    {
-      memset(data, 0, size);
+      memset(data, 0, size*sizeof(element_t));
       //std::fill(data, data+size, 0.0);
       //std::fill(data.begin(), data.end(), 0.0);
    }
@@ -35,7 +35,7 @@ struct multivector : public expression<multivector<CL, M> >
    GAALET_CUDA_HOST_DEVICE
    multivector(const element_t& c0)
    {
-      memset(data, 0, size-1);
+      memset(data, 0, (size-1)*sizeof(element_t));
       //std::fill(data, data+size, 0.0);
       data[0] = c0;
       //std::fill(data.begin(), data.end(), 0.0);
