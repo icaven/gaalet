@@ -36,3 +36,7 @@ testHorizon: testHorizon.cpp $(DEPENDS)
 testHorizon_fast: testHorizon_fast.cpp $(DEPENDS)
 	g++45 -o testHorizon_fast testHorizon_fast.cpp -O3 -std=c++0x $(INCLUDE)
 
+testScalarMultiplication: testScalarMultiplication.cpp $(DEPENDS)
+	g++45 -o testScalarMultiplication testScalarMultiplication.cpp -O3 -std=c++0x $(INCLUDE)
+
+
