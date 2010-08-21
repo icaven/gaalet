@@ -10,6 +10,18 @@ namespace ip
 {
 
 //list of element multiplications with the same result type
+struct msl_null
+{
+   static const conf_t size = 0;
+
+   template<class L, class R>
+   GAALET_CUDA_HOST_DEVICE
+   static element_t product_sum(const L&, const R&)
+   {
+      return 0.0;
+   }
+};
+
 template<conf_t LC, conf_t RC, typename T>
 struct multiplication_sum_list
 {
@@ -31,16 +43,24 @@ struct multiplication_sum_list
          + tail::product_sum(l, r);
    }
 };
-
-struct msl_null
+template<conf_t LC, conf_t RC>
+struct multiplication_sum_list<LC, RC, msl_null>
 {
-   static const conf_t size = 0;
+   static const conf_t left = LC;
+   static const conf_t right = RC;
+
+   typedef msl_null tail;
+
+   static const conf_t size = 1;
 
    template<class L, class R>
    GAALET_CUDA_HOST_DEVICE
-   static element_t product_sum(const L&, const R&)
+   static element_t product_sum(const L& l, const R& r)
    {
-      return 0.0;
+      return
+         l.template element<left>()*r.template element<right>()
+         *CanonicalReorderingSign<left, right>::value
+         *((BitCount<(L::metric::signature_bitmap|R::metric::signature_bitmap)&(left&right)>::value % 2) ? -1 : 1);
    }
 };
 

@@ -3,7 +3,7 @@
 #include <cmath>
 
 
-template<typename T>
+template<typename T> inline
 T na(const T& l, const T& r)
 {
    T result;
@@ -12,7 +12,7 @@ T na(const T& l, const T& r)
    }
    return result;
 }
-template<typename T>
+template<typename T> inline
 T ns(const T& l, const T& r)
 {
    T result;

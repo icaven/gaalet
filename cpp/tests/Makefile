@@ -28,7 +28,7 @@ testConfModel: testConfModel.cpp $(DEPENDS)
 	g++45 -o testConfModel testConfModel.cpp $(INCLUDE)
 
 testMonteCarloPi: testMonteCarloPi.cpp $(DEPENDS)
-	g++45 -o testMonteCarloPi testMonteCarloPi.cpp -O3 -fno-signed-zeros $(INCLUDE)
+	g++45 -o testMonteCarloPi testMonteCarloPi.cpp -O3 $(INCLUDE)
 
 testSpringCGA: testSpringCGA.cpp $(DEPENDS)
 	g++45 -O3 -o testSpringCGA testSpringCGA.cpp -losg -losgViewer -Wfatal-errors $(INCLUDE)
