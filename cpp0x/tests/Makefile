@@ -39,4 +39,9 @@ testHorizon_fast: testHorizon_fast.cpp $(DEPENDS)
 testScalarMultiplication: testScalarMultiplication.cpp $(DEPENDS)
 	g++45 -o testScalarMultiplication testScalarMultiplication.cpp -O3 -std=c++0x $(INCLUDE)
 
+testRotation: testRotation.cpp $(DEPENDS)
+	g++45 -o testRotation testRotation.cpp -O3 -std=c++0x $(INCLUDE)
+
+testScalarMagnitude: testScalarMagnitude.cpp $(DEPENDS)
+	g++45 -o testScalarMagnitude testScalarMagnitude.cpp -g -std=c++0x $(INCLUDE)
 

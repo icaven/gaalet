@@ -4,7 +4,7 @@
 namespace gaalet
 {
 
-typedef unsigned int conf_t;
+typedef unsigned long long int conf_t;
 
 template<conf_t H, typename T>
 struct configuration_list
