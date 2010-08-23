@@ -12,6 +12,7 @@
 #include "grade.h"
 #include "part.h"
 #include "inverse.h"
+#include "exponential.h"
 #include "scalar.h"
 #include "magnitude.h"
 

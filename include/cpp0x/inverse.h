@@ -43,6 +43,7 @@ struct inverse<A, 1> : public expression<inverse<A>>
 
    typedef typename A::metric metric;
 
+   //dangerous implementation: constructor only called when expression is defined, not when evaluated
    inverse(const A& a_)
       :  a(a_),
          div(1.0/((~a)*a).template element<0x00>())

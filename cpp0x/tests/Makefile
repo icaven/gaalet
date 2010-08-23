@@ -18,6 +18,9 @@ testReverse: testReverse.cpp $(DEPENDS)
 testInverse: testInverse.cpp $(DEPENDS)
 	g++45 -o testInverse testInverse.cpp -std=c++0x $(INCLUDE)
 
+testExponential: testExponential.cpp $(DEPENDS)
+	g++45 -o testExponential testExponential.cpp -std=c++0x $(INCLUDE)
+
 testConfModel: testConfModel.cpp $(DEPENDS)
 	g++45 -o testConfModel testConfModel.cpp -std=c++0x $(INCLUDE)
 
