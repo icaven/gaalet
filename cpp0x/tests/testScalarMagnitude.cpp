@@ -1,5 +1,11 @@
 #include "gaalet.h"
 
+template<class E>
+void eval_copy(E expr) {
+   std::cout << "eval_copy(): " << expr << ", expr size: " << sizeof(expr) << std::endl;
+}
+
+
 int main()
 {
    gaalet::mv<1, 2, 4>::type a = {1, 2, 3};
@@ -10,8 +16,20 @@ int main()
 
    std::cout << "scalar(a,a): " << scalar(a,a) << std::endl;
    
-   std::cout << grade<0>(a*a) << std::endl;
+   auto expr_grade = grade<0>(a*a);
+   std::cout << "grade<0>(a,a): " << expr_grade << std::endl;
+   eval_copy(expr_grade);
 
+   auto expr_scalar = scalar(a,a);
 
-   std::cout << "scalar(a*a, a): " << scalar(a*a, a) << std::endl;
+   auto m = eval(expr_scalar);
+   std::cout << "m: " << m << std::endl;
+
+   m = eval(expr_scalar);
+   std::cout << "m: " << m << std::endl;
+
+   m = eval(expr_scalar);
+   std::cout << "m: " << m << std::endl;
+   eval_copy(expr_scalar);
+
 }

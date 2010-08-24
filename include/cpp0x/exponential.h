@@ -1,6 +1,7 @@
 #ifndef __GAALET_EXPONENTIAL_H
 #define __GAALET_EXPONENTIAL_H
 
+#include <cmath>
 
 #include "grade.h"
 #include "geometric_product.h"
@@ -48,7 +49,7 @@ struct exponential<A, 1> : public expression<exponential<A>>
    { 
       element_t alpha_square = eval(grade<0, decltype(a*a)>(a*a));
       if(alpha_square < 0.0) {
-         double alpha = sqrt(-alpha_square);
+         element_t alpha = sqrt(-alpha_square);
          ca = cos(alpha);
          sada = sin(alpha)/alpha;
       }
@@ -58,7 +59,7 @@ struct exponential<A, 1> : public expression<exponential<A>>
       }
       //else if(alpha_square > 0.0) {
       else {
-         double alpha = sqrt(alpha_square);
+         element_t alpha = sqrt(alpha_square);
          ca = cosh(alpha);
          sada = sinh(alpha)/alpha;
       }

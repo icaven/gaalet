@@ -35,17 +35,17 @@ protected:
 }  //end namespace gaalet
 
 
-template <class L, class R> inline
+/*template <class L, class R> inline
 gaalet::scalar<L, R>
 scalar(const gaalet::expression<L>& l, const gaalet::expression<R>& r)
 {
    return gaalet::scalar<L, R>(l, r);
-}
+}*/
 
-/*template <class L, class R> inline
+template <class L, class R> inline
 auto scalar(const gaalet::expression<L>& l, const gaalet::expression<R>& r) -> decltype(grade<0>(l*r))
 {
    return grade<0>(l*r);
-}*/
+}
 
 #endif

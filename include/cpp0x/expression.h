@@ -17,8 +17,6 @@ typedef double element_t;
 //Wrapper class for CRTP
 template <class E>
 struct expression {
-   typedef E son;
-
    operator const E& () const {
       return *static_cast<const E*>(this);
    }
