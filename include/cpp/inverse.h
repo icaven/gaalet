@@ -45,18 +45,24 @@ struct inverse<A, 1> : public expression<inverse<A> >
 
    inverse(const A& a_)
       :  a(a_),
-         div(1.0/((~a)*a).template element<0x00>())
+         first_eval(true)
    { }
 
+   //review: don't evaluate on definition workaround: will only work if arguments stay the same (thus attention with variables)
    template<conf_t conf>
    GAALET_CUDA_HOST_DEVICE
    element_t element() const {
+      if(first_eval) {
+         div = 1.0/((~a)*a).template element<0x00>();
+         first_eval = false;
+      }
       return a.template element<conf>() * div * Power<-1, BitCount<conf>::value*(BitCount<conf>::value-1)/2>::value;
    }
 
 protected:
    const A& a;
-   element_t div;
+   mutable element_t div;
+   mutable bool first_eval;
 };
 
 

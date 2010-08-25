@@ -16,6 +16,6 @@
 #include "grade.h"
 #include "part.h"
 #include "inverse.h"
-
+#include "scalar.h"
 
 #endif

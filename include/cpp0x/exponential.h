@@ -45,7 +45,8 @@ struct exponential<A, 1> : public expression<exponential<A>>
 
    //dangerous implementation: constructor only called when expression is defined, not when evaluated
    exponential(const A& a_)
-      :  a(a_)
+      :  a(a_),
+         first_eval(true)
    { 
       element_t alpha_square = eval(grade<0, decltype(a*a)>(a*a));
       if(alpha_square < 0.0) {
@@ -65,9 +66,29 @@ struct exponential<A, 1> : public expression<exponential<A>>
       }
    }
 
-   //review:
+   //review: don't evaluate on definition workaround: will only work if arguments stay the same (thus attention with variables)
    template<conf_t conf>
    element_t element() const {
+      if(first_eval) {
+         element_t alpha_square = eval(grade<0, decltype(a*a)>(a*a));
+         if(alpha_square < 0.0) {
+            element_t alpha = sqrt(-alpha_square);
+            ca = cos(alpha);
+            sada = sin(alpha)/alpha;
+         }
+         else if(alpha_square == 0.0 || alpha_square == -0.0) {
+            ca = 1.0;
+            sada = 1.0;
+         }
+         //else if(alpha_square > 0.0) {
+         else {
+            element_t alpha = sqrt(alpha_square);
+            ca = cosh(alpha);
+            sada = sinh(alpha)/alpha;
+         }
+         first_eval = false;
+      }
+
       if(conf!=0)
          return a.element<conf>()*sada;
       else
@@ -80,8 +101,9 @@ struct exponential<A, 1> : public expression<exponential<A>>
 
 protected:
    const A& a;
-   element_t ca;
-   element_t sada;
+   mutable element_t ca;
+   mutable element_t sada;
+   mutable bool first_eval;
 };
 
 

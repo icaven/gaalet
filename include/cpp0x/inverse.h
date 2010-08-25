@@ -43,20 +43,25 @@ struct inverse<A, 1> : public expression<inverse<A>>
 
    typedef typename A::metric metric;
 
-   //dangerous implementation: constructor only called when expression is defined, not when evaluated
    inverse(const A& a_)
       :  a(a_),
-         div(1.0/((~a)*a).template element<0x00>())
+         first_eval(true)
    { }
 
    template<conf_t conf>
    element_t element() const {
+      //review: don't evaluate on definition workaround: will only work if arguments stay the same (thus attention with variables)
+      if(first_eval) {
+         div = 1.0/((~a)*a).template element<0x00>();
+         first_eval=false;
+      };
       return a.element<conf>() * div * Power<-1, BitCount<conf>::value*(BitCount<conf>::value-1)/2>::value;
    }
 
 protected:
    const A& a;
-   element_t div;
+   mutable element_t div;
+   mutable bool first_eval;
 };
 
 
