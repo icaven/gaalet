@@ -9,6 +9,7 @@
 
 #include "multivector.h"
 #include "algebra.h"
+#include "streaming.h"
 
 #include "addition.h"
 #include "multiplication.h"
