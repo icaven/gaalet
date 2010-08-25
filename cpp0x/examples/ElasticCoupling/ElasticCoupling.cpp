@@ -1,5 +1,5 @@
 ///----------------------------------
-///Author: Florian Seybold, 2009
+///Author: Florian Seybold, 2010
 ///www.hlrs.de
 ///----------------------------------
 ///Cube body connected to two fixed points via pull and torsion springs, gravity acting on cube body.
@@ -8,15 +8,12 @@
 ///GA-Expression syntax:
 /// auto E = grade<1>(T*p*(~T));
 ///  Object E is not a multivector, but an expression. To evaluate to a multivector:
-/// auto M = E();
+/// auto M = eval(E);
 ///  or directly:
-/// auto M = (grade<1>(T*p*(~T)))();
+/// auto M = eval(grade<1>(T*p*(~T)));
 ///
-/// Operators: Geometric Product: *, Inner Product: %, Outer Product: ^.
-/// Attention with outer product: Best enclose operation with operands in brackets, because of C++ order of operations.
-/// Be careful: operator ~ is the inverse, operator ! the reverse by now. Will be flipped to CLUCalc-notation someday.
-///
-/// Sorry for incredibly long compiler error outputs due to template programming!
+/// Operators: Geometric Product: *, Inner Product: &, Outer Product: ^.
+/// Attention with inner and outer product: Best enclose operation with operands in brackets, because of C++ order of operations.
 
 #include "gaalet.h"
 
