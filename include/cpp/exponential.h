@@ -30,14 +30,14 @@ struct exponential_evaluation_type
 };
 
 template<class A, int ET = exponential_evaluation_type<A>::value>
-struct exponential : public expression<exponential<A>>
+struct exponential : public expression<exponential<A> >
 {
-   static_assert(ET!=-1, "no method for evaluating this type of multivector implemented");
+   //C++0x only: static_assert(ET!=-1, "no method for evaluating this type of multivector implemented");
 };
 
 //bivector exponential
 template<class A>
-struct exponential<A, 1> : public expression<exponential<A>>
+struct exponential<A, 1> : public expression<exponential<A> >
 {
    typedef typename insert_element<0, typename A::clist>::clist clist;
 
@@ -53,7 +53,7 @@ struct exponential<A, 1> : public expression<exponential<A>>
    template<conf_t conf>
    element_t element() const {
       if(first_eval) {
-         element_t alpha_square = eval(grade<0, decltype(a*a)>(a*a));
+         element_t alpha_square = eval(grade<0>(a*a));
          if(alpha_square < 0.0) {
             element_t alpha = sqrt(-alpha_square);
             ca = cos(alpha);

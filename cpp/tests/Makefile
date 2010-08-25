@@ -24,6 +24,9 @@ testReverse: testReverse.cpp $(DEPENDS)
 testInverse: testInverse.cpp $(DEPENDS)
 	g++45 -o testInverse testInverse.cpp $(INCLUDE)
 
+testExponential: testExponential.cpp $(DEPENDS)
+	g++45 -o testExponential testExponential.cpp $(INCLUDE)
+
 testScalar: testScalar.cpp $(DEPENDS)
 	g++45 -o testScalar testScalar.cpp -g $(INCLUDE)
 
