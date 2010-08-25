@@ -1,8 +1,10 @@
 cmake_minimum_required (VERSION 2.6.3)
 project (benchmarks)
 
-INCLUDE_DIRECTORIES ("../../include/cpp")
-set (CMAKE_BUILD_TYPE Release)
+include_directories ("../../include/cpp")
+if (NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif (NOT CMAKE_BUILD_TYPE)
 
 file (GLOB benchmark_sources RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.cpp")
 foreach (benchmark_source ${benchmark_sources})

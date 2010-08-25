@@ -3,20 +3,9 @@
 ///www.hlrs.de
 ///----------------------------------
 ///Cube body connected to two fixed points via pull and torsion springs, gravity acting on cube body.
-///Using some features of new C++0x standard: auto-keyword and decltype-keyword
 ///
-///GA-Expression syntax:
-/// auto E = grade<1>(T*p*(~T));
-///  Object E is not a multivector, but an expression. To evaluate to a multivector:
-/// auto M = E();
-///  or directly:
-/// auto M = (grade<1>(T*p*(~T)))();
-///
-/// Operators: Geometric Product: *, Inner Product: %, Outer Product: ^.
-/// Attention with outer product: Best enclose operation with operands in brackets, because of C++ order of operations.
-/// Be careful: operator ~ is the inverse, operator ! the reverse by now. Will be flipped to CLUCalc-notation someday.
-///
-/// Sorry for incredibly long compiler error outputs due to template programming!
+/// Operators: Geometric Product: *, Inner Product: &, Outer Product: ^.
+/// Attention with inner and outer product: Best enclose operation with operands in brackets, because of C++ order of operations.
 
 #include "gaalet.h"
 
@@ -26,53 +15,55 @@
 #include <osg/PositionAttitudeTransform>
 #include <osg/ShapeDrawable>
 
+typedef gaalet::algebra<gaalet::signature<4,1> > cm;
+
 int main()
 {
    //defintion of basisvectors, null basis, pseudoscalars, helper unit scalar
-   gaalet::cm::mv<0x01>::type e1 = {1.0};
-   gaalet::cm::mv<0x02>::type e2 = {1.0};
-   gaalet::cm::mv<0x04>::type e3 = {1.0};
-   gaalet::cm::mv<0x08>::type ep = {1.0};
-   gaalet::cm::mv<0x10>::type em = {1.0};
+   cm::mv<0x01>::type e1(1.0);
+   cm::mv<0x02>::type e2(1.0);
+   cm::mv<0x04>::type e3(1.0);
+   cm::mv<0x08>::type ep(1.0);
+   cm::mv<0x10>::type em(1.0);
 
-   gaalet::cm::mv<0x00>::type one = {1.0};
+   cm::mv<0x00>::type one(1.0);
 
-   gaalet::cm::mv<0x08, 0x10>::type e0 = 0.5*(em-ep);
-   gaalet::cm::mv<0x08, 0x10>::type einf = em+ep;
+   cm::mv<0x08, 0x10>::type e0 = 0.5*(em-ep);
+   cm::mv<0x08, 0x10>::type einf = em+ep;
 
-   gaalet::cm::mv<0x18>::type E = ep*em;
+   cm::mv<0x18>::type E = ep*em;
 
-   gaalet::cm::mv<0x1f>::type I = e1*e2*e3*ep*em;
-   gaalet::cm::mv<0x07>::type i = e1*e2*e3;
+   cm::mv<0x1f>::type I = e1*e2*e3*ep*em;
+   cm::mv<0x07>::type i = e1*e2*e3;
 
-   typedef gaalet::cm::mv<0x03, 0x05, 0x06, 0x09, 0x0a, 0x0c, 0x11, 0x12, 0x14>::type S_type;
-   typedef gaalet::cm::mv<0x00, 0x03, 0x05, 0x06, 0x09, 0x0a, 0x0c, 0x0f, 0x11, 0x12, 0x14, 0x17>::type D_type;
+   typedef cm::mv<0x03, 0x05, 0x06, 0x09, 0x0a, 0x0c, 0x11, 0x12, 0x14>::type S_type;
+   typedef cm::mv<0x00, 0x03, 0x05, 0x06, 0x09, 0x0a, 0x0c, 0x0f, 0x11, 0x12, 0x14, 0x17>::type D_type;
 
    //Initial position of cube
-   gaalet::cm::mv<1, 2, 4>::type m = {0.0, 0.0, 0.2*M_PI};
-   gaalet::cm::mv<1, 2, 4>::type n = {1.0, 1.0, 0.0};
+   cm::mv<1, 2, 4>::type m(0.0, 0.0, 0.2*M_PI);
+   cm::mv<1, 2, 4>::type n(1.0, 1.0, 0.0);
 
    //Expressions: Screw of pure translation, corresponding versor
-   auto S_n = einf*n;
-   auto T = one + S_n*0.5;
+   typeof(einf*n) S_n = einf*n;
+   typeof(eval(one+S_n*0.5)) T = one + S_n*0.5;
    std::cout << "T: " << T << std::endl;
 
    //Expressions: Screw of pure rotation, corresponding versor
    //auto S_m = i*m*(-1.0);
    //auto R = exp(S_m*0.5);
-   auto R = one*cos(-0.5*0.2*M_PI) + e1*e2*sin(-0.5*0.2*M_PI) + e2*e3*0.0 + e3*e1*0.0;
+   cm::mv<0,3,5,6>::type R = one*cos(-0.5*0.2*M_PI) + e1*e2*sin(-0.5*0.2*M_PI) + e2*e3*0.0 + e3*e1*0.0;
    std::cout << "R: " << R << std::endl;
 
    //Displacement versor, pay attention to the evaluation of the expression: D is a multivector, no expression.
-   auto D = eval(T*R);
+   D_type D = T*R;
    std::cout << "D: " << D << std::endl;
 
    //Initial velocity of cube
-   gaalet::cm::mv<1, 2, 4>::type omega = {0.0, 0.0, 0.0};
-   gaalet::cm::mv<1, 2, 4>::type v = {0.0, 0.0, 0.0};
+   cm::mv<1, 2, 4>::type omega(0.0, 0.0, 0.0);
+   cm::mv<1, 2, 4>::type v(0.0, 0.0, 0.0);
 
    //Velocity twist: evaluation to a multivector
-   auto V_b = eval(i*omega*(-1.0) + einf*v);
+   S_type V_b = i*omega*(-1.0) + einf*v;
 
    //Mass and principal inertias
    double M = 1.0;
@@ -86,12 +77,12 @@ int main()
    double k_d = 0.5;
 
    //Displacements of fixed points connected to cube via springs
-   auto T_s1 = (one + einf*(e1*1.0 + e2*0.0 + e3*1.0)*0.5);
-   auto T_s2 = (one + einf*(e1*0.0 + e2*0.0 + e3*0.0)*0.5);
-   auto R_s1 = one*cos(-M_PI*0.25*0.5) + e3*e1*sin(-M_PI*0.25*0.5);
-   auto R_s2 = one*cos(-M_PI*0.25*0.5) + e3*e1*sin(-M_PI*0.25*0.5);
-   auto D_s1 = eval(T_s1*R_s1);
-   auto D_s2 = eval(T_s2*R_s2);
+   cm::mv<0, 9, 0xa, 0xc, 0x11, 0x12, 0x14>::type T_s1 = (one + einf*(e1*1.0 + e2*0.0 + e3*1.0)*0.5);
+   cm::mv<0, 9, 0xa, 0xc, 0x11, 0x12, 0x14>::type T_s2 = (one + einf*(e1*0.0 + e2*0.0 + e3*0.0)*0.5);
+   cm::mv<0,5>::type R_s1 = one*cos(-M_PI*0.25*0.5) + e3*e1*sin(-M_PI*0.25*0.5);
+   cm::mv<0,5>::type R_s2 = one*cos(-M_PI*0.25*0.5) + e3*e1*sin(-M_PI*0.25*0.5);
+   D_type D_s1 = T_s1*R_s1;
+   D_type D_s2 = T_s2*R_s2;
 
 
    //Visualisation with OpenSceneGraph
@@ -105,14 +96,14 @@ int main()
    cubeTransform->addChild(cubeGeode);
    sceneRoot->addChild(cubeTransform);
 
-   auto p_s1 = eval(grade<1>(D_s1*e0*(~D_s1)));
+   cm::mv<1, 2, 4, 8, 16>::type p_s1 = grade<1>(D_s1*e0*(~D_s1));
    osg::Sphere* s1Sphere = new osg::Sphere(osg::Vec3(p_s1[0], p_s1[1], p_s1[2]), 0.1f);
    osg::ShapeDrawable* s1SphereDrawable = new osg::ShapeDrawable(s1Sphere);
    osg::Geode* s1SphereGeode = new osg::Geode();
    s1SphereGeode->addDrawable(s1SphereDrawable);
    sceneRoot->addChild(s1SphereGeode);
 
-   auto p_s2 = eval(grade<1>(D_s2*e0*(~D_s2)));
+   cm::mv<1, 2, 4, 8, 16>::type p_s2 = eval(grade<1>(D_s2*e0*(~D_s2)));
    osg::Sphere* s2Sphere = new osg::Sphere(osg::Vec3(p_s2[0], p_s2[1], p_s2[2]), 0.1f);
    osg::ShapeDrawable* s2SphereDrawable = new osg::ShapeDrawable(s2Sphere);
    osg::Geode* s2SphereGeode = new osg::Geode();
@@ -143,36 +134,36 @@ int main()
 
       //Displacement propagation
       //auto dD = part<0x00, 0x03, 0x05, 0x06, 0x09, 0x0a, 0x0c, 0x0f, 0x11, 0x12, 0x14, 0x17>(D*V_b*0.5);
-      auto dD = part_type<D_type>(D*V_b*0.5);
+      D_type dD = part_type<D_type>(D*V_b*0.5);
       D = D + dD*frameTime;
 
       //Generalized trigonometric formula for the tangent of a half angle (after Hestenes)
-      auto B_s1 = part_type<S_type>(grade<2>(grade<2>((~D)*D_s1)*(!(one+grade<0>((~D)*D_s1)+grade<4>((~D)*D_s1)))));
-      auto B_s2 = part_type<S_type>(grade<2>(grade<2>((~D)*D_s2)*(!(one+grade<0>((~D)*D_s2)+grade<4>((~D)*D_s2)))));
+      S_type B_s1 = part_type<S_type>(grade<2>(grade<2>((~D)*D_s1)*(!(one+grade<0>((~D)*D_s1)+grade<4>((~D)*D_s1)))));
+      S_type B_s2 = part_type<S_type>(grade<2>(grade<2>((~D)*D_s2)*(!(one+grade<0>((~D)*D_s2)+grade<4>((~D)*D_s2)))));
       
       //Force law of spring (not necessarily linear)
-      auto F_s1_b = B_s1*k_s1;
-      auto F_s2_b = B_s2*k_s2;
+      S_type F_s1_b = B_s1*k_s1;
+      S_type F_s2_b = B_s2*k_s2;
       //Force law of damping
-      auto F_d = V_b*k_d*(-1.0);
+      S_type F_d = V_b*k_d*(-1.0);
       //Gravity acting on body
-      auto F_g = part_type<S_type>((~D)*einf*(e3*(-9.81))*D);
+      S_type F_g = part_type<S_type>((~D)*einf*(e3*(-9.81))*D);
       //Resultant force wrench
-      auto F_b = eval(F_s1_b + F_s2_b + F_d + F_g);
+      S_type F_b = F_s1_b + F_s2_b + F_d + F_g;
 
       //--- Start: velocity propagation due to force laws ---
       //Torque part of force wrench
-      auto t_b = eval(i*part<0x03, 0x05, 0x06>(F_b));
+      cm::mv<1, 2, 4>::type t_b = i*part_type<cm::mv<0x03, 0x05, 0x06>::type>(F_b);
       //Linear force part of force wrench
-      auto f_b = grade<1>(part<0x09, 0x0a, 0x0c, 0x11, 0x12, 0x14>(F_b)*e0);
+      cm::mv<1, 2, 4>::type f_b = grade<1>(part_type<cm::mv<0x09, 0x0a, 0x0c, 0x11, 0x12, 0x14>::type>(F_b)*e0);
 
       //Linear velocity part of velocity twist propagation
-      auto v = grade<1>(part<0x09, 0x0a, 0x0c, 0x11, 0x12, 0x14>(V_b)*e0) + f_b*(frameTime/M);
+      cm::mv<1, 2, 4>::type v = grade<1>(part_type<cm::mv<0x09, 0x0a, 0x0c, 0x11, 0x12, 0x14>::type>(V_b)*e0) + f_b*(frameTime/M);
 
       //Angular velocity part of velocity twist propagation (implicit Euler-forward, solving Euler's equations)
-      auto oldOm = eval((~i)*(-1.0)*part<0x03, 0x05, 0x06>(V_b));
-      auto om = oldOm;
-      decltype(om) prevOm;
+      cm::mv<1, 2, 4>::type oldOm = eval((~i)*(-1.0)*part_type<cm::mv<0x03, 0x05, 0x06>::type>(V_b));
+      cm::mv<1, 2, 4>::type om = oldOm;
+      typeof(om) prevOm;
       double maxError = 1e-5;
       //do {
       for(int j=0; j<5; ++j) {
@@ -188,7 +179,7 @@ int main()
       //--- End: velocity propagation due to force laws ---
      
       //Updating new position of cube
-      auto p_m = eval(grade<1>(D*e0*(~D)));
+      cm::mv<1, 2, 4, 8, 16>::type p_m = eval(grade<1>(D*e0*(~D)));
       cubeTransform->setPosition(osg::Vec3(p_m[0], p_m[1], p_m[2]));
       cubeTransform->setAttitude(osg::Quat(-D[3], D[2], -D[1], D[0]));
 
