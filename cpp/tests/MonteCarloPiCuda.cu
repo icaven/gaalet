@@ -8,7 +8,7 @@ __device__ __shared__ unsigned int d_n_s;
 
 __global__ void test()
 {
-   __shared__ double r;
+   __shared__ float r;
    
    __shared__ cm::mv<0x01>::type e1;
    __shared__ cm::mv<0x02>::type e2;
@@ -24,7 +24,7 @@ __global__ void test()
 
    if(threadIdx.x == 0 && threadIdx.y==0 && threadIdx.z==0) {
       d_n_s = 0;
-      r = (double)blockDim.x;
+      r = (float)blockDim.x;
       e1[0] = 1.0;
       e2[0] = 1.0;
       e3[0] = 1.0;
@@ -36,9 +36,9 @@ __global__ void test()
       S = e0 - 0.5*r*r*einf;
    }
 
-   cm::mv<0x01, 0x02, 0x04>::type x = ((double)threadIdx.x*e1 + (double)threadIdx.y*e2 + (double)threadIdx.z*e3)*r;
+   cm::mv<0x01, 0x02, 0x04>::type x = ((float)threadIdx.x*e1 + (float)threadIdx.y*e2 + (float)threadIdx.z*e3)*r;
    cm::mv<0x01, 0x02, 0x04, 0x08, 0x10>::type P = x + 0.5*(x&x)*einf + e0;
-   double d = eval(S&P);
+   float d = eval(S&P);
    if(d>=0.0) {
       //atomicAdd(&n_s, 1);
       ++d_n_s;
@@ -73,7 +73,7 @@ int main()
    }
 
    unsigned int n_q = r*r*r;
-   double pi = 6.0*(double)n_s/(double)n_q;
+   float pi = 6.0*(float)n_s/(float)n_q;
 
    std::cout << "Pi: " << pi << std::endl;
 

@@ -15,7 +15,7 @@ int main()
    std::cout << "element 2: " << gaalet::get_element<2, c_type::clist>::value << std::endl;
    std::cout << "element 3: " << gaalet::get_element<3, c_type::clist>::value << std::endl;
 
-   gaalet::multivector<c_type::clist, em> c = a*b;
+   gaalet::multivector<c_type::clist, em, gaalet::default_element_t> c = a*b;
    std::cout << "a: " << a << std::endl;
    std::cout << "b: " << b << std::endl;
    std::cout << "c: " << c << std::endl;
