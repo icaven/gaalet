@@ -35,10 +35,12 @@ struct metric_combination_traits<signature<PL, QL>, signature<PR, QR>>
    //typedef ::gaalet::metric<SL | SR> metric;
 };
 
-template<typename M>
+template<typename M, typename T = default_element_t>
 struct algebra
 {
    typedef M metric;
+
+   typedef T element_t;
 
    //no cpp0x template aliases supported by gcc yet
    /*template<conf_t head, conf_t... tail>
@@ -53,12 +55,12 @@ struct algebra
    template<conf_t head, conf_t... tail>
    struct mv<head, tail...>
    {
-      typedef multivector<typename insert_element<head, typename mv<tail...>::type::clist>::clist, metric> type;
+      typedef multivector<typename insert_element<head, typename mv<tail...>::type::clist>::clist, metric, element_t> type;
    };
    template<conf_t head>
    struct mv<head>
    {
-      typedef multivector<configuration_list<head, cl_null>, metric> type;
+      typedef multivector<configuration_list<head, cl_null>, metric, element_t> type;
    };
 };
 

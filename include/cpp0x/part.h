@@ -12,6 +12,8 @@ struct part : public expression<part<A, elements...>>
 
    typedef typename A::metric metric;
 
+   typedef typename A::element_t element_t;
+
    part(const A& a_)
       :  a(a_)
    { }
@@ -31,6 +33,8 @@ struct part_type: public expression<part_type<T, A>>
    typedef typename T::clist clist;
 
    typedef typename A::metric metric;
+
+   typedef typename A::element_t element_t;
 
    part_type(const A& a_)
       :  a(a_)

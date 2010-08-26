@@ -43,6 +43,8 @@ struct inverse<A, 1> : public expression<inverse<A>>
 
    typedef typename A::metric metric;
 
+   typedef typename A::element_t element_t;
+
    inverse(const A& a_)
       :  a(a_),
          first_eval(true)
@@ -82,9 +84,9 @@ auto operator!(const gaalet::expression<A>& a) -> decltype((~a)*(1.0/(a*(~a)).te
 
 template <class A> inline
 //auto operator!(const gaalet::expression<A>& a) -> decltype(eval(a*gaalet::element_t()))
-auto inverse(const gaalet::expression<A>& a) -> decltype(eval(a*gaalet::element_t()))
+auto inverse(const gaalet::expression<A>& a) -> decltype(eval(a*typename A::element_t()))
 {
-   gaalet::element_t div = 1.0/((~a)*a).template element<0x00>();
+   typename A::element_t div = 1.0/((~a)*a).template element<0x00>();
    return eval(a*div);
 }
 

@@ -15,6 +15,8 @@ struct scalar : public expression<scalar<L, R>>
 
    typedef typename E::metric metric;
 
+   typedef typename E::element_t element_t;
+
    scalar(const L& l_ , const R& r_ )
       //:  l(l_), r(r_)
       : e(::grade<0>(l_*r_))
