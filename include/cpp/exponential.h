@@ -43,6 +43,8 @@ struct exponential<A, 1> : public expression<exponential<A> >
 
    typedef typename A::metric metric;
 
+   typedef typename A::element_t element_t;
+
    //dangerous implementation: constructor only called when expression is defined, not when evaluated
    exponential(const A& a_)
       :  a(a_),

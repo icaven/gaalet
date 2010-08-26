@@ -11,14 +11,6 @@
 namespace gaalet
 {
 
-//multivector coefficients type, set hard
-//---float type for cuda
-#ifdef __CUDACC__
-   typedef float element_t;
-#else
-   typedef double element_t;
-#endif
-
 //Wrapper class for CRTP
 template <class E>
 struct expression {

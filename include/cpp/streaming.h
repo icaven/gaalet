@@ -40,7 +40,7 @@ std::ostream& operator<<(std::ostream& os, const gaalet::expression<E>& e_)
 {
    const E& e(e_);
 
-   os << "[ ";
+   os << "[ " << std::dec;
       UnpackElementsToStream<E, typename E::clist>::unpack(os, e);
    os << "] { " << std::hex;
       UnpackConfigurationListToStream<typename E::clist>::unpack(os);

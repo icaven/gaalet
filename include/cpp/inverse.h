@@ -43,6 +43,8 @@ struct inverse<A, 1> : public expression<inverse<A> >
 
    typedef typename A::metric metric;
 
+   typedef typename A::element_t element_t;
+
    inverse(const A& a_)
       :  a(a_),
          first_eval(true)

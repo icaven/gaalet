@@ -14,7 +14,7 @@ struct msl_null
 {
    static const conf_t size = 0;
 
-   template<class L, class R>
+   template<typename element_t, class L, class R>
    GAALET_CUDA_HOST_DEVICE
    static element_t product_sum(const L&, const R&)
    {
@@ -32,7 +32,7 @@ struct multiplication_sum_list
 
    static const conf_t size = T::size + 1;
 
-   template<class L, class R>
+   template<typename element_t, class L, class R>
    GAALET_CUDA_HOST_DEVICE
    static element_t product_sum(const L& l, const R& r)
    {
@@ -40,7 +40,7 @@ struct multiplication_sum_list
          l.template element<left>()*r.template element<right>()
          *CanonicalReorderingSign<left, right>::value
          *((BitCount<(L::metric::signature_bitmap|R::metric::signature_bitmap)&(left&right)>::value % 2) ? -1 : 1)
-         + tail::product_sum(l, r);
+         + tail::template product_sum<element_t>(l, r);
    }
 };
 template<conf_t LC, conf_t RC>
@@ -53,7 +53,7 @@ struct multiplication_sum_list<LC, RC, msl_null>
 
    static const conf_t size = 1;
 
-   template<class L, class R>
+   template<typename element_t, class L, class R>
    GAALET_CUDA_HOST_DEVICE
    static element_t product_sum(const L& l, const R& r)
    {
@@ -76,11 +76,11 @@ struct multiplication_element_list
 
    static const conf_t size = T::size + 1;
 
-   template<class L, class R>
+   template<typename element_t, class L, class R>
    GAALET_CUDA_HOST_DEVICE
    static element_t product_sum(const L& l, const R& r)
    {
-      return head::product_sum(l, r);
+      return head::template product_sum<element_t>(l, r);
    }
 };
 
@@ -91,7 +91,7 @@ struct mel_null
 
    static const conf_t size = 0;
 
-   template<class L, class R>
+   template<typename element_t, class L, class R>
    GAALET_CUDA_HOST_DEVICE
    static element_t product_sum(const L&, const R&)
    {
@@ -195,6 +195,8 @@ struct inner_product : public expression<inner_product<L, R> >
 
    typedef typename metric_combination_traits<typename L::metric, typename R::metric>::metric metric;
 
+   typedef typename element_type_combination_traits<typename L::element_t, typename R::element_t>::element_t element_t;
+
    inner_product(const L& l_ , const R& r_)
       :  l(l_), r(r_)
    { }
@@ -202,7 +204,7 @@ struct inner_product : public expression<inner_product<L, R> >
    template<conf_t conf>
    GAALET_CUDA_HOST_DEVICE
    element_t element() const {
-      return ip::search_conf_in_melist<conf, melist>::melist::product_sum(l, r);
+      return ip::search_conf_in_melist<conf, melist>::melist::template product_sum<element_t>(l, r);
    }
 
 protected:
