@@ -2,13 +2,15 @@
 #include <sys/time.h>
 #include <cmath>
 
+typedef gaalet::algebra<gaalet::signature<3,0>> em;
+
 int main()
 {
    timeval start, end;
    double solveTime;
 
-   gaalet::mv<1, 2, 4, 7>::type a = {1.0, 1.0, 0.0, 0.0};
-   gaalet::mv<0, 3, 5, 6>::type b = {cos(-M_PI*0.25), sin(-M_PI*0.25), 0.0, 0.0};
+   em::mv<1, 2, 4, 7>::type a = {1.0, 1.0, 0.0, 0.0};
+   em::mv<0, 3, 5, 6>::type b = {cos(-M_PI*0.25), sin(-M_PI*0.25), 0.0, 0.0};
 
    gettimeofday(&start, 0);
    for(int i = 0; i<1e8; ++i) {
@@ -22,8 +24,8 @@ int main()
    std::cout << "b: " << b << std::endl;
    std::cout << "operator=(): multiply solve time: " << solveTime << std::endl;
 
-   gaalet::mv<1, 2, 4, 7>::type d = {1.0, 1.0, 0.0, 0.0};
-   gaalet::mv<0, 3, 5, 6>::type e = {cos(-M_PI*0.25), sin(-M_PI*0.25), 0.0, 0.0};
+   em::mv<1, 2, 4, 7>::type d = {1.0, 1.0, 0.0, 0.0};
+   em::mv<0, 3, 5, 6>::type e = {cos(-M_PI*0.25), sin(-M_PI*0.25), 0.0, 0.0};
 
    gettimeofday(&start, 0);
    for(int i = 0; i<1e8; ++i) {
@@ -38,8 +40,8 @@ int main()
    std::cout << "eval(): multiply solve time: " << solveTime << std::endl;
 
 
-   gaalet::mv<1, 2, 4, 7>::type f = {1.0, 1.0, 0.0, 0.0};
-   gaalet::mv<0, 3, 5, 6>::type g = {cos(-M_PI*0.25), sin(-M_PI*0.25), 0.0, 0.0};
+   em::mv<1, 2, 4, 7>::type f = {1.0, 1.0, 0.0, 0.0};
+   em::mv<0, 3, 5, 6>::type g = {cos(-M_PI*0.25), sin(-M_PI*0.25), 0.0, 0.0};
 
    gettimeofday(&start, 0);
    for(int i = 0; i<1e8; ++i) {

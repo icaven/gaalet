@@ -1,11 +1,13 @@
 #include "gaalet.h"
 
+typedef gaalet::algebra<gaalet::signature<3,0> > em;
+
 int main()
 {
-   gaalet::mv<1, 2, 4>::type a = { 1, 2, 3 };
-   gaalet::mv<1, 2, 4>::type b = { 4, 5, 6 };
+   em::mv<1, 2, 4>::type a( 1, 2, 3 );
+   em::mv<1, 2, 4>::type b( 4, 5, 6 );
 
-   typedef decltype(a*b) c_type;
+   typedef typeof(a*b) c_type;
 
    std::cout << "clist size: " << c_type::clist::size << std::endl;
    std::cout << "element 0: " << gaalet::get_element<0, c_type::clist>::value << std::endl;
@@ -13,7 +15,7 @@ int main()
    std::cout << "element 2: " << gaalet::get_element<2, c_type::clist>::value << std::endl;
    std::cout << "element 3: " << gaalet::get_element<3, c_type::clist>::value << std::endl;
 
-   gaalet::multivector<typename c_type::clist> c = a*b;
+   gaalet::multivector<c_type::clist, em, gaalet::default_element_t> c = a*b;
    std::cout << "a: " << a << std::endl;
    std::cout << "b: " << b << std::endl;
    std::cout << "c: " << c << std::endl;

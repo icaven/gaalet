@@ -18,6 +18,5 @@
 #include "part.h"
 #include "inverse.h"
 #include "exponential.h"
-#include "scalar.h"
 
 #endif

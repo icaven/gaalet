@@ -35,10 +35,12 @@ struct metric_combination_traits<signature<PL, QL>, signature<PR, QR> >
    //typedef ::gaalet::metric<SL | SR> metric;
 };
 
-template<typename M>
+template<typename M, typename T = default_element_t>
 struct algebra
 {
    typedef M metric;
+
+   typedef T element_t;
 
    //no cpp0x template aliases supported by gcc yet
    /*template<conf_t head, conf_t... tail>
@@ -76,7 +78,7 @@ struct algebra
                           typename insert_element<e10,
                           typename insert_element<e11,
                           typename insert_element<e12,
-                          cl_null>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist, metric> type;
+                          cl_null>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist, metric, element_t> type;
    };
    template<conf_t e1, conf_t e2, conf_t e3, conf_t e4, conf_t e5, conf_t e6, conf_t e7, conf_t e8, conf_t e9, conf_t e10, conf_t e11>
    struct mv<e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, 0xffffffff>
@@ -92,7 +94,7 @@ struct algebra
                           typename insert_element<e9,
                           typename insert_element<e10,
                           typename insert_element<e11,
-                          cl_null>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist, metric> type;
+                          cl_null>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist, metric, element_t> type;
    };
    template<conf_t e1, conf_t e2, conf_t e3, conf_t e4, conf_t e5, conf_t e6, conf_t e7, conf_t e8, conf_t e9, conf_t e10>
    struct mv<e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, 0xffffffff, 0xffffffff>
@@ -107,7 +109,7 @@ struct algebra
                           typename insert_element<e8,
                           typename insert_element<e9,
                           typename insert_element<e10,
-                          cl_null>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist, metric> type;
+                          cl_null>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist, metric, element_t> type;
    };
    template<conf_t e1, conf_t e2, conf_t e3, conf_t e4, conf_t e5, conf_t e6, conf_t e7, conf_t e8, conf_t e9>
    struct mv<e1, e2, e3, e4, e5, e6, e7, e8, e9, 0xffffffff, 0xffffffff, 0xffffffff>
@@ -121,7 +123,7 @@ struct algebra
                           typename insert_element<e7,
                           typename insert_element<e8,
                           typename insert_element<e9,
-                          cl_null>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist, metric> type;
+                          cl_null>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist, metric, element_t> type;
    };
    template<conf_t e1, conf_t e2, conf_t e3, conf_t e4, conf_t e5, conf_t e6, conf_t e7, conf_t e8>
    struct mv<e1, e2, e3, e4, e5, e6, e7, e8, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff>
@@ -134,7 +136,7 @@ struct algebra
                           typename insert_element<e6,
                           typename insert_element<e7,
                           typename insert_element<e8,
-                          cl_null>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist, metric> type;
+                          cl_null>::clist>::clist>::clist>::clist>::clist>::clist>::clist>::clist, metric, element_t> type;
    };
    template<conf_t e1, conf_t e2, conf_t e3, conf_t e4, conf_t e5, conf_t e6, conf_t e7>
    struct mv<e1, e2, e3, e4, e5, e6, e7, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff>
@@ -146,7 +148,7 @@ struct algebra
                           typename insert_element<e5,
                           typename insert_element<e6,
                           typename insert_element<e7,
-                          cl_null>::clist>::clist>::clist>::clist>::clist>::clist>::clist, metric> type;
+                          cl_null>::clist>::clist>::clist>::clist>::clist>::clist>::clist, metric, element_t> type;
    };
    template<conf_t e1, conf_t e2, conf_t e3, conf_t e4, conf_t e5, conf_t e6>
    struct mv<e1, e2, e3, e4, e5, e6, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff>
@@ -157,7 +159,7 @@ struct algebra
                           typename insert_element<e4,
                           typename insert_element<e5,
                           typename insert_element<e6,
-                          cl_null>::clist>::clist>::clist>::clist>::clist>::clist, metric> type;
+                          cl_null>::clist>::clist>::clist>::clist>::clist>::clist, metric, element_t> type;
    };
    template<conf_t e1, conf_t e2, conf_t e3, conf_t e4, conf_t e5>
    struct mv<e1, e2, e3, e4, e5, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff>
@@ -167,7 +169,7 @@ struct algebra
                           typename insert_element<e3,
                           typename insert_element<e4,
                           typename insert_element<e5,
-                          cl_null>::clist>::clist>::clist>::clist>::clist, metric> type;
+                          cl_null>::clist>::clist>::clist>::clist>::clist, metric, element_t> type;
    };
    template<conf_t e1, conf_t e2, conf_t e3, conf_t e4>
    struct mv<e1, e2, e3, e4, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff>
@@ -176,7 +178,7 @@ struct algebra
                           typename insert_element<e2,
                           typename insert_element<e3,
                           typename insert_element<e4,
-                          cl_null>::clist>::clist>::clist>::clist, metric> type;
+                          cl_null>::clist>::clist>::clist>::clist, metric, element_t> type;
    };
    template<conf_t e1, conf_t e2, conf_t e3>
    struct mv<e1, e2, e3, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff>
@@ -184,20 +186,20 @@ struct algebra
       typedef multivector<typename insert_element<e1,
                           typename insert_element<e2,
                           typename insert_element<e3,
-                          cl_null>::clist>::clist>::clist, metric> type;
+                          cl_null>::clist>::clist>::clist, metric, element_t> type;
    };
    template<conf_t e1, conf_t e2>
    struct mv<e1, e2, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff>
    {
       typedef multivector<typename insert_element<e1,
                           typename insert_element<e2,
-                          cl_null>::clist>::clist, metric> type;
+                          cl_null>::clist>::clist, metric, element_t> type;
    };
    template<conf_t e1>
    struct mv<e1, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff>
    {
       typedef multivector<typename insert_element<e1,
-                          cl_null>::clist, metric> type;
+                          cl_null>::clist, metric, element_t> type;
    };
 
 };

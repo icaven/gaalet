@@ -3,6 +3,7 @@
 
 #include "configuration_list.h"
 #include "expression.h"
+#include "multivector_element.h"
 
 #include <algorithm>
 #include <array>
@@ -14,13 +15,15 @@ namespace gaalet
 //multivector struct
 //template<typename CL, typename SL=sl::sl_null>
 //struct multivector : public expression<multivector<CL, SL>>
-template<typename CL, typename M>
-struct multivector : public expression<multivector<CL, M>>
+template<typename CL, typename M, typename T>
+struct multivector : public expression<multivector<CL, M, T>>
 {
    typedef CL clist;
    static const conf_t size = clist::size;
    
    typedef M metric;
+   
+   typedef T element_t;
 
    //initialization
    multivector()
@@ -135,13 +138,15 @@ protected:
 };
 
 //specialization for scalar multivector type
-template<typename M>
-struct multivector<configuration_list<0x00, cl_null>, M> : public expression<multivector<configuration_list<0x00, cl_null>, M>>
+template<typename M, typename T>
+struct multivector<configuration_list<0x00, cl_null>, M, T> : public expression<multivector<configuration_list<0x00, cl_null>, M, T>>
 {
    typedef configuration_list<0x00, cl_null> clist;
    static const conf_t size = clist::size;
    
    typedef M metric;
+
+   typedef T element_t;
 
    //initialization
    multivector()
@@ -206,9 +211,9 @@ protected:
 } //end namespace gaalet
 
 template<class A> inline
-gaalet::multivector<typename A::clist, typename A::metric>
+gaalet::multivector<typename A::clist, typename A::metric, typename A::element_t>
 eval(const gaalet::expression<A>& a) {
-   return gaalet::multivector<typename A::clist, typename A::metric>(a);
+   return gaalet::multivector<typename A::clist, typename A::metric, typename A::element_t>(a);
 }
 
 

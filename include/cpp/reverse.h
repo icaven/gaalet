@@ -11,6 +11,8 @@ struct reverse : public expression<reverse<A> >
    typedef typename A::clist clist;
 
    typedef typename A::metric metric;
+   
+   typedef typename A::element_t element_t;
 
    reverse(const A& a_)
       :  a(a_)

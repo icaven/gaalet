@@ -11,6 +11,8 @@ struct addition : public expression<addition<L, R>>
 
    typedef typename metric_combination_traits<typename L::metric, typename R::metric>::metric metric;
 
+   typedef typename element_type_combination_traits<typename L::element_t, typename R::element_t>::element_t element_t;
+
    addition(const L& l_ , const R& r_ )
       :  l(l_), r(r_)
    { }
@@ -31,6 +33,8 @@ struct subtraction : public expression<subtraction<L, R>>
    typedef typename merge_lists<typename L::clist, typename R::clist>::clist clist;
 
    typedef typename metric_combination_traits<typename L::metric, typename R::metric>::metric metric;
+
+   typedef typename element_type_combination_traits<typename L::element_t, typename R::element_t>::element_t element_t;
 
    subtraction(const L& l_ , const R& r_ )
       :  l(l_), r(r_)

@@ -35,6 +35,8 @@ struct Grade : public expression<Grade<G, A> >
 
    typedef typename A::metric metric;
 
+   typedef typename A::element_t element_t;
+
    Grade(const A& a_)
       :  a(a_)
    { }
