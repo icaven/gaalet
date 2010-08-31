@@ -6,7 +6,7 @@
 ///
 /// Operators: Geometric Product: *, Inner Product: &, Outer Product: ^.
 /// Attention with inner and outer product: Best enclose operation with operands in brackets, because of C++ order of operations.
-
+#define _USE_MATH_DEFINES
 #include "gaalet.h"
 
 #include <osgViewer/Viewer>
@@ -44,8 +44,8 @@ int main()
    cm::mv<1, 2, 4>::type n(1.0, 1.0, 0.0);
 
    //Expressions: Screw of pure translation, corresponding versor
-   typeof(einf*n) S_n = einf*n;
-   typeof(eval(one+S_n*0.5)) T = one + S_n*0.5;
+   cm::mv<0x09, 0x0a, 0x0c, 0x11, 0x12, 0x14>::type S_n = einf*n;
+   cm::mv<0x00, 0x09, 0x0a, 0x0c, 0x11, 0x12, 0x14>::type T = one + S_n*0.5;
    std::cout << "T: " << T << std::endl;
 
    //Expressions: Screw of pure rotation, corresponding versor
@@ -163,7 +163,7 @@ int main()
       //Angular velocity part of velocity twist propagation (implicit Euler-forward, solving Euler's equations)
       cm::mv<1, 2, 4>::type oldOm = eval((~i)*(-1.0)*part_type<cm::mv<0x03, 0x05, 0x06>::type>(V_b));
       cm::mv<1, 2, 4>::type om = oldOm;
-      typeof(om) prevOm;
+      cm::mv<1, 2, 4>::type prevOm;
       double maxError = 1e-5;
       //do {
       for(int j=0; j<5; ++j) {

@@ -7,7 +7,7 @@ int main()
    em::mv<1, 2, 4>::type a( 1, 2, 3 );
    em::mv<1, 2, 4>::type b( 4, 5, 6 );
 
-   typedef typeof(a*b) c_type;
+   typedef gaalet::geometric_product<typename em::mv<1,2,4>::type, typename em::mv<1,2,4>::type> c_type;
 
    std::cout << "clist size: " << c_type::clist::size << std::endl;
    std::cout << "element 0: " << gaalet::get_element<0, c_type::clist>::value << std::endl;

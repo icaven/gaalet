@@ -151,13 +151,18 @@ struct multivector : public expression<multivector<CL, M, T> >
    }
 
    //evaluation
-   template<typename E, conf_t index = 0>
+   static const conf_t lastElementIndex = size-1;
+   template<typename E, conf_t index = lastElementIndex>
    struct ElementEvaluation
-   {                          //v no reference to pointer *& with gcc4.5 possible... What's going on?
+   {   
+      static const conf_t elementBitmap = get_element<index, clist>::value;
+	  static const conf_t nextElementIndex = index-1;
+
+	   //v no reference to pointer *& with gcc4.5 possible... What's going on?
       GAALET_CUDA_HOST_DEVICE
       static void eval(element_t* const data, const E& e) {
-         data[index] = e.template element<get_element<index, clist>::value>();
-         ElementEvaluation<E, index+1>::eval(data, e);
+         data[index] = e.template element<elementBitmap>();
+         ElementEvaluation<E, nextElementIndex>::eval(data, e);
       }
       /*C++0x only: static void eval(std::array<element_t, size>& data, const E& e) {
          std::get<index>(data) = e.element<get_element<index, clist>::value>();
@@ -165,11 +170,11 @@ struct multivector : public expression<multivector<CL, M, T> >
       }*/
    };
    template<typename E>
-   struct ElementEvaluation<E, size-1>
+   struct ElementEvaluation<E, 0>
    {
       GAALET_CUDA_HOST_DEVICE
       static void eval(element_t* const data, const E& e) {
-         data[size-1] = e.template element<get_element<size-1, clist>::value>();
+         data[0] = e.template element<get_element<0, clist>::value>();
       }
       /*C++0x only: static void eval(std::array<element_t, size>& data, const E& e) {
          std::get<size-1>(data) = e.element<get_element<size-1, clist>::value>();

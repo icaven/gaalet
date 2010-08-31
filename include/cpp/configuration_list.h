@@ -30,7 +30,8 @@ struct get_element
 {
    //C++0x only: static_assert(index < list::size, "get_element<index, list>: index not less than list size");
 
-   static const conf_t value = get_element<index - 1, typename list::tail>::value;
+   static const conf_t nextIndex = index - 1;
+   static const conf_t value = get_element<nextIndex, typename list::tail>::value;
 };
 
 template<typename list>
