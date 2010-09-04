@@ -5,8 +5,8 @@
 #include <cmath>
 
 typedef gaalet::algebra<gaalet::signature<3,0> > em;
-typedef em::mv<0x01,0x02,0x04>::type Vector;
-typedef em::mv<0x00,0x03,0x05,0x06>::type Rotor;
+typedef em::mv<1,2,4>::type Vector;
+typedef em::mv<0,3,5,6>::type Rotor;
 
 struct rotation_functor
 {
@@ -29,9 +29,9 @@ struct rotation_functor
 int main()
 {
    thrust::host_vector<Vector> h_x(100);
-   h_x[0][0] = 1.0; h_x[0][1] = 0.0; h_x[0][2] = 0.0;
-   h_x[1][0] = 0.0; h_x[1][1] = 1.0; h_x[1][2] = 0.0;
-   h_x[2][0] = 0.0; h_x[2][1] = 0.0; h_x[2][2] = 1.0;
+   for(int i=0; i<100; ++i) {
+      h_x[i][0] = 0.1*i; h_x[i][1] = 0.2*i; h_x[i][2] = 0.3*i;
+   }
 
    thrust::device_vector<Vector> d_x = h_x;
 
@@ -44,7 +44,7 @@ int main()
 
    thrust::host_vector<Vector> h_y = d_y;
 
-   std::cout << "1: x: " << h_x[0] << ", y: " << h_y[0] << std::endl;
-   std::cout << "2: x: " << h_x[1] << ", y: " << h_y[1] << std::endl;
-   std::cout << "3: x: " << h_x[2] << ", y: " << h_y[2] << std::endl;
+   for(int i=0; i<100; ++i) {
+      std::cout << i << ": x: " << h_x[i] << ", y: " << h_y[i] << std::endl;
+   }
 }
