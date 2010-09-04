@@ -94,7 +94,7 @@ int main()
    //Visualisation with OpenSceneGraph
    osg::Group* sceneRoot = new osg::Group;
 
-   osg::Box* cube = new osg::Box(osg::Vec3(0,0,0), 0.2f);
+   osg::Box* cube = new osg::Box(osg::Vec3(0.0, 0.0, 0.0), 0.2f);
    osg::ShapeDrawable* cubeDrawable = new osg::ShapeDrawable(cube);
    osg::Geode* cubeGeode = new osg::Geode();
    cubeGeode->addDrawable(cubeDrawable);
@@ -102,19 +102,21 @@ int main()
    cubeTransform->addChild(cubeGeode);
    sceneRoot->addChild(cubeTransform);
 
-   auto p_s1 = eval(grade<1>(D_s1*e0*(~D_s1)));
-   osg::Sphere* s1Sphere = new osg::Sphere(osg::Vec3(p_s1[0], p_s1[1], p_s1[2]), 0.1f);
+   osg::Sphere* s1Sphere = new osg::Sphere(osg::Vec3(0.0, 0.0, 0.0), 0.1f);
    osg::ShapeDrawable* s1SphereDrawable = new osg::ShapeDrawable(s1Sphere);
    osg::Geode* s1SphereGeode = new osg::Geode();
    s1SphereGeode->addDrawable(s1SphereDrawable);
-   sceneRoot->addChild(s1SphereGeode);
+   osg::PositionAttitudeTransform* s1SphereTransform = new osg::PositionAttitudeTransform();
+   s1SphereTransform->addChild(s1SphereGeode);
+   sceneRoot->addChild(s1SphereTransform);
 
-   auto p_s2 = eval(grade<1>(D_s2*e0*(~D_s2)));
-   osg::Sphere* s2Sphere = new osg::Sphere(osg::Vec3(p_s2[0], p_s2[1], p_s2[2]), 0.1f);
+   osg::Sphere* s2Sphere = new osg::Sphere(osg::Vec3(0.0, 0.0, 0.0), 0.1f);
    osg::ShapeDrawable* s2SphereDrawable = new osg::ShapeDrawable(s2Sphere);
    osg::Geode* s2SphereGeode = new osg::Geode();
    s2SphereGeode->addDrawable(s2SphereDrawable);
-   sceneRoot->addChild(s2SphereGeode);
+   osg::PositionAttitudeTransform* s2SphereTransform = new osg::PositionAttitudeTransform();
+   s2SphereTransform->addChild(s2SphereGeode);
+   sceneRoot->addChild(s2SphereTransform);
 
    osgViewer::Viewer viewer;
    viewer.setSceneData( sceneRoot );
@@ -133,9 +135,10 @@ int main()
    //Animation loop: Integration of equations of motion. Generelly Euler-backwards, exception: implicit Euler-forward for solving Euler's equations
    double frameTime = 0.0;
    double sumFrameTime = 0.0;
+   double minFrameTime = 0.0;
+   double timer = 0.0;
    unsigned int counter = 0;
    while(!viewer.done()) {
-      double minFrameTime = 0.0;
       osg::Timer_t startFrameTick = osg::Timer::instance()->tick();
 
       //Displacement propagation
@@ -189,6 +192,17 @@ int main()
       cubeTransform->setPosition(osg::Vec3(p_m[0], p_m[1], p_m[2]));
       cubeTransform->setAttitude(osg::Quat(-D[3], D[2], -D[1], D[0]));
 
+      //Updating actuating points
+      auto T_s1 = (one + einf*(e1*1.0 + e2*0.0 + e3*0.5*(1.0+sin(5.0*timer)))*0.5);
+      D_s1 = T_s1*R_s1;
+      auto p_s1 = eval(grade<1>(D_s1*e0*(~D_s1)));
+      s1SphereTransform->setPosition(osg::Vec3(p_s1[0], p_s1[1], p_s1[2]));
+
+      auto T_s2 = (one + einf*(e1*0.0 + e2*sin(3.0*timer) + e3*0.0)*0.5);
+      D_s2 = T_s2*R_s2;
+      auto p_s2 = eval(grade<1>(D_s2*e0*(~D_s2)));
+      s2SphereTransform->setPosition(osg::Vec3(p_s2[0], p_s2[1], p_s2[2]));
+
       viewer.frame();
 
       //work out if we need to force a sleep to hold back the frame rate
@@ -204,6 +218,8 @@ int main()
       else {
          counter++;
       }
+
+      timer += frameTime;
 
       if (frameTime < minFrameTime) OpenThreads::Thread::microSleep(static_cast<unsigned int>(1000000.0*(minFrameTime-frameTime)));
    }
