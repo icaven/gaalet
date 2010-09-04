@@ -82,13 +82,15 @@ int main()
    double k_s2 = 20.0;
    double k_d = 0.5;
 
-   //Displacements of fixed points connected to cube via springs
-   auto T_s1 = (one + einf*(e1*1.0 + e2*0.0 + e3*1.0)*0.5);
-   auto T_s2 = (one + einf*(e1*0.0 + e2*0.0 + e3*0.0)*0.5);
+   //Displacements of points connected to cube via springs
+   //auto T_s1 = (one + einf*(e1*1.0 + e2*0.0 + e3*1.0)*0.5);
+   //auto T_s2 = (one + einf*(e1*0.0 + e2*0.0 + e3*0.0)*0.5);
    auto R_s1 = one*cos(-M_PI*0.25*0.5) + e3*e1*sin(-M_PI*0.25*0.5);
    auto R_s2 = one*cos(-M_PI*0.25*0.5) + e3*e1*sin(-M_PI*0.25*0.5);
-   auto D_s1 = eval(T_s1*R_s1);
-   auto D_s2 = eval(T_s2*R_s2);
+   //auto D_s1 = eval(T_s1*R_s1);
+   //auto D_s2 = eval(T_s2*R_s2);
+   D_type D_s1;
+   D_type D_s2;
 
 
    //Visualisation with OpenSceneGraph
