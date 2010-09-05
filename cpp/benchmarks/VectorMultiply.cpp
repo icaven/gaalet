@@ -1,13 +1,15 @@
 #include "gaalet.h"
 #include <sys/time.h>
 #include <cmath>
+#include <vector>
 
 typedef gaalet::algebra<gaalet::signature<3,0> > em;
 
-int main()
+std::vector<double> benchmark()
 {
    timeval start, end;
    double solveTime;
+   std::vector<double> times;
 
    em::mv<1, 2, 4, 7>::type a(1.0, 1.0, 0.0, 0.0);
    em::mv<0, 3, 5, 6>::type b(cos(-M_PI*0.25), sin(-M_PI*0.25), 0.0, 0.0);
@@ -19,6 +21,7 @@ int main()
    }
    gettimeofday(&end, 0);
    solveTime = (double)(end.tv_sec - start.tv_sec) + (double)(end.tv_usec - start.tv_usec)*1e-6;
+   times.push_back(solveTime);
 
    std::cout << "a: " << a << std::endl;
    std::cout << "b: " << b << std::endl;
@@ -34,6 +37,7 @@ int main()
    }
    gettimeofday(&end, 0);
    solveTime = (double)(end.tv_sec - start.tv_sec) + (double)(end.tv_usec - start.tv_usec)*1e-6;
+   times.push_back(solveTime);
 
    std::cout << "d: " << d << std::endl;
    std::cout << "e: " << e << std::endl;
@@ -53,6 +57,7 @@ int main()
    }
    gettimeofday(&end, 0);
    solveTime = (double)(end.tv_sec - start.tv_sec) + (double)(end.tv_usec - start.tv_usec)*1e-6;
+   times.push_back(solveTime);
 
    std::cout << "f: " << f << std::endl;
    std::cout << "g: " << g << std::endl;
@@ -68,8 +73,30 @@ int main()
    }
    gettimeofday(&end, 0);
    solveTime = (double)(end.tv_sec - start.tv_sec) + (double)(end.tv_usec - start.tv_usec)*1e-6;
+   times.push_back(solveTime);
 
    std::cout << "f: " << f << std::endl;
    std::cout << "g: " << g << std::endl;
    std::cout << "handcoded optimized: multiply solve time: " << solveTime << std::endl;
+
+
+   return times;
+}
+
+
+int main() {
+   unsigned int num_runs = 10;
+   std::vector<std::vector<double> > times_vector;
+
+   for(int i=0; i<num_runs; ++i) {
+      times_vector.push_back(benchmark());
+   }
+
+   for(int j=0; j<times_vector[0].size(); ++j) {
+      double sum = 0.0;
+      for(int i=0; i<num_runs; ++i) {
+         sum += times_vector[i][j];
+      }
+      std::cout << "Average evaluation " << j << ": " << sum/(double)num_runs << std::endl;
+   }
 }
