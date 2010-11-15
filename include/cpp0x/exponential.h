@@ -20,12 +20,21 @@ struct check_bivector<cl_null>
    static const bool value = true;
 };
 
+//check for scalar
+template<typename CL>
+struct check_scalar
+{
+   static const bool value = (CL::size==1 && BitCount<CL::head>::value==0) ? true : false;
+};
+
 //go through inversion evaluation type checks
 //value=1 - bivector exponential
+//value=2 - scalar exponential
 template<class A>
 struct exponential_evaluation_type
 {
    static const int value = (check_bivector<typename A::clist>::value) ? 1 :
+                            (check_scalar<typename A::clist>::value) ? 0 :
                             -1;
 };
 
@@ -89,6 +98,29 @@ protected:
    mutable element_t ca;
    mutable element_t sada;
    mutable bool first_eval;
+};
+
+//scalar exponential
+template<class A>
+struct exponential<A, 0> : public expression<exponential<A>>
+{
+   typedef typename insert_element<0, cl_null>::clist clist;
+
+   typedef typename A::metric metric;
+
+   typedef typename A::element_t element_t;
+
+   exponential(const A& a_)
+      :  a(a_)
+   { }
+
+   template<conf_t conf>
+   element_t element() const {
+      return (conf==0) ? exp(a.element<conf>()) : 0.0;
+   }
+
+protected:
+   const A& a;
 };
 
 

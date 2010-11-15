@@ -28,6 +28,10 @@ int main()
    auto T = exp(0.5*S);
    std::cout << "T: " << T << ", T*e0*(~T): " << T*e0*(~T) << std::endl;
 
+   auto aa = a&a;
+   auto exp_aa = exp(aa);
+   std::cout << "aa: " << aa << ", exp_aa: " << exp_aa << std::endl;
+
    //vvv fails, because a is no bivector
    //std::cout << exp(a) << std::endl;
 }
