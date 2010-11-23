@@ -105,25 +105,38 @@ int main()
    magicformula2004::ContactWrench tyreRR(tyrePropRight);
    cardyn::StateEquation f(z, tyreFL, tyreFR, tyreRL, tyreRR);
 
-   /*//Get equations of motions in explicit form
-   cardyn::ExpressionVectorType exprVec = cardyn::getExpressionVector();
+   EulerIntegrator<cardyn::StateEquation, cardyn::StateVector> integrator(f);
+   
+   auto& p_b = std::get<0>(y);
+   auto& dp_b = std::get<1>(y);
+   auto& q_b = std::get<2>(y);
+   auto& w_b = std::get<3>(y);
+   auto& u_wfl = std::get<4>(y);
+   auto& du_wfl= std::get<5>(y);
+   auto& u_wfr = std::get<6>(y);
+   auto& du_wfr= std::get<7>(y);
+   auto& u_wrl = std::get<8>(y);
+   auto& du_wrl= std::get<9>(y);
+   auto& u_wrr = std::get<10>(y);
+   auto& du_wrr= std::get<11>(y);
+   auto& w_wfl = std::get<12>(y);
+   auto& w_wfr = std::get<13>(y);
+   auto& w_wrl = std::get<14>(y);
+   auto& w_wrr = std::get<15>(y);
+   auto& w_e = std::get<16>(y);
 
-   //Declare state vector
-   cardyn::StateVectorType y;
+   double& a_steer = std::get<4>(z);
+   double& i_pt = std::get<5>(z);
+   double& s_gp = std::get<6>(z);
 
    //Set initial values
-   cardyn::p_b.e_(y)[2] = 0.6;
-   cardyn::dp_b.e_(y)[0] = 0.0;
-   cardyn::q_b.e_(y)[0] = 1.0;
-   cardyn::q_wfl(y).e_[0] = -M_PI*0.1;
-   cardyn::q_wfr(y).e_[0] = -M_PI*0.1;
-   cardyn::i_pt.e_(y)[0] = 0.0;
-   cardyn::s_gp.e_(y)[0] = 0.0;
-   cardyn::k_c.e_(y)[0] = cardyn::k_cn;*/
+   p_b[2] = 0.6;
+   dp_b[0] = 0.0;
+   q_b[0] = 1.0;
+   a_steer = 0.0;
+   i_pt = 0.0;
+   s_gp = 0.0;
   
-   //Define integrator
-   //gealg::RungeKutta<cardyn::ExpressionVectorType, cardyn::StateVectorType, 19> integrator(exprVec, y);
-   
    //Visualisation with OpenSceneGraph
    osg::Group* sceneRoot = new osg::Group;
 
@@ -227,6 +240,8 @@ int main()
       double minFrameTime = 0.0;
       osg::Timer_t startFrameTick = osg::Timer::instance()->tick();
 
+      std::cout << "p_b: " << p_b << std::endl;
+
       //Setting distance between ground and wheel reference contact point
       double r_w = f.r_w;
       std::get<0>(z) = eval((std::get<0>(y) + grade<1>((!std::get<2>(y))*(f.r_wfl-f.z*r_w-f.z*std::get<4>(y))*std::get<2>(y)))&f.z);
@@ -244,26 +259,9 @@ int main()
 
       //Propagate vehicle state
       //integrator.integrate(frameTime);
+      integrator(frameTime, y);
 
       //Set new body displacements
-      const auto& p_b = std::get<0>(y);
-      const auto& dp_b = std::get<1>(y);
-      const auto& q_b = std::get<2>(y);
-      const auto& w_b = std::get<3>(y);
-      const auto& u_wfl= std::get<4>(y);
-      const auto& du_wfl= std::get<5>(y);
-      const auto& u_wfr= std::get<6>(y);
-      const auto& du_wfr= std::get<7>(y);
-      const auto& u_wrl= std::get<8>(y);
-      const auto& du_wrl= std::get<9>(y);
-      const auto& u_wrr= std::get<10>(y);
-      const auto& du_wrr= std::get<11>(y);
-      const auto& w_wfl= std::get<12>(y);
-      const auto& w_wfr= std::get<13>(y);
-      const auto& w_wrl= std::get<14>(y);
-      const auto& w_wrr= std::get<15>(y);
-      const auto& w_e= std::get<16>(y);
-
       bodyTransform->setPosition(osg::Vec3(p_b[0], p_b[1], p_b[2]));
       bodyTransform->setAttitude(osg::Quat(q_b[3],
                -q_b[2],

@@ -11,6 +11,20 @@ struct tuple_expression {
    }
 };
 
+template <class T>
+struct tuple_wrapper : public tuple_expression<tuple_wrapper<T>> {
+   tuple_wrapper(const T& t_)
+      :  t(t_)
+   { }
+
+   template<int I>
+   auto element() -> decltype(std::get<I>(T())) const {
+      return std::get<I>(t);
+   }
+
+   const T& t;
+};
+
 template<typename L, typename R>
 struct tuple_addition : public tuple_expression<tuple_addition<L,R>>
 {
@@ -20,9 +34,9 @@ struct tuple_addition : public tuple_expression<tuple_addition<L,R>>
    { }
 
    template<int I>
-   auto element() -> decltype(std::get<I>(L()) + std::get<I>(R())) {
+   auto element() -> decltype(L().template element<I>() + R().template element<I>()) const {
    //typename std::tuple_element<I, tuple_t>::type element() {
-      return std::get<I>(l) + std::get<I>(r);
+      return l.template element<I>() + r.template element<I>();
    }
 
    const L& l;
@@ -38,37 +52,25 @@ struct tuple_scalar_product : public tuple_expression<tuple_scalar_product<L>>
    { }
 
    template<int I>
-   auto element() -> decltype(std::get<I>(L())*double()) {
+   auto element() -> decltype(L().template element<I>()*double()) const {
    //typename std::tuple_element<I, L>::type element() {
-      return std::get<I>(l)*r;
+      return l.template element<I>()*r;
    }
 
    const L& l;
    double r;
 };
 
+template<class... A> inline
+tuple_wrapper<std::tuple<A...>>
+wrap(const std::tuple<A...>& t) {
+   return tuple_wrapper<std::tuple<A...>>(t);
+}
+
 template<class L, class R> inline
 tuple_addition<L, R>
 operator+(const tuple_expression<L>& l, const tuple_expression<R>& r) {
    return tuple_addition<L, R>(l, r);
-}
-
-template<class L, class... A> inline
-tuple_addition<L, std::tuple<A...>>
-operator+(const tuple_expression<L>& l, const std::tuple<A...>& r) {
-   return tuple_addition<L, std::tuple<A...>>(l, r);
-}
-
-template<class... A, class R> inline
-tuple_addition<std::tuple<A...>, R>
-operator+(const std::tuple<A...>& l, const tuple_expression<R>& r) {
-   return tuple_addition<std::tuple<A...>, R>(l, r);
-}
-
-template<class... L, class... R> inline
-tuple_addition<std::tuple<L...>, std::tuple<R...>>
-operator+(const std::tuple<L...>& l, const std::tuple<R...>& r) {
-   return tuple_addition<std::tuple<L...>, std::tuple<R...>>(l, r);
 }
 
 template<class T> inline
@@ -77,25 +79,58 @@ operator*(const tuple_expression<T>& l, const double& r) {
    return tuple_scalar_product<T>(l, r);
 }
 
-template<class... A> inline
-tuple_scalar_product<std::tuple<A...>>
-operator*(const std::tuple<A...>& l, const double& r) {
-   return tuple_scalar_product<std::tuple<A...>>(l, r);
+template<class T> inline
+tuple_scalar_product<T>
+operator*(const double& l, const tuple_expression<T>& r) {
+   return tuple_scalar_product<T>(r, l);
 }
 
-template<class... A> inline
-tuple_scalar_product<std::tuple<A...>>
-operator*(const double& l, const std::tuple<A...>& r) {
-   return tuple_scalar_product<std::tuple<A...>>(r, l);
-}
 
-template<typename E, typename R, int I=std::length<R>::value>
+template<typename E, typename R, int I=std::tuple_size<R>::value-1>
 struct tuple_expression_evaluation
 {
-   static void operator()(const E& e, R& r)
+   inline static void operate(const E& e, R& r)
    {
-      std::get<I>(r) = e.element<I>();
+      tuple_expression_evaluation<E, R, I-1>::operate(e, r);
+      //std::get<I>(r) = e.template element<I>();
    }
+};
+
+template<typename E, typename R>
+struct tuple_expression_evaluation<E,R,0>
+{
+   inline static void operate(const E& e, R& r)
+   {
+      //std::get<0>(r) = e.template element<0>();
+      e.template element<0>();
+   }
+};
+
+template<typename R, typename E> inline
+R eval(const tuple_expression<E>& e_)
+{
+   R r;
+   const E& e(e_);
+   tuple_expression_evaluation<E, R>::operate(e, r);
+   return move(r);
+}
+
+
+template<typename F, typename S>
+class EulerIntegrator
+{
+public:
+   EulerIntegrator(const F& f_)
+      :  f(f_)
+   { }
+
+   void operator()(const double& h, S& y) const {
+      y = eval<S>(wrap(y) + wrap(f(h, y))*h);
+      //f(h, y)*h;
+   };
+
+private:
+   const F& f;
 };
 
 #endif

@@ -83,7 +83,7 @@ struct StateEquation
       R_n_wrr = exp((-0.5)*i*(-M_PI*0.05*x + 0.0*y + 0.0*z));
    }
 
-   StateVector operator()(const double& h, const StateVector& oldState)
+   StateVector operator()(const double& h, const StateVector& oldState) const
    {
       const auto& p_b = std::get<0>(oldState);
       const auto& dp_b = std::get<1>(oldState);
@@ -155,6 +155,7 @@ struct StateEquation
       //Body acceleration:
       auto ddp_b = grade<1>(((!q_b)*((grade<1>((!q_wfl)*part<2, 0x0201>(W_wfl)*q_wfl+(!q_wfr)*part<2, 0x0201>(W_wfr)*q_wfr+part<2, 0x0201>(W_wrl)+part<2, 0x0201>(W_wrr))+(Fsd_wfl+Fsd_wfr+Fsd_wrl+Fsd_wrr)*z)*(1.0/m_b))*q_b)) + g;
       auto w_b_I = eval(q_b*w_b*(!q_b));
+      double k_arb = this->k_arb;
       em::mv<3,5,6>::type t_b_I = r_wfl*(Fsd_wfl*z+grade<1>((!q_wfl)*part<2, 0x0201>(W_wfl)*q_wfl)-(u_wfl-u_wfr)*z*k_arb) + r_wfr*(Fsd_wfr*z+grade<1>((!q_wfr)*part<2, 0x0201>(W_wfr)*q_wfr)+(u_wfl-u_wfr)*z*k_arb) + r_wrl*(Fsd_wrl*z+part<2, 0x0201>(W_wrl)) + r_wrr*(Fsd_wrr*z+part<2, 0x0201>(W_wrr));
       em::mv<3,5,6>::type dw_b_I;
       double In_1 = 590.0, In_2 = 1730.0, In_3 = 1950.0;

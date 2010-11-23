@@ -293,7 +293,7 @@ namespace magicformula2004 {
       { }
 
 
-      result_wrench_t operator()(const double& r, const em::mv<0,3,5,6>::type& R, const em::mv<1,2,4,5>::type& V) {
+      result_wrench_t operator()(const double& r, const em::mv<0,3,5,6>::type& R, const em::mv<1,2,4,5>::type& V) const {
          //r: tyre frame, R: surface frame, V: tyre frame
 
          auto Vc = grade<1>(V);
