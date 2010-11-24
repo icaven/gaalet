@@ -83,7 +83,7 @@ struct StateEquation
       R_n_wrr = exp((-0.5)*i*(-M_PI*0.05*x + 0.0*y + 0.0*z));
    }
 
-   StateVector operator()(const double& h, const StateVector& oldState) const
+   StateVector operator()(const double& t, const StateVector& oldState) const
    {
       const auto& p_b = std::get<0>(oldState);
       const auto& dp_b = std::get<1>(oldState);
@@ -105,16 +105,12 @@ struct StateEquation
 
       //Ackermann steering
       const double& steerAngle = std::get<4>(input);
-      gaalet::mv<0,3>::type q_wfl;
-      gaalet::mv<0,3>::type q_wfr;
-      if(steerAngle>(-M_PI*0.4) && steerAngle<(M_PI*0.4)) {
-         double cotSteerAngle = (r_wfl[0]-r_wrl[0])*(1.0/tan(steerAngle));
 
-         double angleFL = atan(1.0/(cotSteerAngle - w_wn/(v_wn*2.0)));
-         double angleFR = atan(1.0/(cotSteerAngle + w_wn/(v_wn*2.0)));
-         q_wfl[0] = cos(angleFL*0.5); q_wfl[1] = sin(angleFL*0.5);
-         q_wfr[0] = cos(angleFR*0.5); q_wfr[1] = sin(angleFR*0.5);
-      }
+      double cotSteerAngle = (r_wfl[0]-r_wrl[0])*(1.0/tan(steerAngle));
+      double angleFL = atan(1.0/(cotSteerAngle - w_wn/(v_wn*2.0)));
+      double angleFR = atan(1.0/(cotSteerAngle + w_wn/(v_wn*2.0)));
+      gaalet::mv<0,3>::type q_wfl = {cos(angleFL*0.5), sin(angleFL*0.5)};
+      gaalet::mv<0,3>::type q_wfr = {cos(angleFR*0.5), sin(angleFR*0.5)};
 
       //wheel velocity in body frame:
       auto dr_wfl = grade<1>(q_wfl*(q_b*dp_b*(!q_b)+r_wfl*q_b*w_b*(!q_b)-du_wfl*z)*(!q_wfl));

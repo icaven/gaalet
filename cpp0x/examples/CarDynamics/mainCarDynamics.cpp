@@ -105,7 +105,8 @@ int main()
    magicformula2004::ContactWrench tyreRR(tyrePropRight);
    cardyn::StateEquation f(z, tyreFL, tyreFR, tyreRL, tyreRR);
 
-   EulerIntegrator<cardyn::StateEquation, cardyn::StateVector> integrator(f);
+   //EulerIntegrator<cardyn::StateEquation, cardyn::StateVector> integrator(f);
+   RungeKuttaClassicIntegrator<cardyn::StateEquation, cardyn::StateVector> integrator(f);
    
    auto& p_b = std::get<0>(y);
    auto& dp_b = std::get<1>(y);
@@ -240,8 +241,6 @@ int main()
       double minFrameTime = 0.0;
       osg::Timer_t startFrameTick = osg::Timer::instance()->tick();
 
-      std::cout << "p_b: " << p_b << std::endl;
-
       //Setting distance between ground and wheel reference contact point
       double r_w = f.r_w;
       std::get<0>(z) = eval((std::get<0>(y) + grade<1>((!std::get<2>(y))*(f.r_wfl-f.z*r_w-f.z*std::get<4>(y))*std::get<2>(y)))&f.z);
@@ -250,7 +249,9 @@ int main()
       std::get<3>(z) = eval((std::get<0>(y) + grade<1>((!std::get<2>(y))*(f.r_wrr-f.z*r_w-f.z*std::get<10>(y))*std::get<2>(y)))&f.z);
       
       //Set steering angle
-      std::get<4>(z) = carHandler->getSteeringAngle();
+      a_steer = carHandler->getSteeringAngle();
+      if(a_steer<(-M_PI*0.4)) a_steer = -M_PI*0.4;
+      if(a_steer>(M_PI*0.4)) a_steer = M_PI*0.4;
 
       //Gear, gas, brake
       std::get<5>(z) = f.i_g[carHandler->getGear()+1]*f.i_a;
@@ -258,7 +259,6 @@ int main()
       std::get<7>(z) = carHandler->getBrakePedal()*90000.0;
 
       //Propagate vehicle state
-      //integrator.integrate(frameTime);
       integrator(frameTime, y);
 
       //Set new body displacements
@@ -270,16 +270,12 @@ int main()
                ));
 
       const double& steerAngle = std::get<4>(z);
-      gaalet::mv<0,3>::type q_wfl;
-      gaalet::mv<0,3>::type q_wfr;
-      if(steerAngle>(-M_PI*0.4) && steerAngle<(M_PI*0.4)) {
-         double cotSteerAngle = (f.r_wfl[0]-f.r_wrl[0])*(1.0/tan(steerAngle));
 
-         double angleFL = atan(1.0/(cotSteerAngle - f.w_wn/(f.v_wn*2.0)));
-         double angleFR = atan(1.0/(cotSteerAngle + f.w_wn/(f.v_wn*2.0)));
-         q_wfl[0] = cos(angleFL*0.5); q_wfl[1] = sin(angleFL*0.5);
-         q_wfr[0] = cos(angleFR*0.5); q_wfr[1] = sin(angleFR*0.5);
-      }
+      double cotSteerAngle = (f.r_wfl[0]-f.r_wrl[0])*(1.0/tan(steerAngle));
+      double angleFL = atan(1.0/(cotSteerAngle - f.w_wn/(f.v_wn*2.0)));
+      double angleFR = atan(1.0/(cotSteerAngle + f.w_wn/(f.v_wn*2.0)));
+      gaalet::mv<0,3>::type q_wfl = {cos(angleFL*0.5), sin(angleFL*0.5)};
+      gaalet::mv<0,3>::type q_wfr = {cos(angleFR*0.5), sin(angleFR*0.5)};
 
       osg::Quat steerRotFL(0,0,q_wfl[1], q_wfl[0]);
       osg::Quat steerRotFR(0,0,q_wfr[1], q_wfr[0]);

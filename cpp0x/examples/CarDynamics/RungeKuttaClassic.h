@@ -1,136 +1,49 @@
 #ifndef __Runge_Kutta_Classic_h
 #define __Runge_Kutta_Classic_h
 
-#include <tuple>
-
-//Wrapper class for CRTP
-template <class E>
-struct tuple_expression {
-   operator const E& () const {
-      return *static_cast<const E*>(this);
-   }
-};
-
-template <class T>
-struct tuple_wrapper : public tuple_expression<tuple_wrapper<T>> {
-   tuple_wrapper(const T& t_)
-      :  t(t_)
-   { }
-
-   template<int I>
-   auto element() -> decltype(std::get<I>(T())) const {
-      return std::get<I>(t);
-   }
-
-   const T& t;
-};
-
-template<typename L, typename R>
-struct tuple_addition : public tuple_expression<tuple_addition<L,R>>
-{
-   tuple_addition(const L& l_, const R& r_)
-      :  l(l_),
-         r(r_)
-   { }
-
-   template<int I>
-   auto element() -> decltype(L().template element<I>() + R().template element<I>()) const {
-   //typename std::tuple_element<I, tuple_t>::type element() {
-      return l.template element<I>() + r.template element<I>();
-   }
-
-   const L& l;
-   const R& r;
-};
-
-template<typename L>
-struct tuple_scalar_product : public tuple_expression<tuple_scalar_product<L>>
-{
-   tuple_scalar_product(const L& l_, const double& r_)
-      :  l(l_),
-         r(r_)
-   { }
-
-   template<int I>
-   auto element() -> decltype(L().template element<I>()*double()) const {
-   //typename std::tuple_element<I, L>::type element() {
-      return l.template element<I>()*r;
-   }
-
-   const L& l;
-   double r;
-};
-
-template<class... A> inline
-tuple_wrapper<std::tuple<A...>>
-wrap(const std::tuple<A...>& t) {
-   return tuple_wrapper<std::tuple<A...>>(t);
-}
-
-template<class L, class R> inline
-tuple_addition<L, R>
-operator+(const tuple_expression<L>& l, const tuple_expression<R>& r) {
-   return tuple_addition<L, R>(l, r);
-}
-
-template<class T> inline
-tuple_scalar_product<T>
-operator*(const tuple_expression<T>& l, const double& r) {
-   return tuple_scalar_product<T>(l, r);
-}
-
-template<class T> inline
-tuple_scalar_product<T>
-operator*(const double& l, const tuple_expression<T>& r) {
-   return tuple_scalar_product<T>(r, l);
-}
-
-
-template<typename E, typename R, int I=std::tuple_size<R>::value-1>
-struct tuple_expression_evaluation
-{
-   inline static void operate(const E& e, R& r)
-   {
-      tuple_expression_evaluation<E, R, I-1>::operate(e, r);
-      //std::get<I>(r) = e.template element<I>();
-   }
-};
-
-template<typename E, typename R>
-struct tuple_expression_evaluation<E,R,0>
-{
-   inline static void operate(const E& e, R& r)
-   {
-      //std::get<0>(r) = e.template element<0>();
-      e.template element<0>();
-   }
-};
-
-template<typename R, typename E> inline
-R eval(const tuple_expression<E>& e_)
-{
-   R r;
-   const E& e(e_);
-   tuple_expression_evaluation<E, R>::operate(e, r);
-   return move(r);
-}
+#include "TupleExpressions.h"
 
 
 template<typename F, typename S>
 class EulerIntegrator
 {
 public:
-   EulerIntegrator(const F& f_)
-      :  f(f_)
+   EulerIntegrator(const F& f_, const double& t_ = 0.0)
+      :  f(f_),
+         t(t_)
    { }
 
-   void operator()(const double& h, S& y) const {
-      y = eval<S>(wrap(y) + wrap(f(h, y))*h);
-      //f(h, y)*h;
+   void operator()(const double& h, S& y) {
+      y = eval<S>(wrap(y) + wrap(f(t, y))*h);
+      t += h;
    };
 
 private:
    const F& f;
+   double t;
+};
+
+template<typename F, typename S>
+class RungeKuttaClassicIntegrator
+{
+public:
+   RungeKuttaClassicIntegrator(const F& f_, const double& t_ = 0.0)
+      :  f(f_),
+         t(t_)
+   { }
+
+   void operator()(const double& h, S& y) {
+      S k1 = f(t,y);
+      S k2 = f(t+0.5*h, eval<S>(wrap(y) + 0.5*h*wrap(k1)));
+      S k3 = f(t+0.5*h, eval<S>(wrap(y) + 0.5*h*wrap(k2)));
+      S k4 = f(t+h, eval<S>(wrap(y) + h*wrap(k3)));
+      y = eval<S>(wrap(y) + 1.0/6.0*h*(wrap(k1)+2.0*wrap(k2)+2.0*wrap(k3)+wrap(k4)));
+      t += h;
+   };
+
+private:
+   const F& f;
+   double t;
 };
 
 #endif
