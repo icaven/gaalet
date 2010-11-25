@@ -7,7 +7,6 @@
 
 namespace cardyn {
 
-typedef gaalet::algebra< gaalet::signature<3,0> > em;
 
 //defintion of basisvectors, null basis, pseudoscalars, helper unit scalar
 typedef gaalet::algebra< gaalet::signature<4,1> > cm;
@@ -44,10 +43,10 @@ typedef std::tuple<
         > InputVector;
 
 typedef std::tuple<
-      D_type,     //Body position
-      em::mv<1,2,4>::type,
-      em::mv<0,3,5,6>::type,   //Body rotation
-      em::mv<3,5,6>::type,
+      D_type,     //Body displacement
+      S_type,     //Screw velocity
+      double,   
+      double,
       double,                  //Spring damper compression, wheel front left
       double,
       double,                  //Spring damper compression, wheel front right
@@ -83,10 +82,14 @@ struct StateEquation
       i[0] = 1.0;
       one[0] = 1.0;
 
-      r_wfl[0] = 1.410; r_wfl[1] = 0.747; r_wfl[2] = -0.4;
-      r_wfr[0] = 1.410; r_wfr[1] = -0.747; r_wfr[2] = -0.4;
-      r_wrl[0] = -0.940; r_wrl[1] = 0.812; r_wrl[2] = -0.4;
-      r_wrr[0] = -0.940; r_wrr[1] = -0.812; r_wrr[2] = -0.4;
+      cm::mv<1,2,4>::type x_wfl = {1.410, 0.747, -0.4};
+      r_wfl = x_wfl + 0.5*(x_wfl&x_wfl)*einf + e0;
+      cm::mv<1,2,4>::type x_wfr = {1.410, -0.747, -0.4};
+      r_wfr = x_wfr + 0.5*(x_wfr&x_wfr)*einf + e0;
+      cm::mv<1,2,4>::type x_wrl = {-0.940, 0.812, -0.4};
+      r_wrl = x_wrl + 0.5*(x_wrl&x_wrl)*einf + e0;
+      cm::mv<1,2,4>::type x_wrr = {-0.940, -0.812, -0.4};
+      r_wrr = x_wrr + 0.5*(x_wrr&x_wrr)*einf + e0;
 
       q_w[0] = cos(0.5*M_PI); q_w[1] = sin(0.5*M_PI);
      
@@ -137,10 +140,14 @@ struct StateEquation
       gaalet::mv<0,3>::type q_wfr = {cos(angleFR*0.5), sin(angleFR*0.5)};
 
       //wheel velocity in body frame:
-      auto dr_wfl = grade<1>(q_wfl*(q_b*dp_b*(!q_b)+r_wfl*q_b*w_b*(!q_b)-du_wfl*z)*(!q_wfl));
+      /*auto dr_wfl = grade<1>(q_wfl*(q_b*dp_b*(!q_b)+r_wfl*q_b*w_b*(!q_b)-du_wfl*z)*(!q_wfl));
       auto dr_wfr = grade<1>(q_wfr*(q_b*dp_b*(!q_b)+r_wfr*q_b*w_b*(!q_b)-du_wfr*z)*(!q_wfr));
       auto dr_wrl = grade<1>(q_b*dp_b*(!q_b)+r_wrl*q_b*w_b*(!q_b)-du_wrl*z);
-      auto dr_wrr = grade<1>(q_b*dp_b*(!q_b)+r_wrr*q_b*w_b*(!q_b)-du_wrr*z);
+      auto dr_wrr = grade<1>(q_b*dp_b*(!q_b)+r_wrr*q_b*w_b*(!q_b)-du_wrr*z);*/
+      auto dr_wfl = grade<1>(q_wfl*((V_b&r_wfl)-du_wfl*z)*(!q_wfl));
+      auto dr_wfr = grade<1>(q_wfr*((V_b&r_wfr)-du_wfr*z)*(!q_wfr));
+      auto dr_wrl = grade<1>((V_b&r_wrl)-du_wrl*z);
+      auto dr_wrr = grade<1>((V_b&r_wrr)-du_wrr*z);
 
       //wheel rotors:
       auto R_wfl = R_n_wfl*exp(y*z*u_wfl*(-0.5));
@@ -173,11 +180,11 @@ struct StateEquation
             part<1,2,4,5>(q_w*(dr_wrr + w_wrr*x*z)*(!q_w)))*q_w);
 
       //Body acceleration:
-      auto ddp_b_b = grade<1>((((grade<1>((!q_wfl)*part<2, 0x0201>(W_wfl)*q_wfl+(!q_wfr)*part<2, 0x0201>(W_wfr)*q_wfr+part<2, 0x0201>(W_wrl)+part<2, 0x0201>(W_wrr))+(Fsd_wfl+Fsd_wfr+Fsd_wrl+Fsd_wrr)*z)*(1.0/m_b)))) + grade<1>((!part<0,3,5,6>(D))*einf*(g)*part<0,3,5,6>(D));
+      auto ddp_b_b = grade<1>((((grade<1>((!q_wfl)*part<2, 0x0201>(W_wfl)*q_wfl+(!q_wfr)*part<2, 0x0201>(W_wfr)*q_wfr+part<2, 0x0201>(W_wrl)+part<2, 0x0201>(W_wrr))+(Fsd_wfl+Fsd_wfr+Fsd_wrl+Fsd_wrr)*z)*(1.0/m_b)))) + grade<1>((!part<0,3,5,6>(D_b))*g*part<0,3,5,6>(D_b));
       auto w_b_b = eval((Ie)*part<0x03, 0x05, 0x06>(V_b));
       double k_arb = this->k_arb;
-      em::mv<3,5,6>::type t_b_b = r_wfl*(Fsd_wfl*z+grade<1>((!q_wfl)*part<2, 0x0201>(W_wfl)*q_wfl)-(u_wfl-u_wfr)*z*k_arb) + r_wfr*(Fsd_wfr*z+grade<1>((!q_wfr)*part<2, 0x0201>(W_wfr)*q_wfr)+(u_wfl-u_wfr)*z*k_arb) + r_wrl*(Fsd_wrl*z+part<2, 0x0201>(W_wrl)) + r_wrr*(Fsd_wrr*z+part<2, 0x0201>(W_wrr));
-      em::mv<3,5,6>::type dw_b_b;
+      cm::mv<3,5,6>::type t_b_b = part<1,2,4>(r_wfl)*(Fsd_wfl*z+grade<1>((!q_wfl)*part<2, 0x0201>(W_wfl)*q_wfl)-(u_wfl-u_wfr)*z*k_arb) + part<1,2,4>(r_wfr)*(Fsd_wfr*z+grade<1>((!q_wfr)*part<2, 0x0201>(W_wfr)*q_wfr)+(u_wfl-u_wfr)*z*k_arb) + part<1,2,4>(r_wrl)*(Fsd_wrl*z+part<2, 0x0201>(W_wrl)) + part<1,2,4>(r_wrr)*(Fsd_wrr*z+part<2, 0x0201>(W_wrr));
+      cm::mv<3,5,6>::type dw_b_b;
       double In_1 = 590.0, In_2 = 1730.0, In_3 = 1950.0;
       dw_b_b[0] = (t_b_b[0] - (In_3-In_2)*w_b_b[1]*w_b_b[2])/In_1;
       dw_b_b[1] = (t_b_b[1] - (In_1-In_3)*w_b_b[2]*w_b_b[0])/In_2;
@@ -190,10 +197,10 @@ struct StateEquation
       const double& F_b = std::get<7>(input);
 
       StateVector newState(
-         part_type<D_type>(D*V_b*0.5),
+         part_type<D_type>(D_b*V_b*0.5),
          dV_b,
-         cm::mv<1,2,4>(),
-         cm::mv<1,2,4>(),
+         0.0,
+         0.0,
          du_wfl,
          (Fsd_wfl - W_wfl.element<4>())*(1.0/m_w),
          du_wfr,
@@ -219,21 +226,21 @@ struct StateEquation
    magicformula2004::ContactWrench tyre_rl;
    magicformula2004::ContactWrench tyre_rr;
 
-   em::mv<1,2,4>::type g;
-   em::mv<1>::type x;
-   em::mv<2>::type y;
-   em::mv<4>::type z;
-   em::mv<0>::type F_aull;
-   em::mv<0>::type one;
-   em::mv<7>::type i;
+   cm::mv<1,2,4>::type g;
+   cm::mv<1>::type x;
+   cm::mv<2>::type y;
+   cm::mv<4>::type z;
+   cm::mv<0>::type F_aull;
+   cm::mv<0>::type one;
+   cm::mv<7>::type i;
 
    //Wheel positions in car body frame
-   em::mv<1,2,4>::type r_wfl;
-   em::mv<1,2,4>::type r_wfr;
-   em::mv<1,2,4>::type r_wrl;
-   em::mv<1,2,4>::type r_wrr;
+   cm::mv<1,2,4,8,10>::type r_wfl;
+   cm::mv<1,2,4,8,10>::type r_wfr;
+   cm::mv<1,2,4,8,10>::type r_wrl;
+   cm::mv<1,2,4,8,10>::type r_wrr;
 
-   em::mv<0,6>::type q_w;
+   cm::mv<0,6>::type q_w;
 
    //Carbody
    static const double m_b = 1450.0;

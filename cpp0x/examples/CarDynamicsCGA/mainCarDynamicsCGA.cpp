@@ -108,10 +108,10 @@ int main()
    //EulerIntegrator<cardyn::StateEquation, cardyn::StateVector> integrator(f);
    RungeKuttaClassicIntegrator<cardyn::StateEquation, cardyn::StateVector> integrator(f);
    
-   auto& p_b = std::get<0>(y);
-   auto& dp_b = std::get<1>(y);
-   auto& q_b = std::get<2>(y);
-   auto& w_b = std::get<3>(y);
+   auto& D_b = std::get<0>(y);
+   auto& V_b = std::get<1>(y);
+   //auto& q_b = std::get<2>(y);
+   //auto& w_b = std::get<3>(y);
    auto& u_wfl = std::get<4>(y);
    auto& du_wfl= std::get<5>(y);
    auto& u_wfr = std::get<6>(y);
@@ -126,6 +126,10 @@ int main()
    auto& w_wrr = std::get<15>(y);
    auto& w_e = std::get<16>(y);
 
+   double& d_wfl = std::get<0>(z);
+   double& d_wfr = std::get<1>(z);
+   double& d_wrl = std::get<2>(z);
+   double& d_wrr = std::get<3>(z);
    double& a_steer = std::get<4>(z);
    double& i_pt = std::get<5>(z);
    double& s_gp = std::get<6>(z);
@@ -133,9 +137,10 @@ int main()
    //Set initial values
    cardyn::cm::mv<1,2,4>::type p_b = {0.0,0.0,0.6};
    auto T = cardyn::one + cardyn::einf*p_b*0.5;
+   D_b = T;
 
-   dp_b[0] = 0.0;
-   q_b[0] = 1.0;
+   //dp_b[0] = 0.0;
+   //q_b[0] = 1.0;
    a_steer = 0.0;
    i_pt = 0.0;
    s_gp = 0.0;
@@ -245,10 +250,14 @@ int main()
 
       //Setting distance between ground and wheel reference contact point
       double r_w = f.r_w;
-      std::get<0>(z) = eval((std::get<0>(y) + grade<1>((!std::get<2>(y))*(f.r_wfl-f.z*r_w-f.z*std::get<4>(y))*std::get<2>(y)))&f.z);
+      /*std::get<0>(z) = eval((std::get<0>(y) + grade<1>((!std::get<2>(y))*(f.r_wfl-f.z*r_w-f.z*std::get<4>(y))*std::get<2>(y)))&f.z);
       std::get<1>(z) = eval((std::get<0>(y) + grade<1>((!std::get<2>(y))*(f.r_wfr-f.z*r_w-f.z*std::get<6>(y))*std::get<2>(y)))&f.z);
       std::get<2>(z) = eval((std::get<0>(y) + grade<1>((!std::get<2>(y))*(f.r_wrl-f.z*r_w-f.z*std::get<8>(y))*std::get<2>(y)))&f.z);
-      std::get<3>(z) = eval((std::get<0>(y) + grade<1>((!std::get<2>(y))*(f.r_wrr-f.z*r_w-f.z*std::get<10>(y))*std::get<2>(y)))&f.z);
+      std::get<3>(z) = eval((std::get<0>(y) + grade<1>((!std::get<2>(y))*(f.r_wrr-f.z*r_w-f.z*std::get<10>(y))*std::get<2>(y)))&f.z);*/
+      d_wfl = eval(grade<1>(D_b*f.r_wfl*(~D_b))&cardyn::e3)-r_w-u_wfl;
+      d_wfr = eval(grade<1>(D_b*f.r_wfr*(~D_b))&cardyn::e3)-r_w-u_wfr;
+      d_wrl = eval(grade<1>(D_b*f.r_wrl*(~D_b))&cardyn::e3)-r_w-u_wrl;
+      d_wrr = eval(grade<1>(D_b*f.r_wrr*(~D_b))&cardyn::e3)-r_w-u_wrr;
       
       //Set steering angle
       a_steer = carHandler->getSteeringAngle();
@@ -265,10 +274,10 @@ int main()
 
       //Set new body displacements
       bodyTransform->setPosition(osg::Vec3(p_b[0], p_b[1], p_b[2]));
-      bodyTransform->setAttitude(osg::Quat(q_b[3],
-               -q_b[2],
-               q_b[1],
-               q_b[0]
+      bodyTransform->setAttitude(osg::Quat(D_b[3],
+               -D_b[2],
+               D_b[1],
+               D_b[0]
                ));
 
       const double& steerAngle = std::get<4>(z);
@@ -328,6 +337,9 @@ int main()
       frameTime = osg::Timer::instance()->delta_s(startFrameTick, endFrameTick);
       if (frameTime < minFrameTime) OpenThreads::Thread::microSleep(static_cast<unsigned int>(1000000.0*(minFrameTime-frameTime)));
       if (frameTime > 0.001) frameTime = 0.001;
+
+      OpenThreads::Thread::microSleep(static_cast<unsigned int>(1000000.0));
+      frameTime = 0.001;
    }
 
    return 0;
