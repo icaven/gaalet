@@ -158,7 +158,7 @@ int main()
       //Force law of damping
       auto F_d = V_b*k_d*(-1.0);
       //Gravity acting on body
-      auto F_g = part_type<S_type>((~D)*einf*(e3*(-9.81))*D);
+      auto F_g = part_type<S_type>((!part<0,3,5,6>(D))*einf*(e3*(-9.81))*part<0,3,5,6>(D));
       //Resultant force wrench
       auto F_b = eval(F_s1_b + F_s2_b + F_d + F_g);
 
