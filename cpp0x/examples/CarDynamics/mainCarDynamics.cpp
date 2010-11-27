@@ -131,7 +131,7 @@ int main()
    double& s_gp = std::get<6>(z);
 
    //Set initial values
-   p_b[2] = 0.6;
+   p_b[2] = 1.0;
    dp_b[0] = 0.0;
    q_b[0] = 1.0;
    a_steer = 0.0;
