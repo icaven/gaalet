@@ -135,9 +135,9 @@ int main()
    double& s_gp = std::get<6>(z);
 
    //Set initial values
-   cardyn::cm::mv<1,2,4>::type p_b = {0.0,0.0,0.6};
-   auto T = cardyn::one + cardyn::einf*p_b*0.5;
-   D_b = T;
+   cardyn::cm::mv<1,2,4>::type p_b = {0.0,0.0,1.0};
+   auto T_b = cardyn::one + cardyn::einf*p_b*0.5;
+   D_b = T_b;
 
    //dp_b[0] = 0.0;
    //q_b[0] = 1.0;
@@ -248,6 +248,12 @@ int main()
       double minFrameTime = 0.0;
       osg::Timer_t startFrameTick = osg::Timer::instance()->tick();
 
+      /*std::cout << "e0: "<< cardyn::e0 << ", D_b*e0*~D_b: " << grade<1>(D_b*cardyn::e0*~D_b) << std::endl;
+      std::cout << "\tr_wfl: "<< f.r_wfl << ", D_b*f.r_wfl*~D_b: " << grade<1>(D_b*f.r_wfl*~D_b) << std::endl;
+      std::cout << "\tr_wfr: "<< f.r_wfr << ", D_b*f.r_wfr*~D_b: " << grade<1>(D_b*f.r_wfr*~D_b) << std::endl;
+      std::cout << "\tr_wrl: "<< f.r_wrl << ", D_b*f.r_wrl*~D_b: " << grade<1>(D_b*f.r_wrl*~D_b) << std::endl;
+      std::cout << "\tr_wrr: "<< f.r_wrr << ", D_b*f.r_wrr*~D_b: " << grade<1>(D_b*f.r_wrr*~D_b) << std::endl;*/
+
       //Setting distance between ground and wheel reference contact point
       double r_w = f.r_w;
       /*std::get<0>(z) = eval((std::get<0>(y) + grade<1>((!std::get<2>(y))*(f.r_wfl-f.z*r_w-f.z*std::get<4>(y))*std::get<2>(y)))&f.z);
@@ -273,6 +279,7 @@ int main()
       integrator(frameTime, y);
 
       //Set new body displacements
+      p_b = grade<1>(D_b*cardyn::e0*~D_b);
       bodyTransform->setPosition(osg::Vec3(p_b[0], p_b[1], p_b[2]));
       bodyTransform->setAttitude(osg::Quat(D_b[3],
                -D_b[2],
@@ -338,7 +345,7 @@ int main()
       if (frameTime < minFrameTime) OpenThreads::Thread::microSleep(static_cast<unsigned int>(1000000.0*(minFrameTime-frameTime)));
       if (frameTime > 0.001) frameTime = 0.001;
 
-      OpenThreads::Thread::microSleep(static_cast<unsigned int>(1000000.0));
+      OpenThreads::Thread::microSleep(static_cast<unsigned int>(100000.0));
       frameTime = 0.001;
    }
 
