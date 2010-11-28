@@ -58,7 +58,7 @@ struct StateEquation
       x[0] = 1.0;
       y[0] = 1.0;
       z[0] = 1.0;
-      i[0] = 1.0;
+      I[0] = 1.0;
       one[0] = 1.0;
 
       r_wfl[0] = 1.410; r_wfl[1] = 0.747; r_wfl[2] = -0.4;
@@ -77,10 +77,10 @@ struct StateEquation
 	   i_g[5] = 1.0;
 	   i_g[6] = 0.83; 
 
-      R_n_wfl = exp((-0.5)*i*(M_PI*0.05*x + M_PI*0.1*y + 0.0*z));
-      R_n_wfr = exp((-0.5)*i*(-M_PI*0.05*x + M_PI*0.1*y + 0.0*z));
-      R_n_wrl = exp((-0.5)*i*(M_PI*0.05*x + 0.0*y + 0.0*z));
-      R_n_wrr = exp((-0.5)*i*(-M_PI*0.05*x + 0.0*y + 0.0*z));
+      R_n_wfl = exp((-0.5)*I*(M_PI*0.05*x + M_PI*0.1*y + 0.0*z));
+      R_n_wfr = exp((-0.5)*I*(-M_PI*0.05*x + M_PI*0.1*y + 0.0*z));
+      R_n_wrl = exp((-0.5)*I*(M_PI*0.05*x + 0.0*y + 0.0*z));
+      R_n_wrr = exp((-0.5)*I*(-M_PI*0.05*x + 0.0*y + 0.0*z));
    }
 
    StateVector operator()(const double& t, const StateVector& oldState) const
@@ -152,14 +152,14 @@ struct StateEquation
       auto ddp_b = grade<1>(((!q_b)*((grade<1>((!q_wfl)*part<1,2>(W_wfl)*q_wfl+(!q_wfr)*part<1,2>(W_wfr)*q_wfr+part<1,2>(W_wrl)+part<1,2>(W_wrr))+(Fsd_wfl+Fsd_wfr+Fsd_wrl+Fsd_wrr)*z)*(1.0/m_b))*q_b)) + g;
       auto w_b_I = eval(q_b*w_b*(!q_b));
       double k_arb = this->k_arb;
-      em::mv<3,5,6>::type t_b_I = r_wfl*(Fsd_wfl*z+grade<1>((!q_wfl)*part<1,2>(W_wfl)*q_wfl)-(u_wfl-u_wfr)*z*k_arb) + r_wfr*(Fsd_wfr*z+grade<1>((!q_wfr)*part<1,2>(W_wfr)*q_wfr)+(u_wfl-u_wfr)*z*k_arb) + r_wrl*(Fsd_wrl*z+part<1,2>(W_wrl)) + r_wrr*(Fsd_wrr*z+part<1,2>(W_wrr));
-      em::mv<3,5,6>::type dw_b_I;
+      em::mv<1,2,4>::type t_b_I = (-1.0)*I*(r_wfl*(Fsd_wfl*z+grade<1>((!q_wfl)*part<1,2>(W_wfl)*q_wfl)-(u_wfl-u_wfr)*z*k_arb) + r_wfr*(Fsd_wfr*z+grade<1>((!q_wfr)*part<1,2>(W_wfr)*q_wfr)+(u_wfl-u_wfr)*z*k_arb) + r_wrl*(Fsd_wrl*z+part<1,2>(W_wrl)) + r_wrr*(Fsd_wrr*z+part<1,2>(W_wrr)));
+      em::mv<1,2,4>::type dw_b_I;
       double In_1 = 590.0, In_2 = 1730.0, In_3 = 1950.0;
       dw_b_I[0] = (t_b_I[0] - (In_3-In_2)*w_b_I[1]*w_b_I[2])/In_1;
       dw_b_I[1] = (t_b_I[1] - (In_1-In_3)*w_b_I[2]*w_b_I[0])/In_2;
       dw_b_I[2] = (t_b_I[2] - (In_2-In_1)*w_b_I[0]*w_b_I[1])/In_3;
 
-      auto dw_b = grade<2>((!q_b)*dw_b_I*q_b);
+      auto dw_b = grade<2>((!q_b)*(I*dw_b_I)*q_b);
 
       const double& i_pt = std::get<5>(input);
       const double& s_gp = std::get<6>(input);
@@ -201,7 +201,7 @@ struct StateEquation
    em::mv<4>::type z;
    em::mv<0>::type F_aull;
    em::mv<0>::type one;
-   em::mv<7>::type i;
+   em::mv<7>::type I;
 
    //Wheel positions in car body frame
    em::mv<1,2,4>::type r_wfl;
