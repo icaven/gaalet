@@ -75,12 +75,7 @@ struct StateEquation
          tyre_rl(tyre_rl_),
          tyre_rr(tyre_rr_)
    {
-      g[2] = -9.81;
-      x[0] = 1.0;
-      y[0] = 1.0;
-      z[0] = 1.0;
-      i[0] = 1.0;
-      one[0] = 1.0;
+      g[0] = -9.81;
 
       cm::mv<1,2,4>::type x_wfl = {1.410, 0.747, -0.4};
       r_wfl = x_wfl + 0.5*(x_wfl&x_wfl)*einf + e0;
@@ -102,14 +97,15 @@ struct StateEquation
 	   i_g[5] = 1.0;
 	   i_g[6] = 0.83; 
 
-      R_n_wfl = exp((-0.5)*i*(M_PI*0.05*x + M_PI*0.1*y + 0.0*z));
-      R_n_wfr = exp((-0.5)*i*(-M_PI*0.05*x + M_PI*0.1*y + 0.0*z));
-      R_n_wrl = exp((-0.5)*i*(M_PI*0.05*x + 0.0*y + 0.0*z));
-      R_n_wrr = exp((-0.5)*i*(-M_PI*0.05*x + 0.0*y + 0.0*z));
+      R_n_wfl = exp((-0.5)*Ie*(M_PI*0.05*e1 + M_PI*0.1*e2 + 0.0*e3));
+      R_n_wfr = exp((-0.5)*Ie*(-M_PI*0.05*e1 + M_PI*0.1*e2 + 0.0*e3));
+      R_n_wrl = exp((-0.5)*Ie*(M_PI*0.05*e1 + 0.0*e2 + 0.0*e3));
+      R_n_wrr = exp((-0.5)*Ie*(-M_PI*0.05*e1 + 0.0*e2 + 0.0*e3));
    }
 
    StateVector operator()(const double& t, const StateVector& oldState) const
    {
+      //state
       const auto& D_b = std::get<0>(oldState);
       //const auto& p_b = std::get<0>(oldState);
       //const auto& dp_b = std::get<1>(oldState);
@@ -130,9 +126,18 @@ struct StateEquation
       const auto& w_wrr= std::get<15>(oldState);
       const auto& w_e= std::get<16>(oldState);
 
-      //Ackermann steering
+      //input
+      const double& Dv_wfl = std::get<0>(input);
+      const double& Dv_wfr = std::get<1>(input);
+      const double& Dv_wrl = std::get<2>(input);
+      const double& Dv_wrr = std::get<3>(input);
       const double& steerAngle = std::get<4>(input);
+      const double& i_pt = std::get<5>(input);
+      const double& s_gp = std::get<6>(input);
+      const double& F_b = std::get<7>(input);
 
+
+      //Ackermann steering
       double cotSteerAngle = (r_wfl[0]-r_wrl[0])*(1.0/tan(steerAngle));
       double angleFL = atan(1.0/(cotSteerAngle - w_wn/(v_wn*2.0)));
       double angleFR = atan(1.0/(cotSteerAngle + w_wn/(v_wn*2.0)));
@@ -140,25 +145,16 @@ struct StateEquation
       gaalet::mv<0,3>::type q_wfr = {cos(angleFR*0.5), sin(angleFR*0.5)};
 
       //wheel velocity in body frame:
-      /*auto dr_wfl = grade<1>(q_wfl*(q_b*dp_b*(!q_b)+r_wfl*q_b*w_b*(!q_b)-du_wfl*z)*(!q_wfl));
-      auto dr_wfr = grade<1>(q_wfr*(q_b*dp_b*(!q_b)+r_wfr*q_b*w_b*(!q_b)-du_wfr*z)*(!q_wfr));
-      auto dr_wrl = grade<1>(q_b*dp_b*(!q_b)+r_wrl*q_b*w_b*(!q_b)-du_wrl*z);
-      auto dr_wrr = grade<1>(q_b*dp_b*(!q_b)+r_wrr*q_b*w_b*(!q_b)-du_wrr*z);*/
-      auto dr_wfl = grade<1>(q_wfl*((V_b&r_wfl)-du_wfl*z)*(!q_wfl));
-      auto dr_wfr = grade<1>(q_wfr*((V_b&r_wfr)-du_wfr*z)*(!q_wfr));
-      auto dr_wrl = grade<1>((V_b&r_wrl)-du_wrl*z);
-      auto dr_wrr = grade<1>((V_b&r_wrr)-du_wrr*z);
-
-      /*auto dp_b = (V_b&e0);
-      auto w_b = (-1.0)*part<0x03, 0x05, 0x06>(V_b);
-      std::cout << "r_wrl: " << grade<1>(dp_b+r_wrl*w_b) << std::endl;
-      std::cout << "r_wrl: " << grade<1>(V_b&r_wrl) << std::endl;*/
+      auto dr_wfl = grade<1>(q_wfl*((V_b&r_wfl)-du_wfl*e3)*(!q_wfl));
+      auto dr_wfr = grade<1>(q_wfr*((V_b&r_wfr)-du_wfr*e3)*(!q_wfr));
+      auto dr_wrl = grade<1>((V_b&r_wrl)-du_wrl*e3);
+      auto dr_wrr = grade<1>((V_b&r_wrr)-du_wrr*e3);
 
       //wheel rotors:
-      auto R_wfl = R_n_wfl*exp(y*z*u_wfl*(-0.5));
-      auto R_wfr = R_n_wfr*exp(y*z*u_wfr*(0.5));
-      auto R_wrl = R_n_wrl*exp(y*z*u_wrl*(-0.5));
-      auto R_wrr = R_n_wrr*exp(y*z*u_wrr*(0.5));
+      auto R_wfl = R_n_wfl*exp(e2*e3*u_wfl*(-0.5));
+      auto R_wfr = R_n_wfr*exp(e2*e3*u_wfr*(0.5));
+      auto R_wrl = R_n_wrl*exp(e2*e3*u_wrl*(-0.5));
+      auto R_wrr = R_n_wrr*exp(e2*e3*u_wrr*(0.5));
       
       //Suspension spring damper force:
       auto Fsd_wfl = (u_wfl*k_wf+du_wfl*d_wf)*(-1.0);
@@ -166,30 +162,26 @@ struct StateEquation
       auto Fsd_wrl = (u_wrl*k_wr+du_wrl*d_wr)*(-1.0);
       auto Fsd_wrr = (u_wrr*k_wr+du_wrr*d_wr)*(-1.0);
 
-      const double& Dv_wfl = std::get<0>(input);
-      const double& Dv_wfr = std::get<1>(input);
-      const double& Dv_wrl = std::get<2>(input);
-      const double& Dv_wrr = std::get<3>(input);
       //Tyre forces and moments:
       auto W_wfl = ((!q_w)*tyre_fl( Dv_wfl, //distance difference with respect to camber angle?
             R_wfl,
-            part<1,2,4,5>(q_w*(dr_wfl + w_wfl*x*z)*(!q_w)))*q_w);
+            part<1,2,4,5>(q_w*(dr_wfl + w_wfl*e1*e3)*(!q_w)))*q_w);
       auto W_wfr = ((!q_w)*tyre_fr( Dv_wfr, //distance difference with respect to camber angle?
             R_wfr,
-            part<1,2,4,5>(q_w*(dr_wfr + w_wfr*x*z)*(!q_w)))*q_w);
+            part<1,2,4,5>(q_w*(dr_wfr + w_wfr*e1*e3)*(!q_w)))*q_w);
       auto W_wrl = ((!q_w)*tyre_rl( Dv_wrl, //distance difference with respect to camber angle?
             R_wrl,
-            part<1,2,4,5>(q_w*(dr_wrl + w_wrl*x*z)*(!q_w)))*q_w);
+            part<1,2,4,5>(q_w*(dr_wrl + w_wrl*e1*e3)*(!q_w)))*q_w);
       auto W_wrr = ((!q_w)*tyre_rr( Dv_wrr, //distance difference with respect to camber angle?
             R_wrr,
-            part<1,2,4,5>(q_w*(dr_wrr + w_wrr*x*z)*(!q_w)))*q_w);
+            part<1,2,4,5>(q_w*(dr_wrr + w_wrr*e1*e3)*(!q_w)))*q_w);
 
       //Body acceleration:
-      auto ddp_b_b = eval(grade<1>((((grade<1>((!q_wfl)*part<1, 2>(W_wfl)*q_wfl+(!q_wfr)*part<1, 2>(W_wfr)*q_wfr+part<1, 2>(W_wrl)+part<1, 2>(W_wrr))+(Fsd_wfl+Fsd_wfr+Fsd_wrl+Fsd_wrr)*z)*(1.0/m_b)))) + grade<1>((!part<0,3,5,6>(D_b))*g*part<0,3,5,6>(D_b)));
+      auto ddp_b_b = eval(grade<1>((((grade<1>((!q_wfl)*part<1, 2>(W_wfl)*q_wfl+(!q_wfr)*part<1, 2>(W_wfr)*q_wfr+part<1, 2>(W_wrl)+part<1, 2>(W_wrr))+(Fsd_wfl+Fsd_wfr+Fsd_wrl+Fsd_wrr)*e3)*(1.0/m_b)))) + grade<1>((!part<0,3,5,6>(D_b))*g*part<0,3,5,6>(D_b)));
 
       auto w_b_b = eval(Ie&V_b);
       double k_arb = this->k_arb;
-      cm::mv<1,2,4>::type t_b_b = (-1.0)*Ie*((part<1,2,4>(r_wfl)^(Fsd_wfl*z+grade<1>((!q_wfl)*part<1,2>(W_wfl)*q_wfl)-(u_wfl-u_wfr)*z*k_arb)) + (part<1,2,4>(r_wfr)^(Fsd_wfr*z+grade<1>((!q_wfr)*part<1,2>(W_wfr)*q_wfr)+(u_wfl-u_wfr)*z*k_arb)) + (part<1,2,4>(r_wrl)^(Fsd_wrl*z+part<1,2>(W_wrl))) + (part<1,2,4>(r_wrr)^(Fsd_wrr*z+part<1,2>(W_wrr))));
+      cm::mv<1,2,4>::type t_b_b = (-1.0)*Ie*((part<1,2,4>(r_wfl)^(Fsd_wfl*e3+grade<1>((!q_wfl)*part<1,2>(W_wfl)*q_wfl)-(u_wfl-u_wfr)*e3*k_arb)) + (part<1,2,4>(r_wfr)^(Fsd_wfr*e3+grade<1>((!q_wfr)*part<1,2>(W_wfr)*q_wfr)+(u_wfl-u_wfr)*e3*k_arb)) + (part<1,2,4>(r_wrl)^(Fsd_wrl*e3+part<1,2>(W_wrl))) + (part<1,2,4>(r_wrr)^(Fsd_wrr*e3+part<1,2>(W_wrr))));
       //cm::mv<1,2,4>::type t_b_b = (-1.0)*Ie*((part<1,2,4>(r_wfl)^(Fsd_wfl*z-(u_wfl-u_wfr)*z*k_arb)) + (part<1,2,4>(r_wfr)^(Fsd_wfr*z+(u_wfl-u_wfr)*z*k_arb)) + (part<1,2,4>(r_wrl)^(Fsd_wrl*z)) + (part<1,2,4>(r_wrr)^(Fsd_wrr*z+part<1,2>(W_wrr))));
       //cm::mv<1,2,4>::type t_b_b = (-1.0)*Ie*((part<1,2,4>(r_wfl)^(Fsd_wfl*z)) + (part<1,2,4>(r_wfr)^(Fsd_wfr*z)) + (part<1,2,4>(r_wrl)^(Fsd_wrl*z)) + (part<1,2,4>(r_wrr)^(Fsd_wrr*z)));
       cm::mv<1,2,4>::type dw_b_b;
@@ -199,10 +191,6 @@ struct StateEquation
       dw_b_b[2] = (t_b_b[2] - (In_2-In_1)*w_b_b[0]*w_b_b[1])/In_3;
 
       auto dV_b = (-1.0)*Ie*dw_b_b + einf*ddp_b_b;
-
-      const double& i_pt = std::get<5>(input);
-      const double& s_gp = std::get<6>(input);
-      const double& F_b = std::get<7>(input);
 
       StateVector newState(
          part_type<D_type>(D_b*V_b*0.5),
@@ -234,13 +222,7 @@ struct StateEquation
    magicformula2004::ContactWrench tyre_rl;
    magicformula2004::ContactWrench tyre_rr;
 
-   cm::mv<1,2,4>::type g;
-   cm::mv<1>::type x;
-   cm::mv<2>::type y;
-   cm::mv<4>::type z;
-   cm::mv<0>::type F_aull;
-   cm::mv<0>::type one;
-   cm::mv<7>::type i;
+   cm::mv<4>::type g;
 
    //Wheel positions in car body frame
    cm::mv<1,2,4,8,0x10>::type r_wfl;

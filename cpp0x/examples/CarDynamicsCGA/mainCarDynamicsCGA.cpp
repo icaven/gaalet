@@ -303,10 +303,10 @@ int main()
       osg::Quat steerRotFL(0,0,q_wfl[1], q_wfl[0]);
       osg::Quat steerRotFR(0,0,q_wfr[1], q_wfr[0]);
 
-      auto R_wfl = eval(f.R_n_wfl*exp(f.y*f.z*u_wfl*(-0.5)));
-      auto R_wfr = eval(f.R_n_wfr*exp(f.y*f.z*u_wfr*(0.5)));
-      auto R_wrl = eval(f.R_n_wrl*exp(f.y*f.z*u_wrl*(-0.5)));
-      auto R_wrr = eval(f.R_n_wrr*exp(f.y*f.z*u_wrr*(0.5)));
+      auto R_wfl = eval(f.R_n_wfl*exp(cardyn::e2*cardyn::e3*u_wfl*(-0.5)));
+      auto R_wfr = eval(f.R_n_wfr*exp(cardyn::e2*cardyn::e3*u_wfr*(0.5)));
+      auto R_wrl = eval(f.R_n_wrl*exp(cardyn::e2*cardyn::e3*u_wrl*(-0.5)));
+      auto R_wrr = eval(f.R_n_wrr*exp(cardyn::e2*cardyn::e3*u_wrr*(0.5)));
       osg::Quat camberRotFL(R_wfl[3], -R_wfl[2], R_wfl[1], R_wfl[0]);
       osg::Quat camberRotFR(R_wfr[3], -R_wfr[2], R_wfr[1], R_wfr[0]);
       osg::Quat camberRotRL(R_wrl[3], -R_wrl[2], R_wrl[1], R_wrl[0]);
