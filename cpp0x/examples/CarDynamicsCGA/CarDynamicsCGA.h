@@ -185,29 +185,20 @@ struct StateEquation
             part<1,2,4,5>(q_w*(dr_wrr + w_wrr*x*z)*(!q_w)))*q_w);
 
       //Body acceleration:
-      auto ddp_b_b = grade<1>((((grade<1>((!q_wfl)*part<1, 2>(W_wfl)*q_wfl+(!q_wfr)*part<1, 2>(W_wfr)*q_wfr+part<1, 2>(W_wrl)+part<1, 2>(W_wrr))+(Fsd_wfl+Fsd_wfr+Fsd_wrl+Fsd_wrr)*z)*(1.0/m_b)))) + grade<1>((!part<0,3,5,6>(D_b))*g*part<0,3,5,6>(D_b));
-      std::cout << "ddp_b_b: " << ddp_b_b << ", ddp_b_b: " << grade<1>((part<0,3,5,6>(D_b)) * ddp_b_b * !part<0,3,5,6>(D_b)) << std::endl;
+      auto ddp_b_b = eval(grade<1>((((grade<1>((!q_wfl)*part<1, 2>(W_wfl)*q_wfl+(!q_wfr)*part<1, 2>(W_wfr)*q_wfr+part<1, 2>(W_wrl)+part<1, 2>(W_wrr))+(Fsd_wfl+Fsd_wfr+Fsd_wrl+Fsd_wrr)*z)*(1.0/m_b)))) + grade<1>((!part<0,3,5,6>(D_b))*g*part<0,3,5,6>(D_b)));
 
-      auto w_b_b = eval((-1.0)*Ie&V_b);
+      auto w_b_b = eval(Ie&V_b);
       double k_arb = this->k_arb;
-      //cm::mv<1,2,4>::type t_b_b = (-1.0)*Ie*((part<1,2,4>(r_wfl)^(Fsd_wfl*z+grade<1>((!q_wfl)*part<1,2>(W_wfl)*q_wfl)-(u_wfl-u_wfr)*z*k_arb)) + (part<1,2,4>(r_wfr)^(Fsd_wfr*z+grade<1>((!q_wfr)*part<1,2>(W_wfr)*q_wfr)+(u_wfl-u_wfr)*z*k_arb)) + (part<1,2,4>(r_wrl)^(Fsd_wrl*z+part<1,2>(W_wrl))) + (part<1,2,4>(r_wrr)^(Fsd_wrr*z+part<1,2>(W_wrr))));
-      cm::mv<1,2,4>::type t_b_b = (-1.0)*Ie*((part<1,2,4>(r_wfl)^(Fsd_wfl*z)) + (part<1,2,4>(r_wfr)^(Fsd_wfr*z)) + (part<1,2,4>(r_wrl)^(Fsd_wrl*z)) + (part<1,2,4>(r_wrr)^(Fsd_wrr*z)));
+      cm::mv<1,2,4>::type t_b_b = (-1.0)*Ie*((part<1,2,4>(r_wfl)^(Fsd_wfl*z+grade<1>((!q_wfl)*part<1,2>(W_wfl)*q_wfl)-(u_wfl-u_wfr)*z*k_arb)) + (part<1,2,4>(r_wfr)^(Fsd_wfr*z+grade<1>((!q_wfr)*part<1,2>(W_wfr)*q_wfr)+(u_wfl-u_wfr)*z*k_arb)) + (part<1,2,4>(r_wrl)^(Fsd_wrl*z+part<1,2>(W_wrl))) + (part<1,2,4>(r_wrr)^(Fsd_wrr*z+part<1,2>(W_wrr))));
+      //cm::mv<1,2,4>::type t_b_b = (-1.0)*Ie*((part<1,2,4>(r_wfl)^(Fsd_wfl*z-(u_wfl-u_wfr)*z*k_arb)) + (part<1,2,4>(r_wfr)^(Fsd_wfr*z+(u_wfl-u_wfr)*z*k_arb)) + (part<1,2,4>(r_wrl)^(Fsd_wrl*z)) + (part<1,2,4>(r_wrr)^(Fsd_wrr*z+part<1,2>(W_wrr))));
+      //cm::mv<1,2,4>::type t_b_b = (-1.0)*Ie*((part<1,2,4>(r_wfl)^(Fsd_wfl*z)) + (part<1,2,4>(r_wfr)^(Fsd_wfr*z)) + (part<1,2,4>(r_wrl)^(Fsd_wrl*z)) + (part<1,2,4>(r_wrr)^(Fsd_wrr*z)));
       cm::mv<1,2,4>::type dw_b_b;
       double In_1 = 590.0, In_2 = 1730.0, In_3 = 1950.0;
       dw_b_b[0] = (t_b_b[0] - (In_3-In_2)*w_b_b[1]*w_b_b[2])/In_1;
       dw_b_b[1] = (t_b_b[1] - (In_1-In_3)*w_b_b[2]*w_b_b[0])/In_2;
       dw_b_b[2] = (t_b_b[2] - (In_2-In_1)*w_b_b[0]*w_b_b[1])/In_3;
-      std::cout << "t_b_b: " << t_b_b << ", dw_b_b: " << dw_b_b << std::endl;
-      /*std::cout << "\tt_wfl: " << (-1.0)*Ie*((part<1,2,4>(r_wfl)^(Fsd_wfl*z))) << std::endl;
-      std::cout << "\tt_wfr: " << (-1.0)*Ie*((part<1,2,4>(r_wfr)^(Fsd_wfr*z))) << std::endl;
-      std::cout << "\tt_wrl: " << (-1.0)*Ie*((part<1,2,4>(r_wrl)^(Fsd_wrl*z))) << std::endl;
-      std::cout << "\tt_wrr: " << (-1.0)*Ie*((part<1,2,4>(r_wrr)^(Fsd_wrr*z))) << std::endl;*/
-      std::cout << "Fsd_wfl: " << Fsd_wfl << std::endl;
-      std::cout << "Fsd_wfr: " << Fsd_wfr << std::endl;
-      std::cout << "Fsd_wrl: " << Fsd_wrl << std::endl;
-      std::cout << "Fsd_wrr: " << Fsd_wrr << std::endl;
 
-      auto dV_b = (Ie)*dw_b_b + einf*ddp_b_b;
+      auto dV_b = (-1.0)*Ie*dw_b_b + einf*ddp_b_b;
 
       const double& i_pt = std::get<5>(input);
       const double& s_gp = std::get<6>(input);

@@ -260,10 +260,15 @@ int main()
       std::get<1>(z) = eval((std::get<0>(y) + grade<1>((!std::get<2>(y))*(f.r_wfr-f.z*r_w-f.z*std::get<6>(y))*std::get<2>(y)))&f.z);
       std::get<2>(z) = eval((std::get<0>(y) + grade<1>((!std::get<2>(y))*(f.r_wrl-f.z*r_w-f.z*std::get<8>(y))*std::get<2>(y)))&f.z);
       std::get<3>(z) = eval((std::get<0>(y) + grade<1>((!std::get<2>(y))*(f.r_wrr-f.z*r_w-f.z*std::get<10>(y))*std::get<2>(y)))&f.z);*/
-      d_wfl = eval(grade<1>(D_b*f.r_wfl*(~D_b))&cardyn::e3)-r_w-u_wfl;
-      d_wfr = eval(grade<1>(D_b*f.r_wfr*(~D_b))&cardyn::e3)-r_w-u_wfr;
-      d_wrl = eval(grade<1>(D_b*f.r_wrl*(~D_b))&cardyn::e3)-r_w-u_wrl;
-      d_wrr = eval(grade<1>(D_b*f.r_wrr*(~D_b))&cardyn::e3)-r_w-u_wrr;
+      auto T_wfl = cardyn::one + cardyn::einf*((-u_wfl)*cardyn::e3)*0.5;
+      auto T_wfr = cardyn::one + cardyn::einf*((-u_wfr)*cardyn::e3)*0.5;
+      auto T_wrl = cardyn::one + cardyn::einf*((-u_wrl)*cardyn::e3)*0.5;
+      auto T_wrr = cardyn::one + cardyn::einf*((-u_wrr)*cardyn::e3)*0.5;
+
+      d_wfl = eval(grade<1>((D_b*T_wfl)*f.r_wfl* ~(D_b*T_wfl))&cardyn::e3);
+      d_wfr = eval(grade<1>((D_b*T_wfr)*f.r_wfr* ~(D_b*T_wfr))&cardyn::e3);
+      d_wrl = eval(grade<1>((D_b*T_wrl)*f.r_wrl* ~(D_b*T_wrl))&cardyn::e3);
+      d_wrr = eval(grade<1>((D_b*T_wrr)*f.r_wrr* ~(D_b*T_wrr))&cardyn::e3);
       
       //Set steering angle
       a_steer = carHandler->getSteeringAngle();
@@ -281,9 +286,9 @@ int main()
       //Set new body displacements
       p_b = grade<1>(D_b*cardyn::e0*~D_b);
       bodyTransform->setPosition(osg::Vec3(p_b[0], p_b[1], p_b[2]));
-      bodyTransform->setAttitude(osg::Quat(D_b[3],
-               -D_b[2],
-               D_b[1],
+      bodyTransform->setAttitude(osg::Quat(-D_b[3],
+               D_b[2],
+               -D_b[1],
                D_b[0]
                ));
 
@@ -345,8 +350,8 @@ int main()
       if (frameTime < minFrameTime) OpenThreads::Thread::microSleep(static_cast<unsigned int>(1000000.0*(minFrameTime-frameTime)));
       if (frameTime > 0.001) frameTime = 0.001;
 
-      OpenThreads::Thread::microSleep(static_cast<unsigned int>(100000.0));
-      frameTime = 0.001;
+      //OpenThreads::Thread::microSleep(static_cast<unsigned int>(10000.0));
+      //frameTime = 0.001;
    }
 
    return 0;
