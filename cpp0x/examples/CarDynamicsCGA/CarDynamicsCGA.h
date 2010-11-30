@@ -29,6 +29,7 @@ cm::mv<0x07>::type Ie = e1*e2*e3;
 typedef cm::mv<1,2,4>::type Vector;
 typedef cm::mv<1,2,4,8,0x10>::type Point;
 typedef Point Sphere;
+typedef cm::mv<1,2,4,8,0x10>::type Plane;
 
 typedef cm::mv<0,3,5,6>::type Rotor;
 
@@ -37,10 +38,10 @@ typedef cm::mv<0x00, 0x03, 0x05, 0x06, 0x09, 0x0a, 0x0c, 0x0f, 0x11, 0x12, 0x14,
 
 
 typedef std::tuple<
-         double,    //Vertical wheel distance to ground, front lef
-         double,    //Vertical wheel distance to ground, front right
-         double,    //Vertical wheel distance to ground, rear left
-         double,    //Vertical wheel distance to ground, rear right
+         Plane,    //Ground plane, front lef
+         Plane,    //Ground plane, front right
+         Plane,    //Ground plane, rear left
+         Plane,    //Ground plane, rear right
          double,    //Steering angle
          double,    //Transmission
          double,    //Gas pedal position [0.0-1.0]
@@ -199,8 +200,8 @@ struct StateEquation
       //Axle kinematics
       D_wfl = wheelVersor(u_wfl, steerAngle*0.01, p_wbf_fl, p_wbr_fl, p_mps_fl, p_steer0_fl, wheel_left);
       D_wfr = wheelVersor(u_wfr, steerAngle*0.01, p_wbf_fr, p_wbr_fr, p_mps_fr, p_steer0_fr, wheel_right);
-      D_wrl = wheelVersor(u_wrl, steerAngle*0.01, p_wbf_rl, p_wbr_rl, p_mps_rl, p_steer0_rl, wheel_left);
-      D_wrr = wheelVersor(u_wrr, steerAngle*0.01, p_wbf_rr, p_wbr_rr, p_mps_rr, p_steer0_rr, wheel_right);
+      D_wrl = wheelVersor(u_wrl, 0.0, p_wbf_rl, p_wbr_rl, p_mps_rl, p_steer0_rl, wheel_left);
+      D_wrr = wheelVersor(u_wrr, 0.0, p_wbf_rr, p_wbr_rr, p_mps_rr, p_steer0_rr, wheel_right);
 
       //Ackermann steering
       double cotSteerAngle = (r_wfl[0]-r_wrl[0])*(1.0/tan(steerAngle));

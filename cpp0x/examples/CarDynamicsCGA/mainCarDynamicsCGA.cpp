@@ -322,7 +322,6 @@ int main()
 
       //wheelTransformFL->setPosition(osg::Vec3(f.v_wn, f.w_wn, -f.u_wn - u_wfl));
       auto p_wfl = eval(grade<1>(D_wfl * cardyn::e0 * ~D_wfl));
-      std::cout << "p_wfl: ( " << f.v_wn << ", " << f.w_wn << ", " << -f.u_wn-u_wfl << " ), p_wfl_k: " << p_wfl << std::endl;
       wheelTransformFL->setPosition(osg::Vec3(p_wfl[0], p_wfl[1], p_wfl[2]));
       osg::Quat wheelRotarySpeedFL(0.0, w_wfl, 0.0, 0.0);
       wheelQuatFL = wheelQuatFL + wheelQuatFL*wheelRotarySpeedFL*(0.5*frameTime);
@@ -331,20 +330,23 @@ int main()
 
       //wheelTransformFR->setPosition(osg::Vec3(f.v_wn, -f.w_wn, -f.u_wn - u_wfr));
       auto p_wfr = eval(grade<1>(D_wfr * cardyn::e0 * ~D_wfr));
-      std::cout << "p_wfr: ( " << f.v_wn << ", " << f.w_wn << ", " << -f.u_wn-u_wfr << " ), p_wfr_k: " << p_wfr << std::endl;
       wheelTransformFR->setPosition(osg::Vec3(p_wfr[0], p_wfr[1], p_wfr[2]));
       osg::Quat wheelRotarySpeedFR(0.0, w_wfr, 0.0, 0.0);
       wheelQuatFR = wheelQuatFR + wheelQuatFR*wheelRotarySpeedFR*(0.5*frameTime);
       wheelQuatFR = wheelQuatFR*(1/wheelQuatFR.length());
       wheelTransformFR->setAttitude(wheelQuatFR*camberRotFR*steerRotFR);
 
-      wheelTransformRL->setPosition(osg::Vec3(-f.v_wn, f.w_wn, -f.u_wn - u_wrl));
+      //wheelTransformRL->setPosition(osg::Vec3(-f.v_wn, f.w_wn, -f.u_wn - u_wrl));
+      auto p_wrl = eval(grade<1>(D_wrl * cardyn::e0 * ~D_wrl));
+      wheelTransformRL->setPosition(osg::Vec3(p_wrl[0], p_wrl[1], p_wrl[2]));
       osg::Quat wheelRotarySpeedRL(0.0, w_wrl, 0.0, 0.0);
       wheelQuatRL = wheelQuatRL + wheelQuatRL*wheelRotarySpeedRL*(0.5*frameTime);
       wheelQuatRL = wheelQuatRL*(1/wheelQuatRL.length());
       wheelTransformRL->setAttitude(wheelQuatRL*camberRotRL);
 
-      wheelTransformRR->setPosition(osg::Vec3(-f.v_wn, -f.w_wn, -f.u_wn - u_wrr));
+      //wheelTransformRR->setPosition(osg::Vec3(-f.v_wn, -f.w_wn, -f.u_wn - u_wrr));
+      auto p_wrr = eval(grade<1>(D_wrr * cardyn::e0 * ~D_wrr));
+      wheelTransformRR->setPosition(osg::Vec3(p_wrr[0], p_wrr[1], p_wrr[2]));
       osg::Quat wheelRotarySpeedRR(0.0, w_wrr, 0.0, 0.0);
       wheelQuatRR = wheelQuatRR + wheelQuatRR*wheelRotarySpeedRR*(0.5*frameTime);
       wheelQuatRR = wheelQuatRR*(1/wheelQuatRR.length());
