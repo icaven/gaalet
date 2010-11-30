@@ -26,6 +26,12 @@ cm::mv<0x18>::type E = ep*em;
 cm::mv<0x1f>::type Ic = e1*e2*e3*ep*em;
 cm::mv<0x07>::type Ie = e1*e2*e3;
 
+typedef cm::mv<1,2,4>::type Vector;
+typedef cm::mv<1,2,4,8,0x10>::type Point;
+typedef Point Sphere;
+
+typedef cm::mv<0,3,5,6>::type Rotor;
+
 typedef cm::mv<0x03, 0x05, 0x06, 0x09, 0x0a, 0x0c, 0x11, 0x12, 0x14>::type S_type;
 typedef cm::mv<0x00, 0x03, 0x05, 0x06, 0x09, 0x0a, 0x0c, 0x0f, 0x11, 0x12, 0x14, 0x17>::type D_type;
 
@@ -41,6 +47,13 @@ typedef std::tuple<
          double,    //Brake shoe force
          double     //Clutch coefficient
         > InputVector;
+
+typedef std::tuple<
+         D_type,  //Displacement versor wheel hub front left
+         D_type,  //Displacement versor wheel hub front right
+         D_type,  //Displacement versor wheel hub rear left
+         D_type   //Displacement versor wheel hub rear right
+        > OutputVector;
 
 typedef std::tuple<
       D_type,     //Body displacement
@@ -65,11 +78,13 @@ typedef std::tuple<
 struct StateEquation
 {
    StateEquation( const InputVector& input_,
+                  OutputVector& output_,
                   const magicformula2004::ContactWrench& tyre_fl_,
                   const magicformula2004::ContactWrench& tyre_fr_,
                   const magicformula2004::ContactWrench& tyre_rl_,
                   const magicformula2004::ContactWrench& tyre_rr_)
       :  input(input_),
+         output(output_),
          tyre_fl(tyre_fl_),
          tyre_fr(tyre_fr_),
          tyre_rl(tyre_rl_),
@@ -101,6 +116,45 @@ struct StateEquation
       R_n_wfr = exp((-0.5)*Ie*(-M_PI*0.05*e1 + M_PI*0.1*e2 + 0.0*e3));
       R_n_wrl = exp((-0.5)*Ie*(M_PI*0.05*e1 + 0.0*e2 + 0.0*e3));
       R_n_wrr = exp((-0.5)*Ie*(-M_PI*0.05*e1 + 0.0*e2 + 0.0*e3));
+
+      //car body wishbone joints
+      auto x_wbf_fl = 1.638*e1 + 0.333*e2 + (-0.488)*e3;
+      p_wbf_fl = x_wbf_fl + 0.5*(x_wbf_fl&x_wbf_fl)*einf + e0;
+      auto x_wbf_fr = 1.638*e1 - 0.333*e2 + (-0.488)*e3;
+      p_wbf_fr = x_wbf_fr + 0.5*(x_wbf_fr&x_wbf_fr)*einf + e0;
+      auto x_wbf_rl = (-0.712)*e1 + 0.333*e2 + (-0.488)*e3;
+      p_wbf_rl = x_wbf_rl + 0.5*(x_wbf_rl&x_wbf_rl)*einf + e0;
+      auto x_wbf_rr = (-0.712)*e1 - 0.333*e2 + (-0.488)*e3;
+      p_wbf_rr = x_wbf_rr + 0.5*(x_wbf_rr&x_wbf_rr)*einf + e0;
+
+      auto x_wbr_fl = 1.4*e1 + 0.333*e2 + (-0.488)*e3;
+      p_wbr_fl = x_wbr_fl + 0.5*(x_wbr_fl&x_wbr_fl)*einf + e0;
+      auto x_wbr_fr = 1.4*e1 - 0.333*e2 + (-0.488)*e3;
+      p_wbr_fr = x_wbr_fr + 0.5*(x_wbr_fr&x_wbr_fr)*einf + e0;
+      auto x_wbr_rl = (-0.95)*e1 + 0.333*e2 + (-0.488)*e3;
+      p_wbr_rl = x_wbr_rl + 0.5*(x_wbr_rl&x_wbr_rl)*einf + e0;
+      auto x_wbr_rr = (-0.95)*e1 - 0.333*e2 + (-0.488)*e3;
+      p_wbr_rr = x_wbr_rr + 0.5*(x_wbr_rr&x_wbr_rr)*einf + e0;
+
+      //dome of mcpherson strut
+      auto x_mps_fl = (1.335)*e1 + 0.473*e2 + (-0.043)*e3;
+      p_mps_fl = x_mps_fl + 0.5*(x_mps_fl&x_mps_fl)*einf + e0;
+      auto x_mps_fr = (1.335)*e1 - 0.473*e2 + (-0.043)*e3;
+      p_mps_fr = x_mps_fr + 0.5*(x_mps_fr&x_mps_fr)*einf + e0;
+      auto x_mps_rl = (-1.015)*e1 + 0.473*e2 + (-0.043)*e3;
+      p_mps_rl = x_mps_rl + 0.5*(x_mps_rl&x_mps_rl)*einf + e0;
+      auto x_mps_rr = (-1.015)*e1 - 0.473*e2 + (-0.043)*e3;
+      p_mps_rr = x_mps_rr + 0.5*(x_mps_rr&x_mps_rr)*einf + e0;
+      
+      //steering link initial position
+      auto x_steer0_fl = 1.3*e1 + 0.141*e2 + (-0.388)*e3;
+      p_steer0_fl = x_steer0_fl + 0.5*(x_steer0_fl&x_steer0_fl)*einf + e0;
+      auto x_steer0_fr = 1.3*e1 - 0.141*e2 + (-0.388)*e3;
+      p_steer0_fr = x_steer0_fr + 0.5*(x_steer0_fr&x_steer0_fr)*einf + e0;
+      auto x_steer0_rl = (-1.05)*e1 + 0.141*e2 + (-0.388)*e3;
+      p_steer0_rl = x_steer0_rl + 0.5*(x_steer0_rl&x_steer0_rl)*einf + e0;
+      auto x_steer0_rr = (-1.05)*e1 - 0.141*e2 + (-0.388)*e3;
+      p_steer0_rr = x_steer0_rr + 0.5*(x_steer0_rr&x_steer0_rr)*einf + e0;
    }
 
    StateVector operator()(const double& t, const StateVector& oldState) const
@@ -136,6 +190,17 @@ struct StateEquation
       const double& s_gp = std::get<6>(input);
       const double& F_b = std::get<7>(input);
 
+      //output
+      auto& D_wfl = std::get<0>(output);
+      auto& D_wfr = std::get<1>(output);
+      auto& D_wrl = std::get<2>(output);
+      auto& D_wrr = std::get<3>(output);
+
+      //Axle kinematics
+      D_wfl = wheelVersor(u_wfl, steerAngle*0.01, p_wbf_fl, p_wbr_fl, p_mps_fl, p_steer0_fl, wheel_left);
+      D_wfr = wheelVersor(u_wfr, steerAngle*0.01, p_wbf_fr, p_wbr_fr, p_mps_fr, p_steer0_fr, wheel_right);
+      D_wrl = wheelVersor(u_wrl, steerAngle*0.01, p_wbf_rl, p_wbr_rl, p_mps_rl, p_steer0_rl, wheel_left);
+      D_wrr = wheelVersor(u_wrr, steerAngle*0.01, p_wbf_rr, p_wbr_rr, p_mps_rr, p_steer0_rr, wheel_right);
 
       //Ackermann steering
       double cotSteerAngle = (r_wfl[0]-r_wrl[0])*(1.0/tan(steerAngle));
@@ -215,8 +280,84 @@ struct StateEquation
       return std::move(newState);
    }
 
+   D_type wheelVersor(const double& stroke, const double& steer, const Point& p_wbf, const Point& p_wbr, const Point& p_mps, const Point& p_steer0, const double side) const
+   {
+      //?dstroke = -(Mouse(2, 1, 1)-Pi)/Pi;
+      //rod lengthes:
+      //mcpherson strut: spring and wheel carrier
+      double r_mps = 0.486 + stroke;
+      //?dr_mps = dstroke;
+      //wishbone
+      double r_wbf = 0.365;
+      double r_wbr = 0.23;
+
+      //wishbone circle
+      auto s_wbf = p_wbf - 0.5*r_wbf*r_wbf*einf;
+      auto s_wbr = p_wbr - 0.5*r_wbr*r_wbr*einf;
+      auto c_wb = s_wbf^s_wbr;
+
+      //sphere of mcpherson strut: spring and wheel carrier
+      Sphere s_mps = p_mps - 0.5*r_mps*r_mps*einf;
+      //?ds_mps = -dr_mps*r_mps*e;
+
+      //wheel carrier lower joint
+      auto Pp_wc = Ic * (c_wb^s_mps);
+      //?dPp_wc = c_wb^ds_mps * I;
+      Point p_wc = (Pp_wc + one*side*sqrt(eval(Pp_wc&Pp_wc))) * !(Pp_wc&einf);
+      //?p_wc;
+      //?dp_wc = (dPp_wc + 0.5*(1.0/sqrt(Pp_wc*Pp_wc)*(dPp_wc*Pp_wc+Pp_wc*dPp_wc)))*(1.0/(Pp_wc.einf)) - (Pp_wc + sqrt(Pp_wc.Pp_wc))*(dPp_wc.einf)*(1.0/((Pp_wc.einf)*(Pp_wc.einf)));
+      //?dp_wc = (dPp_wc*(p_wc))°1;
+      //?dp_wc = (dPp_wc.(p_wc));
+      //:dp_wc;
+      //?((Pp_wc.einf)*(Pp_wc.einf));
+      //?dp_wc_R3 = (dp_wc^E)*E;
+      //?dp_wc_R3.dp_wc_R3;
+      //?Pp_wc.Pp_wc;
+      //?Pp_wc*Pp_wc;
+
+      //steering link
+      double r_sl = 0.4;
+      //steering arm:
+      //from mcpherson struct dome
+      double r_samps = sqrt(pow(r_mps-0.15,2)+pow(0.12,2));
+      //from wheel carrier lower joint
+      double r_sawc = sqrt(pow(0.15,2)+pow(0.12,2));
+
+      //Translation induced to steering link inner joint by steering wheel (e.g. via a cograil)
+      auto T_steer = one + einf*(steer*e2)*0.5;
+      auto p_steer = grade<1>(T_steer*p_steer0*(~T_steer));
+
+      auto s_samps = p_mps - 0.5*r_samps*r_samps*einf;
+
+      auto s_sawc = p_wc - 0.5*r_sawc*r_sawc*einf;
+
+      auto s_steer = p_steer - 0.5*r_sl*r_sl*einf;
+
+      //steering arm
+      auto Pp_sa = (s_sawc^s_samps^s_steer) * Ic;
+      Point p_sa = (Pp_sa - one*side*sqrt(eval(Pp_sa&Pp_sa))) * !(Pp_sa&einf);
+
+
+      //plane of wheel
+      auto pi_w = eval((p_sa^p_mps^p_wc^einf)*Ic);
+      auto mag_pi_w = magnitude(pi_w);
+      pi_w = pi_w * !mag_pi_w;
+
+
+      auto T_wb = one + 0.5*einf*(p_wc - e0);
+      auto n_wb = e2;
+      auto pi_wb = e0&(einf^(n_wb + pi_w));
+      Rotor R_wb = pi_wb*n_wb;
+      auto T_w = one + 0.5*einf*(side*0.2*e2+0.1*e3);
+      double R_wb0=1.0;
+      D_type D_w = T_wb*R_wb*T_w*R_wb0;
+      D_w = D_w * !magnitude(D_w);
+
+      return std::move(D_w);
+   }
 
    const InputVector& input;
+   OutputVector& output;
    magicformula2004::ContactWrench tyre_fl;
    magicformula2004::ContactWrench tyre_fr;
    magicformula2004::ContactWrench tyre_rl;
@@ -245,8 +386,10 @@ struct StateEquation
    static const double u_wn = 0.4;
    static const double v_wn = 1.3;
    static const double w_wn = 0.7;
-   static const double k_wf = 17400.0;
-   static const double k_wr = 26100.0;
+   //static const double k_wf = 17400.0;
+   static const double k_wf = 30000.0;
+   //static const double k_wr = 26100.0;
+   static const double k_wr = 30000.0;
    static const double d_wf = 2600.0;
    static const double d_wr = 2600.0;
    gaalet::mv<0,3,5,6>::type R_n_wfl;
@@ -275,6 +418,27 @@ struct StateEquation
    //Transmission
    std::vector<double> i_g;
    static const double i_a = 3.5;
+
+   //Wheel kinematics
+   static const double wheel_left = 1.0;
+   static const double wheel_right = -1.0;
+
+   Point p_wbf_fl;
+   Point p_wbf_fr;
+   Point p_wbf_rl;
+   Point p_wbf_rr;
+   Point p_wbr_fl;
+   Point p_wbr_fr;
+   Point p_wbr_rl;
+   Point p_wbr_rr;
+   Point p_mps_fl;
+   Point p_mps_fr;
+   Point p_mps_rl;
+   Point p_mps_rr;
+   Point p_steer0_fl;
+   Point p_steer0_fr;
+   Point p_steer0_rl;
+   Point p_steer0_rr;
 };
 
 }  //end namespace cardyn
