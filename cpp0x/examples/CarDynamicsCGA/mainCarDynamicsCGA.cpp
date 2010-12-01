@@ -127,10 +127,10 @@ int main()
    auto& w_wrr = std::get<15>(y);
    auto& w_e = std::get<16>(y);
 
-   double& d_wfl = std::get<0>(z);
-   double& d_wfr = std::get<1>(z);
-   double& d_wrl = std::get<2>(z);
-   double& d_wrr = std::get<3>(z);
+   auto& P_wfl = std::get<0>(z);
+   auto& P_wfr = std::get<1>(z);
+   auto& P_wrl = std::get<2>(z);
+   auto& P_wrr = std::get<3>(z);
    double& a_steer = std::get<4>(z);
    double& i_pt = std::get<5>(z);
    double& s_gp = std::get<6>(z);
@@ -141,7 +141,7 @@ int main()
    const auto& D_wrr = std::get<3>(o);
 
    //Set initial values
-   cardyn::cm::mv<1,2,4>::type p_b = {0.0,0.0,1.0};
+   cardyn::cm::mv<1,2,4>::type p_b = {0.0,0.0,0.75};
    auto T_b = cardyn::one + cardyn::einf*p_b*0.5;
    D_b = T_b;
 
@@ -150,7 +150,13 @@ int main()
    a_steer = 0.0;
    i_pt = 0.0;
    s_gp = 0.0;
-  
+ 
+   //Ground planes
+   P_wfl = (-1.0)*cardyn::e3;
+   P_wfr = (-1.0)*cardyn::e3;
+   P_wrl = (-1.0)*cardyn::e3;
+   P_wrr = (-1.0)*cardyn::e3;
+
    //Visualisation with OpenSceneGraph
    osg::Group* sceneRoot = new osg::Group;
 
@@ -271,10 +277,10 @@ int main()
       auto T_wrl = cardyn::one + cardyn::einf*((-u_wrl)*cardyn::e3)*0.5;
       auto T_wrr = cardyn::one + cardyn::einf*((-u_wrr)*cardyn::e3)*0.5;
 
-      d_wfl = eval(grade<1>((D_b*T_wfl)*f.r_wfl* ~(D_b*T_wfl))&cardyn::e3);
+      /*d_wfl = eval(grade<1>((D_b*T_wfl)*f.r_wfl* ~(D_b*T_wfl))&cardyn::e3);
       d_wfr = eval(grade<1>((D_b*T_wfr)*f.r_wfr* ~(D_b*T_wfr))&cardyn::e3);
       d_wrl = eval(grade<1>((D_b*T_wrl)*f.r_wrl* ~(D_b*T_wrl))&cardyn::e3);
-      d_wrr = eval(grade<1>((D_b*T_wrr)*f.r_wrr* ~(D_b*T_wrr))&cardyn::e3);
+      d_wrr = eval(grade<1>((D_b*T_wrr)*f.r_wrr* ~(D_b*T_wrr))&cardyn::e3);*/
       
       //Set steering angle
       a_steer = carHandler->getSteeringAngle();
@@ -311,10 +317,12 @@ int main()
 
       //auto R_wfl = eval(f.R_n_wfl*exp(cardyn::e2*cardyn::e3*u_wfl*(-0.5)));
       //auto R_wfr = eval(f.R_n_wfr*exp(cardyn::e2*cardyn::e3*u_wfr*(0.5)));
+      //auto R_wrl = eval(f.R_n_wrl*exp(cardyn::e2*cardyn::e3*u_wrl*(-0.5)));
+      //auto R_wrr = eval(f.R_n_wrr*exp(cardyn::e2*cardyn::e3*u_wrr*(0.5)));
       auto R_wfl = eval(part<0,3,5,6>(D_wfl));
       auto R_wfr = eval(part<0,3,5,6>(D_wfr));
-      auto R_wrl = eval(f.R_n_wrl*exp(cardyn::e2*cardyn::e3*u_wrl*(-0.5)));
-      auto R_wrr = eval(f.R_n_wrr*exp(cardyn::e2*cardyn::e3*u_wrr*(0.5)));
+      auto R_wrl = eval(part<0,3,5,6>(D_wrl));
+      auto R_wrr = eval(part<0,3,5,6>(D_wrr));
       osg::Quat camberRotFL(R_wfl[3], -R_wfl[2], R_wfl[1], R_wfl[0]);
       osg::Quat camberRotFR(R_wfr[3], -R_wfr[2], R_wfr[1], R_wfr[0]);
       osg::Quat camberRotRL(R_wrl[3], -R_wrl[2], R_wrl[1], R_wrl[0]);

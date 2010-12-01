@@ -182,10 +182,10 @@ struct StateEquation
       const auto& w_e= std::get<16>(oldState);
 
       //input
-      const double& Dv_wfl = std::get<0>(input);
-      const double& Dv_wfr = std::get<1>(input);
-      const double& Dv_wrl = std::get<2>(input);
-      const double& Dv_wrr = std::get<3>(input);
+      const auto& P_wfl = std::get<0>(input);
+      const auto& P_wfr = std::get<1>(input);
+      const auto& P_wrl = std::get<2>(input);
+      const auto& P_wrr = std::get<3>(input);
       const double& steerAngle = std::get<4>(input);
       const double& i_pt = std::get<5>(input);
       const double& s_gp = std::get<6>(input);
@@ -228,6 +228,10 @@ struct StateEquation
       auto Fsd_wrl = (u_wrl*k_wr+du_wrl*d_wr)*(-1.0);
       auto Fsd_wrr = (u_wrr*k_wr+du_wrr*d_wr)*(-1.0);
 
+      double Dv_wfl = eval((-1.0) * (P_wfl&grade<1>(D_b*D_wfl*e0*~(D_b*D_wfl))) * (1.0/sqrt(eval(P_wfl&P_wfl))));
+      double Dv_wfr = eval((-1.0) * (P_wfr&grade<1>(D_b*D_wfr*e0*~(D_b*D_wfr))) * (1.0/sqrt(eval(P_wfr&P_wfr))));
+      double Dv_wrl = eval((-1.0) * (P_wrl&grade<1>(D_b*D_wrl*e0*~(D_b*D_wrl))) * (1.0/sqrt(eval(P_wrl&P_wrl))));
+      double Dv_wrr = eval((-1.0) * (P_wrr&grade<1>(D_b*D_wrr*e0*~(D_b*D_wrr))) * (1.0/sqrt(eval(P_wrr&P_wrr))));
       //Tyre forces and moments:
       auto W_wfl = ((!q_w)*tyre_fl( Dv_wfl, //distance difference with respect to camber angle?
             R_wfl,
@@ -350,7 +354,7 @@ struct StateEquation
       auto pi_wb = e0&(einf^(n_wb + pi_w));
       Rotor R_wb = pi_wb*n_wb;
       auto T_w = one + 0.5*einf*(side*0.2*e2+0.1*e3);
-      double R_wb0=1.0;
+      Rotor R_wb0=exp((-0.5)*side*(-M_PI*0.07)*e2*e3);
       D_type D_w = T_wb*R_wb*T_w*R_wb0;
       D_w = D_w * !magnitude(D_w);
 
