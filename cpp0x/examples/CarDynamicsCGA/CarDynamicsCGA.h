@@ -102,7 +102,8 @@ struct StateEquation
       cm::mv<1,2,4>::type x_wrr = {-0.940, -0.812, -0.4};
       r_wrr = x_wrr + 0.5*(x_wrr&x_wrr)*einf + e0;
 
-      q_w[0] = cos(0.5*M_PI); q_w[1] = sin(0.5*M_PI);
+      //q_w[0] = cos(0.5*M_PI); q_w[1] = sin(0.5*M_PI);
+      R_w = exp(-0.5*M_PI*e2*e3);
      
       i_g.resize(7);
       i_g[0] = -3.6;
@@ -228,7 +229,7 @@ struct StateEquation
       auto Fsd_wrl = (u_wrl*k_wr+du_wrl*d_wr)*(-1.0);
       auto Fsd_wrr = (u_wrr*k_wr+du_wrr*d_wr)*(-1.0);
 
-      double Dv_wfl = eval((-1.0) * (P_wfl&grade<1>(D_b*D_wfl*e0*~(D_b*D_wfl))) * (1.0/sqrt(eval(P_wfl&P_wfl))));
+      /*double Dv_wfl = eval((-1.0) * (P_wfl&grade<1>(D_b*D_wfl*e0*~(D_b*D_wfl))) * (1.0/sqrt(eval(P_wfl&P_wfl))));
       double Dv_wfr = eval((-1.0) * (P_wfr&grade<1>(D_b*D_wfr*e0*~(D_b*D_wfr))) * (1.0/sqrt(eval(P_wfr&P_wfr))));
       double Dv_wrl = eval((-1.0) * (P_wrl&grade<1>(D_b*D_wrl*e0*~(D_b*D_wrl))) * (1.0/sqrt(eval(P_wrl&P_wrl))));
       double Dv_wrr = eval((-1.0) * (P_wrr&grade<1>(D_b*D_wrr*e0*~(D_b*D_wrr))) * (1.0/sqrt(eval(P_wrr&P_wrr))));
@@ -244,7 +245,11 @@ struct StateEquation
             part<1,2,4,5>(q_w*(dr_wrl + w_wrl*e1*e3)*(!q_w)))*q_w);
       auto W_wrr = ((!q_w)*tyre_rr( Dv_wrr, //distance difference with respect to camber angle?
             R_wrr,
-            part<1,2,4,5>(q_w*(dr_wrr + w_wrr*e1*e3)*(!q_w)))*q_w);
+            part<1,2,4,5>(q_w*(dr_wrr + w_wrr*e1*e3)*(!q_w)))*q_w);*/
+      auto W_wfl = (R_w * tyre_fl(~(D_b*D_wfl*R_w)*P_wfl*(D_b*D_wfl*R_w), part<1,2,4,5>(~R_w*(dr_wfl + w_wfl*e1*e3)*R_w)) * ~R_w);
+      auto W_wfr = (R_w * tyre_fl(~(D_b*D_wfr*R_w)*P_wfr*(D_b*D_wfr*R_w), part<1,2,4,5>(~R_w*(dr_wfr + w_wfr*e1*e3)*R_w)) * ~R_w);
+      auto W_wrl = (R_w * tyre_fl(~(D_b*D_wrl*R_w)*P_wrl*(D_b*D_wrl*R_w), part<1,2,4,5>(~R_w*(dr_wrl + w_wrl*e1*e3)*R_w)) * ~R_w);
+      auto W_wrr = (R_w * tyre_fl(~(D_b*D_wrr*R_w)*P_wrr*(D_b*D_wrr*R_w), part<1,2,4,5>(~R_w*(dr_wrr + w_wrr*e1*e3)*R_w)) * ~R_w);
 
       //Body acceleration:
       auto ddp_b_b = eval(grade<1>((((grade<1>((!q_wfl)*part<1, 2>(W_wfl)*q_wfl+(!q_wfr)*part<1, 2>(W_wfr)*q_wfr+part<1, 2>(W_wrl)+part<1, 2>(W_wrr))+(Fsd_wfl+Fsd_wfr+Fsd_wrl+Fsd_wrr)*e3)*(1.0/m_b)))) + grade<1>((!part<0,3,5,6>(D_b))*g*part<0,3,5,6>(D_b)));
@@ -378,7 +383,7 @@ struct StateEquation
    cm::mv<1,2,4,8,0x10>::type r_wrl;
    cm::mv<1,2,4,8,0x10>::type r_wrr;
 
-   cm::mv<0,6>::type q_w;
+   cm::mv<0,6>::type R_w;
 
    //Carbody
    static const double m_b = 1450.0;

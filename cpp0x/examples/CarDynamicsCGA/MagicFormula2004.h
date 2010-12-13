@@ -16,7 +16,34 @@
 #include <sstream>
 
 namespace magicformula2004 {
-   typedef gaalet::algebra< gaalet::signature<3,0> > em;
+   //typedef gaalet::algebra< gaalet::signature<3,0> > em;
+   //defintion of basisvectors, null basis, pseudoscalars, helper unit scalar
+   typedef gaalet::algebra< gaalet::signature<4,1> > cm;
+   cm::mv<0x01>::type e1 = {1.0};
+   cm::mv<0x02>::type e2 = {1.0};
+   cm::mv<0x04>::type e3 = {1.0};
+   cm::mv<0x08>::type ep = {1.0};
+   cm::mv<0x10>::type em = {1.0};
+
+   cm::mv<0x00>::type one = {1.0};
+
+   cm::mv<0x08, 0x10>::type e0 = 0.5*(em-ep);
+   cm::mv<0x08, 0x10>::type einf = em+ep;
+
+   cm::mv<0x18>::type E = ep*em;
+
+   cm::mv<0x1f>::type Ic = e1*e2*e3*ep*em;
+   cm::mv<0x07>::type Ie = e1*e2*e3;
+
+   typedef cm::mv<1,2,4>::type Vector;
+   typedef cm::mv<1,2,4,8,0x10>::type Point;
+   typedef Point Sphere;
+   typedef cm::mv<1,2,4,8,0x10>::type Plane;
+
+   typedef cm::mv<0,3,5,6>::type Rotor;
+
+   typedef cm::mv<0x03, 0x05, 0x06, 0x09, 0x0a, 0x0c, 0x11, 0x12, 0x14>::type S_type;
+   typedef cm::mv<0x00, 0x03, 0x05, 0x06, 0x09, 0x0a, 0x0c, 0x0f, 0x11, 0x12, 0x14, 0x17>::type D_type;
 
    struct TyrePropertyPack {
       static const int TYRE_LEFT = 1;
@@ -286,18 +313,24 @@ namespace magicformula2004 {
    };
 
    struct ContactWrench {
-      typedef em::mv<1,2,3,4,5,6>::type result_wrench_t;
+      typedef cm::mv<1,2,3,4,5,6>::type result_wrench_t;
 
 	   ContactWrench(const TyrePropertyPack& setPars) 
          :  pars(setPars)
       { }
 
 
-      result_wrench_t operator()(const double& r, const em::mv<0,3,5,6>::type& R, const em::mv<1,2,4,5>::type& V) const {
+      //result_wrench_t operator()(const double& r, const cm::mv<0,3,5,6>::type& R, const cm::mv<1,2,4,5>::type& V) const {
+      result_wrench_t operator()(const Plane& P, const cm::mv<1,2,4,5>::type& V) const {
          //r: tyre frame, R: surface frame, V: tyre frame
+         //P: tyre frame, V: tyre frame
+
+         Plane Pn = eval(P * (1.0/sqrt(eval(P&P))));
+         double r = eval((-1.0) * (Pn&e0)); 
 
          auto Vc = grade<1>(V);
-         em::mv<1,2>::type Vs = part<1,2>(V) + em::mv<4>::type({-pars.R_0})*part<5>(V);  //assumption R_e = R_0
+         //auto Vc = (V&e0);
+         cm::mv<1,2>::type Vs = part<1,2>(V) + cm::mv<4>::type({-pars.R_0})*part<5>(V);  //assumption R_e = R_0
 
          //singularity avoidance
          double epsilon_Vx = 0.1;
@@ -345,7 +378,8 @@ namespace magicformula2004 {
 
          //spin due to camber angle
          //double gamma_star = sin(gamma);
-         double gamma_star = eval(grade<1>(R*em::mv<1>::type({1.0})*(~R)))[1];
+         //double gamma_star = eval(grade<1>(R*cm::mv<1>::type({1.0})*(~R)))[1];
+         double gamma_star = ((Pn^e3)*(~Pn)).element<2>();
 
          //longitudinal slip ratio
          double kappa = - V_sx/(fabs(V_cx)+epsilon_x);
