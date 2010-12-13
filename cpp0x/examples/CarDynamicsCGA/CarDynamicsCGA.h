@@ -285,8 +285,10 @@ struct StateEquation
       return std::move(newState);
    }
 
-   D_type wheelVersor(const double& stroke, const double& steer, const Point& p_wbf, const Point& p_wbr, const Point& p_mps, const Point& p_steer0, const double side) const
+   D_type wheelVersor(double stroke, double steer, const Point& p_wbf, const Point& p_wbr, const Point& p_mps, const Point& p_steer0, const double side) const
    {
+      stroke = std::max(-0.24, std::min(0.16, stroke));
+      steer = std::max(-0.09, std::min(0.05, steer));
       //?dstroke = -(Mouse(2, 1, 1)-Pi)/Pi;
       //rod lengthes:
       //mcpherson strut: spring and wheel carrier
