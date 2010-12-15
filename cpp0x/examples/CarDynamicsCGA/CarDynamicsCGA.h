@@ -190,7 +190,7 @@ struct StateEquation
       const double& steerAngle = std::get<4>(input);
       const double& i_pt = std::get<5>(input);
       const double& s_gp = std::get<6>(input);
-      const double& F_b = std::get<7>(input);
+      const double& f_b = std::get<7>(input);
 
       //output
       auto& D_wfl = std::get<0>(output);
@@ -199,8 +199,8 @@ struct StateEquation
       auto& D_wrr = std::get<3>(output);
 
       //Axle kinematics
-      D_wfl = wheelVersor(u_wfl, -steerAngle*0.1, p_wbf_fl, p_wbr_fl, p_mps_fl, p_steer0_fl, wheel_left);
-      D_wfr = wheelVersor(u_wfr, -steerAngle*0.1, p_wbf_fr, p_wbr_fr, p_mps_fr, p_steer0_fr, wheel_right);
+      D_wfl = wheelVersor(u_wfl, steerAngle*0.1, p_wbf_fl, p_wbr_fl, p_mps_fl, p_steer0_fl, wheel_left);
+      D_wfr = wheelVersor(u_wfr, steerAngle*0.1, p_wbf_fr, p_wbr_fr, p_mps_fr, p_steer0_fr, wheel_right);
       D_wrl = wheelVersor(u_wrl, 0.0, p_wbf_rl, p_wbr_rl, p_mps_rl, p_steer0_rl, wheel_left);
       D_wrr = wheelVersor(u_wrr, 0.0, p_wbf_rr, p_wbr_rr, p_mps_rr, p_steer0_rr, wheel_right);
 
@@ -257,21 +257,38 @@ struct StateEquation
       auto V_wfr = (~R_w)*((~D_wfr) * V_b * D_wfr - Ie*(w_wfr)*e2 + einf*(-du_wfr)*e3)*R_w;
       auto V_wrl = (~R_w)*((~D_wrl) * V_b * D_wrl - Ie*(w_wrl)*e2 + einf*(-du_wrl)*e3)*R_w;
       auto V_wrr = (~R_w)*((~D_wrr) * V_b * D_wrr - Ie*(w_wrr)*e2 + einf*(-du_wrr)*e3)*R_w;
-      auto W_wfl = (R_w * tyre_fl(~(D_b*D_wfl*R_w)*P_wfl*(D_b*D_wfl*R_w), V_wfl) * ~R_w);
+      auto F_wfl = (R_w * tyre_fl(~(D_b*D_wfl*R_w)*P_wfl*(D_b*D_wfl*R_w), V_wfl) * ~R_w);
+      auto F_wfr = (R_w * tyre_fr(~(D_b*D_wfr*R_w)*P_wfr*(D_b*D_wfr*R_w), V_wfr) * ~R_w);
+      auto F_wrl = (R_w * tyre_rl(~(D_b*D_wrl*R_w)*P_wrl*(D_b*D_wrl*R_w), V_wrl) * ~R_w);
+      auto F_wrr = (R_w * tyre_rr(~(D_b*D_wrr*R_w)*P_wrr*(D_b*D_wrr*R_w), V_wrr) * ~R_w);
+      /*auto W_wfl = (R_w * tyre_fl(~(D_b*D_wfl*R_w)*P_wfl*(D_b*D_wfl*R_w), V_wfl) * ~R_w);
       auto W_wfr = (R_w * tyre_fr(~(D_b*D_wfr*R_w)*P_wfr*(D_b*D_wfr*R_w), V_wfr) * ~R_w);
       auto W_wrl = (R_w * tyre_rl(~(D_b*D_wrl*R_w)*P_wrl*(D_b*D_wrl*R_w), V_wrl) * ~R_w);
-      auto W_wrr = (R_w * tyre_rr(~(D_b*D_wrr*R_w)*P_wrr*(D_b*D_wrr*R_w), V_wrr) * ~R_w);
+      auto W_wrr = (R_w * tyre_rr(~(D_b*D_wrr*R_w)*P_wrr*(D_b*D_wrr*R_w), V_wrr) * ~R_w);*/
       /*auto W_wfl = (R_w * tyre_fl(~(D_b*D_wfl*R_w)*P_wfl*(D_b*D_wfl*R_w), part<1,2,4,5>(~R_w*(dr_wfl + w_wfl*e1*e3)*R_w)) * ~R_w);
       auto W_wfr = (R_w * tyre_fl(~(D_b*D_wfr*R_w)*P_wfr*(D_b*D_wfr*R_w), part<1,2,4,5>(~R_w*(dr_wfr + w_wfr*e1*e3)*R_w)) * ~R_w);
       auto W_wrl = (R_w * tyre_fl(~(D_b*D_wrl*R_w)*P_wrl*(D_b*D_wrl*R_w), part<1,2,4,5>(~R_w*(dr_wrl + w_wrl*e1*e3)*R_w)) * ~R_w);
       auto W_wrr = (R_w * tyre_fl(~(D_b*D_wrr*R_w)*P_wrr*(D_b*D_wrr*R_w), part<1,2,4,5>(~R_w*(dr_wrr + w_wrr*e1*e3)*R_w)) * ~R_w);*/
+   
+      auto f_u_wfl = ((einf&F_wfl)&e3)*(~e3);
+      auto f_u_wfr = ((einf&F_wfr)&e3)*(~e3);
+      auto f_u_wrl = ((einf&F_wrl)&e3)*(~e3);
+      auto f_u_wrr = ((einf&F_wrr)&e3)*(~e3);
+
+      auto F_wfl_b = D_wfl*(F_wfl + (Fsd_wfl*e3-f_u_wfl)*e0)*(~D_wfl);
+      auto F_wfr_b = D_wfr*(F_wfr + (Fsd_wfr*e3-f_u_wfr)*e0)*(~D_wfr);
+      auto F_wrl_b = D_wrl*(F_wrl + (Fsd_wrl*e3-f_u_wrl)*e0)*(~D_wrl);
+      auto F_wrr_b = D_wrr*(F_wrr + (Fsd_wrr*e3-f_u_wrr)*e0)*(~D_wrr);
+      auto F_b = F_wfl_b+F_wfr_b+F_wrl_b+F_wrr_b;
 
       //Body acceleration:
-      auto ddp_b_b = eval(grade<1>((((grade<1>((!q_wfl)*part<1, 2>(W_wfl)*q_wfl+(!q_wfr)*part<1, 2>(W_wfr)*q_wfr+part<1, 2>(W_wrl)+part<1, 2>(W_wrr))+(Fsd_wfl+Fsd_wfr+Fsd_wrl+Fsd_wrr)*e3)*(1.0/m_b)))) + grade<1>((!part<0,3,5,6>(D_b))*g*part<0,3,5,6>(D_b)));
+      //auto ddp_b_b = eval(grade<1>((((grade<1>((!q_wfl)*part<1, 2>(W_wfl)*q_wfl+(!q_wfr)*part<1, 2>(W_wfr)*q_wfr+part<1, 2>(W_wrl)+part<1, 2>(W_wrr))+(Fsd_wfl+Fsd_wfr+Fsd_wrl+Fsd_wrr)*e3)*(1.0/m_b)))) + grade<1>((!part<0,3,5,6>(D_b))*g*part<0,3,5,6>(D_b)));
+      auto ddp_b_b = eval((einf&F_b)*(1.0/m_b) + grade<1>((!part<0,3,5,6>(D_b))*g*part<0,3,5,6>(D_b)));
 
       auto w_b_b = eval(Ie&V_b);
       double k_arb = this->k_arb;
-      cm::mv<1,2,4>::type t_b_b = (-1.0)*Ie*((part<1,2,4>(r_wfl)^(Fsd_wfl*e3+grade<1>((!q_wfl)*part<1,2>(W_wfl)*q_wfl)-(u_wfl-u_wfr)*e3*k_arb)) + (part<1,2,4>(r_wfr)^(Fsd_wfr*e3+grade<1>((!q_wfr)*part<1,2>(W_wfr)*q_wfr)+(u_wfl-u_wfr)*e3*k_arb)) + (part<1,2,4>(r_wrl)^(Fsd_wrl*e3+part<1,2>(W_wrl))) + (part<1,2,4>(r_wrr)^(Fsd_wrr*e3+part<1,2>(W_wrr))));
+      //cm::mv<1,2,4>::type t_b_b = (-1.0)*Ie*((part<1,2,4>(r_wfl)^(Fsd_wfl*e3+grade<1>((!q_wfl)*part<1,2>(W_wfl)*q_wfl)-(u_wfl-u_wfr)*e3*k_arb)) + (part<1,2,4>(r_wfr)^(Fsd_wfr*e3+grade<1>((!q_wfr)*part<1,2>(W_wfr)*q_wfr)+(u_wfl-u_wfr)*e3*k_arb)) + (part<1,2,4>(r_wrl)^(Fsd_wrl*e3+part<1,2>(W_wrl))) + (part<1,2,4>(r_wrr)^(Fsd_wrr*e3+part<1,2>(W_wrr))));
+      auto t_b_b = eval(Ie&F_b);
       //cm::mv<1,2,4>::type t_b_b = (-1.0)*Ie*((part<1,2,4>(r_wfl)^(Fsd_wfl*z-(u_wfl-u_wfr)*z*k_arb)) + (part<1,2,4>(r_wfr)^(Fsd_wfr*z+(u_wfl-u_wfr)*z*k_arb)) + (part<1,2,4>(r_wrl)^(Fsd_wrl*z)) + (part<1,2,4>(r_wrr)^(Fsd_wrr*z+part<1,2>(W_wrr))));
       //cm::mv<1,2,4>::type t_b_b = (-1.0)*Ie*((part<1,2,4>(r_wfl)^(Fsd_wfl*z)) + (part<1,2,4>(r_wfr)^(Fsd_wfr*z)) + (part<1,2,4>(r_wrl)^(Fsd_wrl*z)) + (part<1,2,4>(r_wrr)^(Fsd_wrr*z)));
       cm::mv<1,2,4>::type dw_b_b;
@@ -288,17 +305,17 @@ struct StateEquation
          0.0,
          0.0,
          du_wfl,
-         (Fsd_wfl - W_wfl.element<4>())*(1.0/m_w),
+         (Fsd_wfl + (einf&F_wfl).element<0x04>())*(1.0/m_w),
          du_wfr,
-         (Fsd_wfr - W_wfr.element<4>())*(1.0/m_w),
+         (Fsd_wfr + (einf&F_wfr).element<0x04>())*(1.0/m_w),
          du_wrl,
-         (Fsd_wrl - W_wrl.element<4>())*(1.0/m_w),
+         (Fsd_wrl + (einf&F_wrl).element<0x04>())*(1.0/m_w),
          du_wrr,
-         (Fsd_wrr - W_wrr.element<4>())*(1.0/m_w),
-         (W_wfl.element<1>()*(-r_w) - tanh(w_wfl*d_b)*mu_b*F_b)*(1.0/I_w),
-         (W_wfr.element<1>()*(-r_w) - tanh(w_wfr*d_b)*mu_b*F_b)*(1.0/I_w),
-         (W_wrl.element<1>()*(-r_w) - tanh(w_wrl*d_b)*mu_b*F_b + i_pt*(w_e-(w_wrl+w_wrr)*i_pt*0.5))*(1.0/I_w),
-         (W_wrr.element<1>()*(-r_w) - tanh(w_wrr*d_b)*mu_b*F_b + i_pt*(w_e-(w_wrl+w_wrr)*i_pt*0.5))*(1.0/I_w),
+         (Fsd_wrr + (einf&F_wrr).element<0x04>())*(1.0/m_w),
+         ((einf&F_wfl).element<1>()*(-r_w) - tanh(w_wfl*d_b)*mu_b*f_b)*(1.0/I_w),
+         ((einf&F_wfr).element<1>()*(-r_w) - tanh(w_wfr*d_b)*mu_b*f_b)*(1.0/I_w),
+         ((einf&F_wrl).element<1>()*(-r_w) - tanh(w_wrl*d_b)*mu_b*f_b + i_pt*(w_e-(w_wrl+w_wrr)*i_pt*0.5))*(1.0/I_w),
+         ((einf&F_wrr).element<1>()*(-r_w) - tanh(w_wrr*d_b)*mu_b*f_b + i_pt*(w_e-(w_wrl+w_wrr)*i_pt*0.5))*(1.0/I_w),
          (s_gp*(w_e*w_e*a_e + w_e*b_e + c_e) - (w_e-(w_wrl+w_wrr)*i_pt*0.5) - w_e*d_e)*(1.0/I_e)
       );
 
@@ -308,7 +325,8 @@ struct StateEquation
    D_type wheelVersor(double stroke, double steer, const Point& p_wbf, const Point& p_wbr, const Point& p_mps, const Point& p_steer0, const double side) const
    {
       stroke = std::max(-0.24, std::min(0.16, stroke));
-      steer = std::max(-0.09, std::min(0.05, steer));
+      //steer = std::max(-0.09, std::min(0.05, steer));
+      steer = std::max(-0.05, std::min(0.05, steer));
       //?dstroke = -(Mouse(2, 1, 1)-Pi)/Pi;
       //rod lengthes:
       //mcpherson strut: spring and wheel carrier
@@ -351,7 +369,7 @@ struct StateEquation
       double r_sawc = sqrt(pow(0.15,2)+pow(0.12,2));
 
       //Translation induced to steering link inner joint by steering wheel (e.g. via a cograil)
-      auto T_steer = one + einf*(steer*e2)*0.5;
+      auto T_steer = one - einf*(steer*e2)*0.5;
       auto p_steer = grade<1>(T_steer*p_steer0*(~T_steer));
 
       auto s_samps = p_mps - 0.5*r_samps*r_samps*einf;
@@ -376,7 +394,7 @@ struct StateEquation
       auto pi_wb = e0&(einf^(n_wb + pi_w));
       Rotor R_wb = pi_wb*n_wb;
       auto T_w = one + 0.5*einf*(side*0.2*e2+0.1*e3);
-      Rotor R_wb0=exp((-0.5)*side*(-M_PI*0.07)*e2*e3);
+      Rotor R_wb0=exp((-0.5)*side*(-M_PI*0.06)*e2*e3);
       D_type D_w = T_wb*R_wb*T_w*R_wb0;
       D_w = D_w * !magnitude(D_w);
 

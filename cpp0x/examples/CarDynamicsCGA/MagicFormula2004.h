@@ -321,7 +321,8 @@ namespace magicformula2004 {
 
 
       //result_wrench_t operator()(const double& r, const cm::mv<0,3,5,6>::type& R, const cm::mv<1,2,4,5>::type& V) const {
-      result_wrench_t operator()(const Plane& P, const S_type& V) const {
+      //result_wrench_t operator()(const Plane& P, const S_type& V) const {
+      S_type operator()(const Plane& P, const S_type& V) const {
          //r: tyre frame, R: surface frame, V: tyre frame
          //P: tyre frame, V: tyre frame
 
@@ -479,16 +480,19 @@ namespace magicformula2004 {
          double s = pars.R_0*(pars.s_sz[0]+pars.s_sz[1]*(F_y/F_z0_prime) + (pars.s_sz[2]+pars.s_sz[3]*df_z)*gamma_star);
          double M_z = M_z_prime + M_zr + s*F_x;
 
-         result_wrench_t wrench;
-         wrench[0] = F_x;
-         wrench[1] = F_y;
-         wrench[3] = -F_z;
+         //result_wrench_t wrench;
+         //wrench[0] = F_x;
+         //wrench[1] = F_y;
+         //wrench[3] = -F_z;
 
-         wrench[2] = M_z;
-         wrench[4] = -M_y;
-         wrench[5] = M_x;
+         //wrench[2] = M_z;
+         //wrench[4] = -M_y;
+         //wrench[5] = M_x;
 
-         return std::move(wrench);
+         S_type F = (F_x*e1+F_y*e2+F_z*e3)*e0 - (M_x*e1+M_y*e2+M_z*e3)*Ie;
+
+         //return std::move(wrench);
+         return std::move(F);
       }
 
       TyrePropertyPack pars;
