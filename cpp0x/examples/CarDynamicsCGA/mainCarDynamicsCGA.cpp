@@ -145,6 +145,8 @@ int main()
    auto T_b = cardyn::one + cardyn::einf*p_b*0.5;
    D_b = T_b;
 
+   V_b = cardyn::einf*cardyn::e1;
+
    //dp_b[0] = 0.0;
    //q_b[0] = 1.0;
    a_steer = 0.0;
@@ -306,35 +308,36 @@ int main()
 
       const double& steerAngle = std::get<4>(z);
 
-      double cotSteerAngle = (f.r_wfl[0]-f.r_wrl[0])*(1.0/tan(steerAngle));
+      /*double cotSteerAngle = (f.r_wfl[0]-f.r_wrl[0])*(1.0/tan(steerAngle));
       double angleFL = atan(1.0/(cotSteerAngle - f.w_wn/(f.v_wn*2.0)));
       double angleFR = atan(1.0/(cotSteerAngle + f.w_wn/(f.v_wn*2.0)));
       gaalet::mv<0,3>::type q_wfl = {cos(angleFL*0.5), sin(angleFL*0.5)};
-      gaalet::mv<0,3>::type q_wfr = {cos(angleFR*0.5), sin(angleFR*0.5)};
+      gaalet::mv<0,3>::type q_wfr = {cos(angleFR*0.5), sin(angleFR*0.5)};*/
 
-      osg::Quat steerRotFL(0,0,q_wfl[1], q_wfl[0]);
-      osg::Quat steerRotFR(0,0,q_wfr[1], q_wfr[0]);
+      //osg::Quat steerRotFL(0,0,q_wfl[1], q_wfl[0]);
+      //osg::Quat steerRotFR(0,0,q_wfr[1], q_wfr[0]);
 
       //auto R_wfl = eval(f.R_n_wfl*exp(cardyn::e2*cardyn::e3*u_wfl*(-0.5)));
       //auto R_wfr = eval(f.R_n_wfr*exp(cardyn::e2*cardyn::e3*u_wfr*(0.5)));
       //auto R_wrl = eval(f.R_n_wrl*exp(cardyn::e2*cardyn::e3*u_wrl*(-0.5)));
       //auto R_wrr = eval(f.R_n_wrr*exp(cardyn::e2*cardyn::e3*u_wrr*(0.5)));
-      auto R_wfl = eval(part<0,3,5,6>(D_wfl));
-      auto R_wfr = eval(part<0,3,5,6>(D_wfr));
-      auto R_wrl = eval(part<0,3,5,6>(D_wrl));
-      auto R_wrr = eval(part<0,3,5,6>(D_wrr));
+      auto R_wfl = eval(~part<0,3,5,6>(D_wfl));
+      auto R_wfr = eval(~part<0,3,5,6>(D_wfr));
+      auto R_wrl = eval(~part<0,3,5,6>(D_wrl));
+      auto R_wrr = eval(~part<0,3,5,6>(D_wrr));
       osg::Quat camberRotFL(R_wfl[3], -R_wfl[2], R_wfl[1], R_wfl[0]);
       osg::Quat camberRotFR(R_wfr[3], -R_wfr[2], R_wfr[1], R_wfr[0]);
       osg::Quat camberRotRL(R_wrl[3], -R_wrl[2], R_wrl[1], R_wrl[0]);
       osg::Quat camberRotRR(R_wrr[3], -R_wrr[2], R_wrr[1], R_wrr[0]);
 
+      //std::cout << "R_wfl: " << R_wfl << ", " << grade<1>((!R_wfl)*cardyn::e1*R_wfl) << std::endl;
       //wheelTransformFL->setPosition(osg::Vec3(f.v_wn, f.w_wn, -f.u_wn - u_wfl));
       auto p_wfl = eval(grade<1>(D_wfl * cardyn::e0 * ~D_wfl));
       wheelTransformFL->setPosition(osg::Vec3(p_wfl[0], p_wfl[1], p_wfl[2]));
       osg::Quat wheelRotarySpeedFL(0.0, w_wfl, 0.0, 0.0);
       wheelQuatFL = wheelQuatFL + wheelQuatFL*wheelRotarySpeedFL*(0.5*frameTime);
       wheelQuatFL = wheelQuatFL*(1/wheelQuatFL.length());
-      wheelTransformFL->setAttitude(wheelQuatFL*camberRotFL*steerRotFL);
+      wheelTransformFL->setAttitude(wheelQuatFL*camberRotFL);
 
       //wheelTransformFR->setPosition(osg::Vec3(f.v_wn, -f.w_wn, -f.u_wn - u_wfr));
       auto p_wfr = eval(grade<1>(D_wfr * cardyn::e0 * ~D_wfr));
@@ -342,7 +345,7 @@ int main()
       osg::Quat wheelRotarySpeedFR(0.0, w_wfr, 0.0, 0.0);
       wheelQuatFR = wheelQuatFR + wheelQuatFR*wheelRotarySpeedFR*(0.5*frameTime);
       wheelQuatFR = wheelQuatFR*(1/wheelQuatFR.length());
-      wheelTransformFR->setAttitude(wheelQuatFR*camberRotFR*steerRotFR);
+      wheelTransformFR->setAttitude(wheelQuatFR*camberRotFR);
 
       //wheelTransformRL->setPosition(osg::Vec3(-f.v_wn, f.w_wn, -f.u_wn - u_wrl));
       auto p_wrl = eval(grade<1>(D_wrl * cardyn::e0 * ~D_wrl));

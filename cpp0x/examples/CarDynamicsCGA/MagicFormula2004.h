@@ -321,16 +321,20 @@ namespace magicformula2004 {
 
 
       //result_wrench_t operator()(const double& r, const cm::mv<0,3,5,6>::type& R, const cm::mv<1,2,4,5>::type& V) const {
-      result_wrench_t operator()(const Plane& P, const cm::mv<1,2,4,5>::type& V) const {
+      result_wrench_t operator()(const Plane& P, const S_type& V) const {
          //r: tyre frame, R: surface frame, V: tyre frame
          //P: tyre frame, V: tyre frame
 
          Plane Pn = eval(P * (1.0/sqrt(eval(P&P))));
-         double r = eval((-1.0) * (Pn&e0)); 
+         double r = eval((-1.0) * (Pn&e0));
+         Point p = (e0^Pn)*(~Pn) - 0.5*r*r*einf;
 
-         auto Vc = grade<1>(V);
-         //auto Vc = (V&e0);
-         cm::mv<1,2>::type Vs = part<1,2>(V) + cm::mv<4>::type({-pars.R_0})*part<5>(V);  //assumption R_e = R_0
+         //auto Vc = grade<1>(V);
+         auto Vc = (V&e0);
+         //std::cout << "Vc: " << Vc << std::endl;
+         //cm::mv<1,2>::type Vs = part<1,2>(V) + cm::mv<4>::type({-pars.R_0})*part<5>(V);  //assumption R_e = R_0
+         auto p_R0 = pars.R_0*e3 + 0.5*pars.R_0*pars.R_0*einf + e0;
+         auto Vs = (V&p_R0);
 
          //singularity avoidance
          double epsilon_Vx = 0.1;
@@ -348,7 +352,7 @@ namespace magicformula2004 {
 
          //Velocity contact point
          //double V_c = magnitude(part<2, 0x0201>(Vc)).element<0x00>();
-         double V_c = eval(grade<0>(magnitude(part<1,2>(Vc))));
+         double V_c = eval(magnitude(part<1,2>(Vc)));
          //double V_cx = Vc.element<0x01>();
          double V_cx = Vc.element<1>();
          //double V_cy = Vc.element<0x02>();
@@ -356,6 +360,8 @@ namespace magicformula2004 {
 
          //Velocity point S
          double V_sx = Vs.element<1>();
+         //double V_sx = eval(magnitude(part<1,4>(Vs)));
+         //double V_sx = eval(grade<0>((Ie*Vs)&(Pn^e2)));
 
          //Speed of rolling
          double V_r = V_cx-V_sx;

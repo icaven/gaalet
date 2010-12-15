@@ -199,13 +199,16 @@ struct StateEquation
       auto& D_wrr = std::get<3>(output);
 
       //Axle kinematics
-      D_wfl = wheelVersor(u_wfl, steerAngle*0.01, p_wbf_fl, p_wbr_fl, p_mps_fl, p_steer0_fl, wheel_left);
-      D_wfr = wheelVersor(u_wfr, steerAngle*0.01, p_wbf_fr, p_wbr_fr, p_mps_fr, p_steer0_fr, wheel_right);
+      D_wfl = wheelVersor(u_wfl, -steerAngle*0.1, p_wbf_fl, p_wbr_fl, p_mps_fl, p_steer0_fl, wheel_left);
+      D_wfr = wheelVersor(u_wfr, -steerAngle*0.1, p_wbf_fr, p_wbr_fr, p_mps_fr, p_steer0_fr, wheel_right);
       D_wrl = wheelVersor(u_wrl, 0.0, p_wbf_rl, p_wbr_rl, p_mps_rl, p_steer0_rl, wheel_left);
       D_wrr = wheelVersor(u_wrr, 0.0, p_wbf_rr, p_wbr_rr, p_mps_rr, p_steer0_rr, wheel_right);
 
+      auto q_wfl = part<0,3,5,6>(D_wfl);
+      auto q_wfr = part<0,3,5,6>(D_wfr);
+
       //Ackermann steering
-      double cotSteerAngle = (r_wfl[0]-r_wrl[0])*(1.0/tan(steerAngle));
+      /*double cotSteerAngle = (r_wfl[0]-r_wrl[0])*(1.0/tan(steerAngle));
       double angleFL = atan(1.0/(cotSteerAngle - w_wn/(v_wn*2.0)));
       double angleFR = atan(1.0/(cotSteerAngle + w_wn/(v_wn*2.0)));
       gaalet::mv<0,3>::type q_wfl = {cos(angleFL*0.5), sin(angleFL*0.5)};
@@ -215,13 +218,13 @@ struct StateEquation
       auto dr_wfl = grade<1>(q_wfl*((V_b&r_wfl)-du_wfl*e3)*(!q_wfl));
       auto dr_wfr = grade<1>(q_wfr*((V_b&r_wfr)-du_wfr*e3)*(!q_wfr));
       auto dr_wrl = grade<1>((V_b&r_wrl)-du_wrl*e3);
-      auto dr_wrr = grade<1>((V_b&r_wrr)-du_wrr*e3);
+      auto dr_wrr = grade<1>((V_b&r_wrr)-du_wrr*e3);*/
 
       //wheel rotors:
-      auto R_wfl = R_n_wfl*exp(e2*e3*u_wfl*(-0.5));
+      /*auto R_wfl = R_n_wfl*exp(e2*e3*u_wfl*(-0.5));
       auto R_wfr = R_n_wfr*exp(e2*e3*u_wfr*(0.5));
       auto R_wrl = R_n_wrl*exp(e2*e3*u_wrl*(-0.5));
-      auto R_wrr = R_n_wrr*exp(e2*e3*u_wrr*(0.5));
+      auto R_wrr = R_n_wrr*exp(e2*e3*u_wrr*(0.5));*/
       
       //Suspension spring damper force:
       auto Fsd_wfl = (u_wfl*k_wf+du_wfl*d_wf)*(-1.0);
@@ -246,10 +249,22 @@ struct StateEquation
       auto W_wrr = ((!q_w)*tyre_rr( Dv_wrr, //distance difference with respect to camber angle?
             R_wrr,
             part<1,2,4,5>(q_w*(dr_wrr + w_wrr*e1*e3)*(!q_w)))*q_w);*/
-      auto W_wfl = (R_w * tyre_fl(~(D_b*D_wfl*R_w)*P_wfl*(D_b*D_wfl*R_w), part<1,2,4,5>(~R_w*(dr_wfl + w_wfl*e1*e3)*R_w)) * ~R_w);
+      //std::cout << "v_b: " << (V_b&e0) << ", v_b_wfl: " << grade<1>((~D_wfl*V_b*D_wfl)&e0) << std::endl;
+      //std::cout << "V_b: " << (V_b) << ", V_b_wfl: " << grade<2>((~D_wfl*V_b*D_wfl)) << std::endl;
+      //std::cout << "D_wfl: " << grade<1>(~D_wfl*e1*D_wfl) << std::endl;
+      //std::cout << "R_wfl: " << grade<1>(~part<0,3,5,6>(D_wfl)*e1*part<0,3,5,6>(D_wfl)) << std::endl;
+      auto V_wfl = (~R_w)*((~D_wfl) * V_b * D_wfl - Ie*(w_wfl)*e2 + einf*(-du_wfl)*e3)*R_w;
+      auto V_wfr = (~R_w)*((~D_wfr) * V_b * D_wfr - Ie*(w_wfr)*e2 + einf*(-du_wfr)*e3)*R_w;
+      auto V_wrl = (~R_w)*((~D_wrl) * V_b * D_wrl - Ie*(w_wrl)*e2 + einf*(-du_wrl)*e3)*R_w;
+      auto V_wrr = (~R_w)*((~D_wrr) * V_b * D_wrr - Ie*(w_wrr)*e2 + einf*(-du_wrr)*e3)*R_w;
+      auto W_wfl = (R_w * tyre_fl(~(D_b*D_wfl*R_w)*P_wfl*(D_b*D_wfl*R_w), V_wfl) * ~R_w);
+      auto W_wfr = (R_w * tyre_fr(~(D_b*D_wfr*R_w)*P_wfr*(D_b*D_wfr*R_w), V_wfr) * ~R_w);
+      auto W_wrl = (R_w * tyre_rl(~(D_b*D_wrl*R_w)*P_wrl*(D_b*D_wrl*R_w), V_wrl) * ~R_w);
+      auto W_wrr = (R_w * tyre_rr(~(D_b*D_wrr*R_w)*P_wrr*(D_b*D_wrr*R_w), V_wrr) * ~R_w);
+      /*auto W_wfl = (R_w * tyre_fl(~(D_b*D_wfl*R_w)*P_wfl*(D_b*D_wfl*R_w), part<1,2,4,5>(~R_w*(dr_wfl + w_wfl*e1*e3)*R_w)) * ~R_w);
       auto W_wfr = (R_w * tyre_fl(~(D_b*D_wfr*R_w)*P_wfr*(D_b*D_wfr*R_w), part<1,2,4,5>(~R_w*(dr_wfr + w_wfr*e1*e3)*R_w)) * ~R_w);
       auto W_wrl = (R_w * tyre_fl(~(D_b*D_wrl*R_w)*P_wrl*(D_b*D_wrl*R_w), part<1,2,4,5>(~R_w*(dr_wrl + w_wrl*e1*e3)*R_w)) * ~R_w);
-      auto W_wrr = (R_w * tyre_fl(~(D_b*D_wrr*R_w)*P_wrr*(D_b*D_wrr*R_w), part<1,2,4,5>(~R_w*(dr_wrr + w_wrr*e1*e3)*R_w)) * ~R_w);
+      auto W_wrr = (R_w * tyre_fl(~(D_b*D_wrr*R_w)*P_wrr*(D_b*D_wrr*R_w), part<1,2,4,5>(~R_w*(dr_wrr + w_wrr*e1*e3)*R_w)) * ~R_w);*/
 
       //Body acceleration:
       auto ddp_b_b = eval(grade<1>((((grade<1>((!q_wfl)*part<1, 2>(W_wfl)*q_wfl+(!q_wfr)*part<1, 2>(W_wfr)*q_wfr+part<1, 2>(W_wrl)+part<1, 2>(W_wrr))+(Fsd_wfl+Fsd_wfr+Fsd_wrl+Fsd_wrr)*e3)*(1.0/m_b)))) + grade<1>((!part<0,3,5,6>(D_b))*g*part<0,3,5,6>(D_b)));
