@@ -28,9 +28,10 @@ int main()
 
    double h = 0.001;
    for(double t = 0.0; t<10.0; t += h) {
-      std::cout << "p: " << p << ", einf: " << (p&einf)*einf << ", e0: " << (p&e0)*e0 << std::endl;
-
       x = (p^E)*E;
+      
+      std::cout << "p: " << p << ", x: " << x << ", einf: " << (-1.0)*(p&e0) << ", e0: " << (-1.0)*(p&einf) << std::endl;
+
       auto dp = dx + (x&dx)*einf + e0;
       p = p + dp*h;
    }
