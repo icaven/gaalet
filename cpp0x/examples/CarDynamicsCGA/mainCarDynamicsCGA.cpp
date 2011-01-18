@@ -145,7 +145,7 @@ int main()
    auto T_b = cardyn::one + cardyn::einf*p_b*0.5;
    D_b = T_b;
 
-   V_b = cardyn::einf*cardyn::e1;
+   V_b = cardyn::einf*10.0*cardyn::e2;
 
    //dp_b[0] = 0.0;
    //q_b[0] = 1.0;
