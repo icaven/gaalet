@@ -283,12 +283,14 @@ struct StateEquation
       auto F_b = F_wfl_b+F_wfr_b+F_wrl_b+F_wrr_b;
 
 
+      auto w_b_b = eval(Ie&V_b);
+      auto v_b_b = eval(V_b&e0);
+
       //Body acceleration:
       //auto ddp_b_b = eval(grade<1>((((grade<1>((!q_wfl)*part<1, 2>(W_wfl)*q_wfl+(!q_wfr)*part<1, 2>(W_wfr)*q_wfr+part<1, 2>(W_wrl)+part<1, 2>(W_wrr))+(Fsd_wfl+Fsd_wfr+Fsd_wrl+Fsd_wrr)*e3)*(1.0/m_b)))) + grade<1>((!part<0,3,5,6>(D_b))*g*part<0,3,5,6>(D_b)));
-      auto ddp_b_b = eval((einf&F_b)*(1.0/m_b) + grade<1>((!part<0,3,5,6>(D_b))*g*part<0,3,5,6>(D_b)));
-      std::cout << "dp_b_b: " << (V_b&e0) << ", ddp_b_b: " << ddp_b_b << std::endl;
+      auto R_b = part<0,3,5,6>(D_b);
+      auto ddp_b_b = eval(grade<1>((einf&F_b)*(1.0/m_b) + grade<1>((~R_b)*g*part<0,3,5,6>(R_b)) + 0.5*Ie*w_b_b*v_b_b + (-0.5)*v_b_b*R_b*Ie*w_b_b*(~R_b)));
 
-      auto w_b_b = eval(Ie&V_b);
       double k_arb = this->k_arb;
       //cm::mv<1,2,4>::type t_b_b = (-1.0)*Ie*((part<1,2,4>(r_wfl)^(Fsd_wfl*e3+grade<1>((!q_wfl)*part<1,2>(W_wfl)*q_wfl)-(u_wfl-u_wfr)*e3*k_arb)) + (part<1,2,4>(r_wfr)^(Fsd_wfr*e3+grade<1>((!q_wfr)*part<1,2>(W_wfr)*q_wfr)+(u_wfl-u_wfr)*e3*k_arb)) + (part<1,2,4>(r_wrl)^(Fsd_wrl*e3+part<1,2>(W_wrl))) + (part<1,2,4>(r_wrr)^(Fsd_wrr*e3+part<1,2>(W_wrr))));
       auto t_b_b = eval(Ie&F_b);
