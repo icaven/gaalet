@@ -98,7 +98,12 @@ struct mel_null
    }
 };
 
-//insert_element to multiplication_element_list
+///insert_element to multiplication_element_list
+/**
+ * op= 0: element existing, add to multiplication_sum_list
+ * op=-1: element not existing, but do not insert here
+ * op= 1: element not existing, insert here new multiplication_sum_list
+*/
 template<conf_t LC, conf_t RC, typename list, int op = ((LC^RC)==list::conf) ? 0 : (((LC^RC)<list::conf) ? 1 : -1)>
 struct insert_element_to_melist
 {
