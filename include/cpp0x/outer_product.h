@@ -37,7 +37,6 @@ struct multiplication_sum_list
       return
          l.template element<left>()*r.template element<right>()
          *CanonicalReorderingSign<left, right>::value
-         *((BitCount<(L::metric::signature_bitmap|R::metric::signature_bitmap)&(left&right)>::value % 2) ? -1 : 1)
          + tail::template product_sum<element_t>(l, r);
    }
 };
@@ -56,8 +55,7 @@ struct multiplication_sum_list<LC, RC, msl_null>
    {
       return
          l.template element<left>()*r.template element<right>()
-         *CanonicalReorderingSign<left, right>::value
-         *((BitCount<(L::metric::signature_bitmap|R::metric::signature_bitmap)&(left&right)>::value % 2) ? -1 : 1);
+         *CanonicalReorderingSign<left, right>::value;
    }
 };
 

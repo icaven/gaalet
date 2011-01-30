@@ -34,10 +34,12 @@ struct multiplication_sum_list
    template<typename element_t, class L, class R>
    static element_t product_sum(const L& l, const R& r)
    {
+      typedef typename metric_combination_traits<typename L::metric, typename R::metric>::metric metric;
+
       return
          l.template element<left>()*r.template element<right>()
          *CanonicalReorderingSign<left, right>::value
-         *((BitCount<(L::metric::signature_bitmap|R::metric::signature_bitmap)&(left&right)>::value % 2) ? -1 : 1)
+         *((BitCount<metric::signature_bitmap&(left&right)>::value % 2) ? -1 : 1)
          + tail::template product_sum<element_t>(l, r);
    }
 };
@@ -54,10 +56,12 @@ struct multiplication_sum_list<LC, RC, msl_null>
    template<typename element_t, class L, class R>
    static element_t product_sum(const L& l, const R& r)
    {
+      typedef typename metric_combination_traits<typename L::metric, typename R::metric>::metric metric;
+
       return
          l.template element<left>()*r.template element<right>()
          *CanonicalReorderingSign<left, right>::value
-         *((BitCount<(L::metric::signature_bitmap|R::metric::signature_bitmap)&(left&right)>::value % 2) ? -1 : 1);
+         *((BitCount<metric::signature_bitmap&(left&right)>::value % 2) ? -1 : 1);
    }
 };
 
