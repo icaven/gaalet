@@ -134,18 +134,33 @@ struct insert_element_to_melist<LC, RC, list, 1>
 };
 
 //build_multiplication_element_list
-template<typename L, typename R, typename CL=L>
+template<typename L, typename R, typename metric, typename CL=L, int op = metric::degenerate_bitmap&(L::head&R::head)>
 struct build_multiplication_element_list
 {
-   typedef typename insert_element_to_melist<L::head, R::head, typename build_multiplication_element_list<typename L::tail, R, CL>::melist>::melist melist;
+   typedef typename build_multiplication_element_list<typename L::tail, R, metric, CL>::melist melist;
 };
-template<typename R, typename CL>
-struct build_multiplication_element_list<cl_null, R, CL>
+template<typename L, typename R, typename metric, typename CL>
+struct build_multiplication_element_list<L, R, metric, CL, 0>
 {
-   typedef typename build_multiplication_element_list<CL, typename R::tail, CL>::melist melist;
+   typedef typename insert_element_to_melist<L::head, R::head, typename build_multiplication_element_list<typename L::tail, R, metric, CL>::melist>::melist melist;
 };
-template<typename L, typename CL>
-struct build_multiplication_element_list<L, cl_null, CL>
+template<typename R, typename metric, typename CL, int op>
+struct build_multiplication_element_list<cl_null, R, metric, CL, op>
+{
+   typedef typename build_multiplication_element_list<CL, typename R::tail, metric, CL>::melist melist;
+};
+template<typename R, typename metric, typename CL>
+struct build_multiplication_element_list<cl_null, R, metric, CL, 0>
+{
+   typedef typename build_multiplication_element_list<CL, typename R::tail, metric, CL>::melist melist;
+};
+template<typename L, typename metric, typename CL, int op>
+struct build_multiplication_element_list<L, cl_null, metric, CL, op>
+{
+   typedef mel_null melist;
+};
+template<typename L, typename metric, typename CL>
+struct build_multiplication_element_list<L, cl_null, metric, CL, 0>
 {
    typedef mel_null melist;
 };
@@ -179,12 +194,12 @@ struct search_conf_in_melist<conf, mel_null, true>
 template<class L, class R>
 struct geometric_product : public expression<geometric_product<L, R>>
 {
-   typedef typename gp::build_multiplication_element_list<typename L::clist, typename R::clist>::melist melist;
-   typedef typename melist::clist clist;
-
+   typedef typename element_type_combination_traits<typename L::element_t, typename R::element_t>::element_t element_t;
    typedef typename metric_combination_traits<typename L::metric, typename R::metric>::metric metric;
 
-   typedef typename element_type_combination_traits<typename L::element_t, typename R::element_t>::element_t element_t;
+   typedef typename gp::build_multiplication_element_list<typename L::clist, typename R::clist, metric>::melist melist;
+   typedef typename melist::clist clist;
+
 
    geometric_product(const L& l_ , const R& r_)
       :  l(l_), r(r_)

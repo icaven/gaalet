@@ -10,28 +10,33 @@ namespace gaalet
 //metric of multivector
 // --- only definable by signature yet
 // --- interface may change in order to allow for a general metric tensor
-template<unsigned int P, unsigned Q>
+template<unsigned int P, unsigned int Q, unsigned int R=0>
 struct signature
 {
    static const unsigned int p = P;
    static const unsigned int q = Q;
-   static const unsigned int dimension = P+Q;
+   static const unsigned int r = R;
+   static const unsigned int dimension = P+Q+R;
 
    static const conf_t signature_bitmap = (Power<2, Q>::value-1)<<P;
+   static const conf_t degenerate_bitmap = (Power<2, R>::value-1)<<(P+Q);
 };
 template<typename ML, typename MR>
 struct metric_combination_traits;
 
 //combination of signature metrics -> negative signature dominant
-template<unsigned int PL, unsigned QL, unsigned int PR, unsigned QR>
-struct metric_combination_traits<signature<PL, QL>, signature<PR, QR>>
+template<unsigned int PL, unsigned QL, unsigned RL, unsigned int PR, unsigned QR, unsigned RR>
+struct metric_combination_traits<signature<PL, QL, RL>, signature<PR, QR, RR>>
 {
    static_assert(PL==PR || (PL<PR && QL==0) || (PR<PL && QR==0),
                  "Combination of different metrics: different number of positive signatures");
-   static const unsigned int P = (QL==0) ? PR : PL;
+   static_assert(PL+QL==PR+QR || (PL+QL<PR+QR && RL==0) || (PR+QR<PL+QL && RR==0),
+                 "Combination of different metrics: different number of positive plus negative signatures");
+   static const unsigned int P = (PL>PR) ? PL : PR;
    static const unsigned int Q = (QL>QR) ? QL : QR;
+   static const unsigned int R = (RL>RR) ? RL : RR;
 
-   typedef signature<P, Q> metric;
+   typedef signature<P, Q, R> metric;
    //typedef ::gaalet::metric<SL | SR> metric;
 };
 
