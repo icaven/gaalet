@@ -1,30 +1,43 @@
 #include "gaalet.h"
 
-typedef gaalet::algebra<gaalet::signature<0,3,1>> ma;
+typedef gaalet::algebra<gaalet::signature<3,0,1>> ma;
 
 int main()
 {
+   ma::mv<0>::type one={1.0};
    ma::mv<1>::type e1={1.0};
    ma::mv<2>::type e2={1.0};
    ma::mv<4>::type e3={1.0};
    ma::mv<8>::type e0={1.0};
+   ma::mv<0xf>::type I= (e1^e2^e3^e0);
 
 
-   auto x = ma::mv<0>::type({1.0}) + 1.0*e1*e0 + 2.0*e2*e0 + 3.0*e3*e0;
+   auto x = 1.0*e2*e3 + 2.0*e3*e1 + 3.0*e1*e2;
    std::cout << "x: " << x << std::endl;
+   auto X = one + I*x;
+   std::cout << "X: " << X << std::endl;
 
    double phi = M_PI*0.5;
-   auto r = ma::mv<0>::type({cos(phi*0.5)}) + sin(phi*0.5)*(0.0*e2*e3 + 0.0*e3*e1 + 1.0*e1*e2);
-   std::cout << "r: " << r << std::endl;
+   auto R = one*cos(phi*0.5) + sin(phi*0.5)*(0.0*e2*e3 + 0.0*e3*e1 + 1.0*e1*e2);
+   std::cout << "R: " << R << std::endl;
+   std::cout << "R*x*~R: " << R*x*~R << std::endl;
+   std::cout << "R*X*~R: " << R*X*~R << std::endl;
 
-   auto t = ma::mv<0>::type({1.0}) + 0.5*(10.0*e1*e0 + 0.0*e2*e0 + 0.0*e3*e0);
-   std::cout << "t: " << t << std::endl;
+   auto T = one + 0.5*I*(10.0*e2*e3 + 0.0*e3*e1 + 0.0*e1*e2);
+   std::cout << "T: " << T << std::endl;
+   std::cout << "T*x*T: " << T*x*T << std::endl;
+   std::cout << "T*X*T: " << T*X*T << std::endl;
+   std::cout << "T*x*~T: " << T*x*~T << std::endl;
+   std::cout << "T*X*~T: " << T*X*~T << std::endl;
+   std::cout << "~T*x*T: " << ~T*x*T << std::endl;
+   std::cout << "~T*X*T: " << ~T*X*T << std::endl;
+   std::cout << "~T*x*~T: " << ~T*x*~T << std::endl;
+   std::cout << "~T*X*~T: " << ~T*X*~T << std::endl;
 
-   std::cout << "r*x*~r: " << r*x*~r << std::endl;
-   std::cout << "t*x*~t: " << t*x*~t << std::endl;
-
-   auto g = t*r;
-   std::cout << "g: " << g << std::endl;
-
-   std::cout << "g*x*~g: " << g*x*~g << std::endl;
+   auto M = R*T;
+   std::cout << "M: " << M << std::endl;
+   std::cout << "M*x*~M: " << M*x*~M << std::endl;
+   std::cout << "M*X*~M: " << M*X*~M << std::endl;
+   std::cout << "R*T*x*T*~R: " << R*T*x*T*~R << std::endl;
+   std::cout << "R*T*X*T*~R: " << R*T*X*T*~R << std::endl;
 }
