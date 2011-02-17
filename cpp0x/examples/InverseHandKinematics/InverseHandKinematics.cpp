@@ -11,7 +11,7 @@ int main()
    ma::mv<8>::type e0={1.0};
    ma::mv<0xf>::type I= (e1^e2^e3^e0);
 
-   double K_d = 10.0;
+   double K_d = 20.0;
    double K_1 = 1.0;
 
    auto T_s = one + 0.5*I*(10.0*e2*e3 + 0.0*e3*e1 + 0.0*e1*e2);
@@ -42,15 +42,16 @@ int main()
       auto R_1_d = (one+B_1)*!(one-B_1);
       auto R_2_d = (one+B_2)*!(one-B_2);
       std::cout << "i=" << i << ": B_1: " << B_1 << ", B_2: " << B_2 << std::endl;
-      double alpha = 0.001;
+      double alpha = 0.01;
 
       auto D_d = eval(~T_1*~R_1_0*~R_1_d*~T_2*~R_2_0*~R_2_d*D_s);
-      auto B_d = (D_d-~D_d)*~(2.0*one+D_d+~D_d);
+      auto B_d_inv_part = eval(!(2.0*one+D_d+~D_d));
+      auto B_d = eval((D_d-~D_d)*B_d_inv_part);
 
       //Ball joint R_1:
-      auto grad_B1_Dd = ~T_1*~R_1_0*(-2.0*(one-B_1)*!(one+B_1)*!(one+B_1))*~T_2*~R_2_0*~R_2_d*D_s;
-      auto grad_B1_revDd = ~D_s*R_2_d*R_2_0*T_2*(2.0*!(one-B_1))*R_1_0*T_1;
-      auto grad_B1_Bd = (grad_B1_Dd-grad_B1_revDd)*!(2.0*one+D_d+~D_d)-(D_d-~D_d)*!(2.0*one+D_d+~D_d)*!(2.0*one+D_d+~D_d)*(grad_B1_Dd+grad_B1_revDd);
+      auto grad_B1_Dd = eval(~T_1*~R_1_0*(-2.0*(one-B_1)*!(one+B_1)*!(one+B_1))*~T_2*~R_2_0*~R_2_d*D_s);
+      auto grad_B1_revDd = eval(~D_s*R_2_d*R_2_0*T_2*(2.0*!(one-B_1))*R_1_0*T_1);
+      auto grad_B1_Bd = (grad_B1_Dd-grad_B1_revDd)*B_d_inv_part-B_d*B_d_inv_part*(grad_B1_Dd+grad_B1_revDd);
       auto grad_B1_Ud = (grad_B1_Bd*(K_d*B_d));
      
       auto grad_B1_U1 = K_1*B_1;
@@ -68,9 +69,9 @@ int main()
       B_1 = B_1 - alpha*grad_B1_U;
 
       //Ball joint R_2:
-      auto grad_B2_Dd = ~T_1*~R_1_0*~R_2_0*~T_2*(-2.0*(one-B_2)*!(one+B_2)*!(one+B_2))*~R_2_d*D_s;
-      auto grad_B2_revDd = ~D_s*(2.0*!(one-B_2))*R_2_0*T_2*R_2_d*R_1_0*T_1;
-      auto grad_B2_Bd = (grad_B2_Dd-grad_B2_revDd)*!(2.0*one+D_d+~D_d)-(D_d-~D_d)*!(2.0*one+D_d+~D_d)*!(2.0*one+D_d+~D_d)*(grad_B2_Dd+grad_B2_revDd);
+      auto grad_B2_Dd = eval(~T_1*~R_1_0*~R_2_0*~T_2*(-2.0*(one-B_2)*!(one+B_2)*!(one+B_2))*~R_2_d*D_s);
+      auto grad_B2_revDd = eval(~D_s*(2.0*!(one-B_2))*R_2_0*T_2*R_2_d*R_1_0*T_1);
+      auto grad_B2_Bd = (grad_B2_Dd-grad_B2_revDd)*B_d_inv_part-B_d*B_d_inv_part*(grad_B2_Dd+grad_B2_revDd);
       auto grad_B2_Ud = (grad_B2_Bd*(K_d*B_d));
      
       auto grad_B2_U1 = K_1*B_2;
@@ -88,5 +89,6 @@ int main()
 
    auto R_1_d = (one+B_1)*!(one-B_1);
    auto R_2_d = (one+B_2)*!(one-B_2);
+   std::cout << "R_1: " << R_1_d*R_1_0 << ", R_2: " << R_2_d*R_2_0 << std::endl;
    std::cout << "R_s: " << R_s << ", R_1_d*R_1_0*R_2_d*R_2_0: " << R_1_d*R_1_0*R_2_d*R_2_0 << std::endl;
 }
