@@ -18,7 +18,7 @@ int main()
    std::cout << "X: " << X << std::endl;
 
    double phi = M_PI*0.5;
-   auto R = one*cos(phi*0.5) + sin(phi*0.5)*(0.0*e2*e3 + 0.0*e3*e1 + 1.0*e1*e2);
+   auto R = one*cos(-phi*0.5) + sin(-phi*0.5)*(0.0*e2*e3 + 0.0*e3*e1 + 1.0*e1*e2);
    std::cout << "R: " << R << std::endl;
    std::cout << "R*x*~R: " << R*x*~R << std::endl;
    std::cout << "R*X*~R: " << R*X*~R << std::endl;
