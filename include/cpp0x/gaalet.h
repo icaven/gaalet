@@ -13,6 +13,7 @@
 #include "part.h"
 #include "inverse.h"
 #include "exponential.h"
+#include "logarithm.h"
 #include "scalar.h"
 #include "magnitude.h"
 
