@@ -27,11 +27,16 @@ int main()
    std::cout << "S: " << S << ", S*S: " << S*S << std::endl;
    auto T = exp(0.5*S);
    std::cout << "T: " << T << ", T*e0*(~T): " << T*e0*(~T) << std::endl;
+   auto S_back = 2.0*log(T);
+   std::cout << "S back: " << S_back << std::endl;
 
    auto aa = a&a;
    auto exp_aa = exp(aa);
    std::cout << "aa: " << aa << ", exp_aa: " << exp_aa << std::endl;
 
+   std::cout << "log(A): " << log(A) << ", exp(<log(A)>_2): " << exp(grade<2>(log(A))) << std::endl;
+   em::mv<0>::type s = {1.0};
+   std::cout << "s: " << s << ", log(s): " << log(s) << std::endl;
    //vvv fails, because a is no bivector
    //std::cout << exp(a) << std::endl;
 }
