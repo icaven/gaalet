@@ -62,7 +62,12 @@ struct logarithm<A, 1> : public expression<logarithm<A>>
    template<conf_t conf>
    element_t element() const {
       if(first_eval) {
-         element_t b_square = eval(::magnitude(::grade<2>(a)));
+         auto b = eval(::grade<2>(a));
+         typedef decltype(b) b_type;
+         element_t b_square = 0.0;
+         for(int bIt = 0; bIt < b_type::size; ++bIt) {
+            b_square += b[bIt]*b[bIt];
+         }
          inv_mag_b = 1.0/sqrt(b_square);
          element_t r = a.element<0>();
          mag_s = sqrt(r*r+b_square);
@@ -126,7 +131,13 @@ struct logarithm<A, 2> : public expression<logarithm<A>>
    template<conf_t conf>
    element_t element() const {
       if(first_eval) {
-         element_t b_square = eval(::magnitude(::grade<2>(a)));
+         //element_t b_square = eval(::magnitude(::grade<2>(a)));
+         auto b = eval(::grade<2>(a));
+         typedef decltype(b) b_type;
+         element_t b_square = 0.0;
+         for(int bIt = 0; bIt < b_type::size; ++bIt) {
+            b_square += b[bIt]*b[bIt];
+         }
          element_t r = a.element<0>();
          mag_s = sqrt(r*r+b_square);
          b_acos_r_s = acos(r/mag_s)/sqrt(b_square);
