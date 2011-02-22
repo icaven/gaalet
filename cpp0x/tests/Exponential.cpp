@@ -11,7 +11,9 @@ int main()
    em::mv<1, 2, 4>::type a = {1.0, 2.0, 3.0};
    em::mv<3, 5, 6>::type m = {-0.25*M_PI, 0.0, 0.0};
    auto R = exp(m);
-   std::cout << "R: " << m << ", R=exp(m): " << R << std::endl;
+   std::cout << "m: " << m << ", R=exp(m): " << R << std::endl;
+   auto m_back = log(R);
+   std::cout << "log(R): " << m_back << std::endl;
    std::cout << "a: " << a << ", R*a*(~R): " << R*a*(~R) << ", R*a*(!R):" << R*a*(!R) << std::endl;
 
    cm::mv<0x01>::type e1 = {1.0};
