@@ -11,3 +11,6 @@ find_package(OpenSceneGraph REQUIRED osg osgViewer)
 include_directories (${OPENSCENEGRAPH_INCLUDE_DIRS})
 add_executable (InverseHandKinematics InverseHandKinematics.cpp)
 target_link_libraries(InverseHandKinematics ${OPENSCENEGRAPH_LIBRARIES})
+
+add_executable (InverseHandKinematicsScrew InverseHandKinematicsScrew.cpp)
+target_link_libraries(InverseHandKinematicsScrew ${OPENSCENEGRAPH_LIBRARIES})
