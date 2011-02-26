@@ -20,3 +20,6 @@ target_link_libraries(InverseHandKinematicsLagrange ${OPENSCENEGRAPH_LIBRARIES})
 
 add_executable (InverseHandKinematicsMetric InverseHandKinematicsMetric.cpp)
 target_link_libraries(InverseHandKinematicsMetric ${OPENSCENEGRAPH_LIBRARIES})
+
+add_executable (SymbolicEquationMetric SymbolicEquationMetric.cpp)
+target_link_libraries(SymbolicEquationMetric ${OPENSCENEGRAPH_LIBRARIES})
