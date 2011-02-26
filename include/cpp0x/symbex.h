@@ -13,8 +13,18 @@ struct symbex {
       :  expr(expr_)
    { }
 
-   template<typename A>
-   symbex(const A& expr_)
+   //template<typename A>
+   //symbex(const A& expr_)
+   symbex(const double& expr_)
+   {
+      std::stringstream as;
+      as << expr_;
+      expr = as.str();
+   }
+
+   //template<typename A>
+   //symbex(const A& expr_)
+   symbex(const char expr_[])
    {
       std::stringstream as;
       as << expr_;
@@ -36,6 +46,12 @@ gaalet::symbex
 operator+(const gaalet::symbex& l, const gaalet::symbex& r) {
    return gaalet::symbex("(" + l.expr + "+" + r.expr + ")");
 }
+
+gaalet::symbex
+operator-(const gaalet::symbex& l, const gaalet::symbex& r) {
+   return gaalet::symbex("(" + l.expr + "-" + r.expr + ")");
+}
+
 
 gaalet::symbex
 operator*(const gaalet::symbex& l, const gaalet::symbex& r) {
@@ -72,6 +88,28 @@ operator*(const gaalet::symbex& l, const double& r) {
 
       return gaalet::symbex(l.expr + "*" + rs.str());
    }
+}
+
+
+gaalet::symbex
+operator/(const gaalet::symbex& l, const gaalet::symbex& r) {
+   return gaalet::symbex(l.expr + "/" + r.expr);
+}
+
+
+gaalet::symbex
+sin(const gaalet::symbex& a) {
+   return gaalet::symbex("sin(" + a.expr + ")");
+}
+
+gaalet::symbex
+cos(const gaalet::symbex& a) {
+   return gaalet::symbex("cos(" + a.expr + ")");
+}
+
+gaalet::symbex
+sqrt(const gaalet::symbex& a) {
+   return gaalet::symbex("sqrt(" + a.expr + ")");
 }
 
 #endif

@@ -9,7 +9,7 @@ template<typename E, typename clist>
 struct UnpackElementsToStream
 {
    static void unpack(std::ostream& os, const E& e) {
-      os << e.template element<clist::head>() << ' ';
+      os << e.template element<clist::head>() << " ";
       UnpackElementsToStream<E, typename clist::tail>::unpack(os, e);
    }
 };
@@ -24,7 +24,7 @@ template<typename clist>
 struct UnpackConfigurationListToStream
 {
    static void unpack(std::ostream& os) {
-      os << clist::head << ' ';
+      os << clist::head << " ";
       UnpackConfigurationListToStream<typename clist::tail>::unpack(os);
    }
 };

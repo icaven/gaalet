@@ -5,7 +5,6 @@
 #include "reverse.h"
 #include "grade.h"
 
-
 namespace gaalet {
 
 template<class A>
