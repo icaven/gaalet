@@ -17,4 +17,6 @@
 #include "scalar.h"
 #include "magnitude.h"
 
+#include "symbex.h"
+
 #endif
