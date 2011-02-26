@@ -66,6 +66,9 @@ operator*(const double& l, const gaalet::symbex& r) {
    else if(l == -1.0) {
       return gaalet::symbex("(-" + r.expr+")");
    }
+   else if(l == 0.0) {
+      return gaalet::symbex("");
+   }
    else {
       std::stringstream ls;
       ls << l;
@@ -81,6 +84,9 @@ operator*(const gaalet::symbex& l, const double& r) {
    }
    else if(r == -1.0) {
       return gaalet::symbex("(-" + l.expr+")");
+   }
+   else if(r == 0.0) {
+      return gaalet::symbex("");
    }
    else {
       std::stringstream rs;
