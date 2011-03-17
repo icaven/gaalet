@@ -15,6 +15,7 @@
 #include "part.h"
 #include "inverse.h"
 #include "exponential.h"
+#include "hyperbolic.h"
 #include "logarithm.h"
 #include "scalar.h"
 #include "magnitude.h"
