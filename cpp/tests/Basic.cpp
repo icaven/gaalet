@@ -14,4 +14,6 @@ int main()
    std::cout << "c: " << c << std::endl;
 
    em::mv<0>::type d;
+
+   std::cout << "part<a_type>(c): " << part_type<em::mv<3, 5>::type>(c) << std::endl;
 }
