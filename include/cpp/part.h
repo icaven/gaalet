@@ -26,7 +26,7 @@ protected:
 };*/
 
 template<class T, class A>
-struct part_type: public expression<part_type<T, A> >
+struct Part_type: public expression<Part_type<T, A> >
 {
    typedef typename T::clist clist;
 
@@ -34,7 +34,7 @@ struct part_type: public expression<part_type<T, A> >
 
    typedef typename A::element_t element_t;
 
-   part_type(const A& a_)
+   Part_type(const A& a_)
       :  a(a_)
    { }
 
@@ -59,9 +59,9 @@ part(const gaalet::expression<A>& a) {
 
 template<class T, class A> inline
 GAALET_CUDA_HOST_DEVICE
-gaalet::part_type<T, A>
+gaalet::Part_type<T, A>
 part_type(const gaalet::expression<A>& a) {
-   return gaalet::part_type<T, A>(a);
+   return gaalet::Part_type<T, A>(a);
 }
 
 #endif
