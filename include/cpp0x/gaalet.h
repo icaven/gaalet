@@ -2,8 +2,6 @@
 #define __GAALET_H
 
 
-#include "symbex.h"
-
 #include "multivector.h"
 #include "algebra.h"
 #include "streaming.h"
