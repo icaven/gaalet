@@ -1,3 +1,4 @@
+#include "symbex.h"
 #include "gaalet.h"
 
 int main() {
