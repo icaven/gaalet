@@ -100,46 +100,55 @@ struct mel_null
 };
 
 //insert_element to multiplication_element_list
-template<conf_t LC, conf_t RC, typename list, int op = (BitCount<LC^RC>::value == (BitCount<LC>::value+BitCount<RC>::value)) ?
-                                                   (((LC^RC)==list::conf) ? 0 : (((LC^RC)<list::conf) ? 1 : -1))
-                                                   : -10>
-struct insert_element_to_melist
+template<conf_t LC, conf_t RC, typename list> struct insert_element_to_melist;
+
+template<conf_t LC, conf_t RC, typename list, int op>
+struct insert_element_to_melist_op
 {
    typedef multiplication_element_list<list::conf, typename list::head, typename insert_element_to_melist<LC, RC, typename list::tail>::melist> melist;
 };
 
 template<conf_t LC, conf_t RC, int op>
-struct insert_element_to_melist<LC, RC, mel_null, op>
+struct insert_element_to_melist_op<LC, RC, mel_null, op>
 {
    typedef multiplication_element_list<LC^RC, multiplication_sum_list<LC, RC, msl_null>, mel_null> melist;
 };
 template<conf_t LC, conf_t RC>
-struct insert_element_to_melist<LC, RC, mel_null, 0>
+struct insert_element_to_melist_op<LC, RC, mel_null, 0>
 {
    typedef multiplication_element_list<LC^RC, multiplication_sum_list<LC, RC, msl_null>, mel_null> melist;
 };
 
 template<conf_t LC, conf_t RC, typename list>
-struct insert_element_to_melist<LC, RC, list, 0>
+struct insert_element_to_melist_op<LC, RC, list, 0>
 {
    typedef multiplication_element_list<list::conf, multiplication_sum_list<LC, RC, typename list::head>, typename list::tail> melist;
 };
 
 template<conf_t LC, conf_t RC, typename list>
-struct insert_element_to_melist<LC, RC, list, 1>
+struct insert_element_to_melist_op<LC, RC, list, 1>
 {
    typedef multiplication_element_list<LC^RC, multiplication_sum_list<LC, RC, msl_null>, list> melist;
 };
 
 template<conf_t LC, conf_t RC, typename list>
-struct insert_element_to_melist<LC, RC, list, -10>
+struct insert_element_to_melist_op<LC, RC, list, -10>
 {
    typedef list melist;
 };
 template<conf_t LC, conf_t RC>
-struct insert_element_to_melist<LC, RC, mel_null, -10>
+struct insert_element_to_melist_op<LC, RC, mel_null, -10>
 {
    typedef mel_null melist;
+};
+
+template<conf_t LC, conf_t RC, typename list>
+struct insert_element_to_melist
+{
+   static const int op = (BitCount<LC^RC>::value == (BitCount<LC>::value+BitCount<RC>::value)) ?
+                                                   (((LC^RC)==list::conf) ? 0 : (((LC^RC)<list::conf) ? 1 : -1))
+                                                   : -10;
+   typedef typename insert_element_to_melist_op<LC, RC, list, op>::melist melist;
 };
 
 //build_multiplication_element_list
@@ -160,27 +169,36 @@ struct build_multiplication_element_list<L, cl_null, CL>
 };
 
 //search melist
-template<conf_t conf, typename list, bool fit = (conf==list::conf)>
-struct search_conf_in_melist
+template<conf_t conf, typename list> struct search_conf_in_melist;
+
+template<conf_t conf, typename list, bool fit>
+struct search_conf_in_melist_op
 {
    typedef typename search_conf_in_melist<conf, typename list::tail>::melist melist;
 };
 
 template<conf_t conf, typename list>
-struct search_conf_in_melist<conf, list, true>
+struct search_conf_in_melist_op<conf, list, true>
 {
    typedef list melist;
 };
 
 template<conf_t conf, bool fit>
-struct search_conf_in_melist<conf, mel_null, fit>
+struct search_conf_in_melist_op<conf, mel_null, fit>
 {
    typedef mel_null melist;
 };
 template<conf_t conf>
-struct search_conf_in_melist<conf, mel_null, true>
+struct search_conf_in_melist_op<conf, mel_null, true>
 {
    typedef mel_null melist;
+};
+
+template<conf_t conf, typename list>
+struct search_conf_in_melist
+{
+   static const bool fit = (conf==list::conf);
+   typedef typename search_conf_in_melist_op<conf, list, fit>::melist melist;
 };
 
 }  //end namespace op
