@@ -22,6 +22,7 @@ struct Magnitude : public expression<Magnitude<A> >
    { }
 
    template<conf_t conf>
+   GAALET_CUDA_HOST_DEVICE
    element_t element() const {
       return (conf==0x00) ? sqrt(eval(::grade<0>((~a)*a))) : 0.0;
    }
@@ -34,6 +35,7 @@ protected:
 
 
 template <class A> inline
+GAALET_CUDA_HOST_DEVICE
 gaalet::Magnitude<A>
 magnitude(const gaalet::expression<A>& a)
 {
