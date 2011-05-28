@@ -7,17 +7,24 @@
 namespace gaalet {
 
 //check for versor
-template<typename CL, bool parent_even_grade = (BitCount<CL::head>::value%2)>
-struct check_versor
+   //Strange error with CUDA 3.2 and 4.0 for "BitCount<CL::head>" -> workaround "BitCount<CL::head+0>"
+template<typename CL, bool parent_even_grade = (BitCount<CL::head+0>::value%2)>
+struct check_versor_op
 {
-   static const bool even_grade = (BitCount<CL::head>::value%2);
-   static const bool value = (parent_even_grade==even_grade) ? check_versor<typename CL::tail, even_grade>::value : false;
+   static const bool even_grade = (BitCount<CL::head+0>::value%2);
+   static const bool value = (parent_even_grade==even_grade) ? check_versor_op<typename CL::tail, even_grade>::value : false;
 };
 template<bool parent_even_grade>
-struct check_versor<cl_null, parent_even_grade>
+struct check_versor_op<cl_null, parent_even_grade>
 {
    static const bool even_grade = parent_even_grade;
    static const bool value = true;
+};
+template<typename CL>
+struct check_versor
+{
+   static const bool parent_even_grade = (BitCount<CL::head+0>::value%2);
+   static const bool value = check_versor_op<CL, parent_even_grade>::value;
 };
 
 //go through inversion evaluation type checks
@@ -25,7 +32,8 @@ struct check_versor<cl_null, parent_even_grade>
 template<class A>
 struct inverse_evaluation_type
 {
-   static const int value = (check_versor<typename A::clist>::value) ? 1 :
+   static const bool is_versor = check_versor<typename A::clist>::value;
+   static const int value = (is_versor) ? 1 :
                             -1;
 };
 
@@ -55,7 +63,9 @@ struct inverse<A, 1> : public expression<inverse<A> >
    GAALET_CUDA_HOST_DEVICE
    element_t element() const {
       if(first_eval) {
-         div = 1.0/((~a)*a).template element<0x00>();
+         //div = 1.0/((~a)*a).template element<0x00>();
+         element_t inv_div = eval(grade<0>((~a)*a));
+         div = 1.0/inv_div;
          first_eval = false;
       }
       return a.template element<conf>() * div * Power<-1, BitCount<conf>::value*(BitCount<conf>::value-1)/2>::value;

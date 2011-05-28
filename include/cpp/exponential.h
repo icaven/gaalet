@@ -12,7 +12,8 @@ namespace gaalet {
 template<typename CL>
 struct check_bivector
 {
-   static const bool value = (BitCount<CL::head>::value==2) ? check_bivector<typename CL::tail>::value : false;
+   //Strange error with CUDA 3.2 and 4.0 for "BitCount<CL::head>" -> workaround "BitCount<CL::head+0>"
+   static const bool value = (BitCount<CL::head+0>::value==2) ? check_bivector<typename CL::tail>::value : false;
 };
 template<>
 struct check_bivector<cl_null>
