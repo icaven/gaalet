@@ -9,7 +9,7 @@ namespace gaalet
 
 ///symbex: symbolic expression
 struct symbex {
-   symbex(const std::string& expr_ = "null")
+   symbex(const std::string& expr_ = "0")
       :  expr(expr_)
    { }
 
@@ -32,6 +32,13 @@ struct symbex {
    }
 
    std::string expr;
+};
+
+template<>
+struct null_element<symbex> {
+   static symbex value() {
+      return symbex("0");
+   }
 };
 
 } //end namespace gaalet

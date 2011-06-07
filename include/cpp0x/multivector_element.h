@@ -85,6 +85,22 @@ struct element_type_combination_traits<E, E>
    typedef E element_t;
 };
 
+//null element traits
+template<typename E, bool is_integer>
+struct null_element_type_traits {
+   static constexpr E value = 0;
+};
+template<typename E>
+struct null_element_type_traits<E, false> {
+   static constexpr E value = 0.0;
+};
+
+template<typename E>
+struct null_element {
+   static constexpr E value() {
+      return null_element_type_traits<E, std::numeric_limits<E>::is_integer>::value;
+   }
+};
 
 } //end namespace gaalet
 

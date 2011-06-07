@@ -29,7 +29,8 @@ struct multivector : public expression<multivector<CL, M, T>>
    multivector()
    {
       //std::fill(data, data+size, 0.0);
-      std::fill(data.begin(), data.end(), 0.0);
+      //std::fill(data.begin(), data.end(), null_element);
+      for(int i=0; i<size; ++i) data[i] = null_element<element_t>::value();
    }
 
    multivector(std::initializer_list<element_t> s)
@@ -37,7 +38,8 @@ struct multivector : public expression<multivector<CL, M, T>>
       //element_t* last = std::copy(s.begin(), (s.size()<=size) ? s.end() : (s.begin()+size), data);
       typename std::array<element_t, size>::iterator last = std::copy(s.begin(), (s.size()<=size) ? s.end() : (s.begin()+size), data.begin());
       //std::fill(last, data+size, 0.0);
-      std::fill(last, data.end(), 0.0);
+      //std::fill(last, data.end(), null_element);
+      for(typename std::array<element_t, size>::iterator it = last; it!=data.end(); ++it) (*it) = null_element<element_t>::value();
    }
 
    //return element by index, index known at runtime
@@ -64,7 +66,7 @@ struct multivector : public expression<multivector<CL, M, T>>
    element_t element() const {
       static const conf_t index = search_element<conf, clist>::index;
       //static_assert(index<size, "element<conf_t>(): no such element in configuration list");
-      return (index<size) ? data[index] : 0.0;
+      return (index<size) ? data[index] : null_element<element_t>::value();
    }
 
    //evaluation
@@ -150,7 +152,7 @@ struct multivector<configuration_list<0x00, cl_null>, M, T> : public expression<
 
    //initialization
    multivector()
-      :  value(0.0)
+      :  value(null_element<element_t>::value())
    { }
 
    multivector(const element_t& setValue)
@@ -186,7 +188,7 @@ struct multivector<configuration_list<0x00, cl_null>, M, T> : public expression<
    element_t element() const {
       //static const conf_t index = search_element<conf, clist>::index;
       //static_assert(index<size, "element<conf_t>(): no such element in configuration list");
-      return (conf==0x00) ? value : 0.0;
+      return (conf==0x00) ? value : null_element<element_t>::value();
    }
 
    //   constructor evaluation
