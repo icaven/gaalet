@@ -17,5 +17,6 @@
 #include "logarithm.h"
 #include "scalar.h"
 #include "magnitude.h"
+#include "dual.h"
 
 #endif
