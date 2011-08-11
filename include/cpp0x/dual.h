@@ -47,8 +47,10 @@ protected:
 }  //end namespace gaalet
 
 
-///Dual of multivector
-//*Depends on metric and should work with a non-degenerate algebra. When operated within degenerate algebra, a positive bilinear form of the corresponding basis vectors is assumed.*//
+/// Dual of a multivector.
+/** Depends on metric and should work with a non-degenerate algebra. When operated within degenerate algebra, a positive bilinear form of the corresponding basis vectors is assumed.
+  */
+/// \ingroup ga_ops
 
 template <class A> inline
 gaalet::dual<A>

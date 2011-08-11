@@ -52,12 +52,24 @@ protected:
 
 }  //end namespace gaalet
 
+/// Projection on a sub-space of a multivector.
+/**
+ * Returns the elements of the multivector belonging to a sub-space defined by variadic template parameter \p elements. \p elements is a list of configuration bitmaps, e.g. part<1,2,4>().
+ * \param elements List of elements defining the sub-spaces to project onto.
+ */
+/// \ingroup ga_ops
 template<gaalet::conf_t... elements, class A> inline
 gaalet::part<A, elements...>
 part(const gaalet::expression<A>& a) {
    return gaalet::part<A, elements...>(a);
 }
 
+/// Projection on a sub-space of a multivector.
+/**
+ * Returns the elements of the multivector belonging to a sub-space defined by configuration list of multivector \p T.
+ * \param T Multivector with configuration list defining the sub-spaces to project onto.
+ */
+/// \ingroup ga_ops
 template<class T, class A> inline
 gaalet::part_type<T, A>
 part_type(const gaalet::expression<A>& a) {

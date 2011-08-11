@@ -52,12 +52,16 @@ protected:
 
 } //end namespace gaalet
 
+/// \brief Addition of two multivectors.
+/// \ingroup ga_ops
 template <class L, class R> inline
 gaalet::addition<L, R>
 operator+(const gaalet::expression<L>& l, const gaalet::expression<R>& r) {
    return gaalet::addition<L, R>(l, r);
 }
 
+/// \brief Subtraction of two multivectors.
+/// \ingroup ga_ops
 template <class L, class R> inline
 gaalet::subtraction<L, R>
 operator-(const gaalet::expression<L>& l, const gaalet::expression<R>& r) {

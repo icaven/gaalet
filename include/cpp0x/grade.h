@@ -52,6 +52,12 @@ protected:
 
 }  //end namespace gaalet
 
+/// Projection on a grade of a multivector.
+/**
+ * Returns the elements of the multivector belonging to a sub-space of grade G.
+ * \param G Grade of sub-spaces to project onto.
+ */
+/// \ingroup ga_ops
 template <gaalet::conf_t G, class A> inline
 gaalet::grade<G, A>
 grade(const gaalet::expression<A>& a) {

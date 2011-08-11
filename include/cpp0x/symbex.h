@@ -49,22 +49,29 @@ std::ostream& operator<<(std::ostream& os, const gaalet::symbex& s)
    return os;
 }
 
+/// \brief Addition of two symbex operands.
+/// \ingroup symbex_ops
 gaalet::symbex
 operator+(const gaalet::symbex& l, const gaalet::symbex& r) {
    return gaalet::symbex("(" + l.expr + "+" + r.expr + ")");
 }
 
+/// \brief Subtraction of two symbex operands.
+/// \ingroup symbex_ops
 gaalet::symbex
 operator-(const gaalet::symbex& l, const gaalet::symbex& r) {
    return gaalet::symbex("(" + l.expr + "-" + r.expr + ")");
 }
 
-
+/// \brief Multiplication of two symbex operands.
+/// \ingroup symbex_ops
 gaalet::symbex
 operator*(const gaalet::symbex& l, const gaalet::symbex& r) {
    return gaalet::symbex(l.expr + "*" + r.expr);
 }
 
+/// \brief Multiplication of a double and a symbex operand.
+/// \ingroup symbex_ops
 gaalet::symbex
 operator*(const double& l, const gaalet::symbex& r) {
    if(l == 1.0) {
@@ -84,6 +91,8 @@ operator*(const double& l, const gaalet::symbex& r) {
    }
 }
 
+/// \brief Multiplication of a symbex operand and a double.
+/// \ingroup symbex_ops
 gaalet::symbex
 operator*(const gaalet::symbex& l, const double& r) {
    if(r == 1.0) {
@@ -104,22 +113,30 @@ operator*(const gaalet::symbex& l, const double& r) {
 }
 
 
+/// \brief Division of a symbex operand by another symbex operand.
+/// \ingroup symbex_ops
 gaalet::symbex
 operator/(const gaalet::symbex& l, const gaalet::symbex& r) {
    return gaalet::symbex(l.expr + "/" + r.expr);
 }
 
 
+/// \brief Sine of symbex operand.
+/// \ingroup symbex_ops
 gaalet::symbex
 sin(const gaalet::symbex& a) {
    return gaalet::symbex("sin(" + a.expr + ")");
 }
 
+/// \brief Cosine of symbex operand.
+/// \ingroup symbex_ops
 gaalet::symbex
 cos(const gaalet::symbex& a) {
    return gaalet::symbex("cos(" + a.expr + ")");
 }
 
+/// \brief Square root of symbex operand.
+/// \ingroup symbex_ops
 gaalet::symbex
 sqrt(const gaalet::symbex& a) {
    return gaalet::symbex("sqrt(" + a.expr + ")");

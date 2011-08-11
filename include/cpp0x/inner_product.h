@@ -227,7 +227,11 @@ protected:
 
 } //end namespace gaalet
 
-
+/// Inner product of two multivectors.
+/**
+ * Following Hestenes' defintion.
+ */
+/// \ingroup ga_ops
 template <class L, class R> inline
 gaalet::inner_product<L, R>
 operator&(const gaalet::expression<L>& l, const gaalet::expression<R>& r) {

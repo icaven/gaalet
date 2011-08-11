@@ -240,19 +240,24 @@ protected:
 
 } //end namespace gaalet
 
-
+/// \brief Geometric product of two multivectors.
+/// \ingroup ga_ops
 template <class L, class R> inline
 gaalet::geometric_product<L, R>
 operator*(const gaalet::expression<L>& l, const gaalet::expression<R>& r) {
    return gaalet::geometric_product<L, R>(l, r);
 }
 
+/// \brief Geometric product of a scalar and a multivector.
+/// \ingroup ga_ops
 template <class A> inline
 gaalet::scalar_multivector_product<A>
 operator*(const typename A::element_t& s, const gaalet::expression<A>& a) {
    return gaalet::scalar_multivector_product<A>(s, a);
 }
 
+/// \brief Geometric product of a multivector and a scalar.
+/// \ingroup ga_ops
 template <class A> inline
 gaalet::scalar_multivector_product<A>
 operator*(const gaalet::expression<A>& a, const typename A::element_t& s) {

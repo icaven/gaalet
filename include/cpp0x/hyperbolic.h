@@ -150,12 +150,22 @@ protected:
 
 }  //end namespace gaalet
 
+/// Hyperbolic sine of a multivector.
+/**
+ * Only implemented for scalars and bivectors.
+ */
+/// \ingroup ga_ops
 template <class A> inline
 gaalet::sinh<A>
 sinh(const gaalet::expression<A>& a) {
    return gaalet::sinh<A>(a);
 }
 
+/// Hyperbolic cosine of a multivector.
+/**
+ * Only implemented for scalars and bivectors.
+ */
+/// \ingroup ga_ops
 template <class A> inline
 gaalet::cosh<A>
 cosh(const gaalet::expression<A>& a) {

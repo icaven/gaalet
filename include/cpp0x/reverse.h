@@ -30,6 +30,8 @@ protected:
 
 }  //end namespace gaalet
 
+/// \brief Reverse of a multivector.
+/// \ingroup ga_ops
 template <class A> inline
 gaalet::reverse<A>
 operator~(const gaalet::expression<A>& a) {

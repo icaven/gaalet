@@ -69,6 +69,11 @@ protected:
 
 }  //end namespace gaalet
 
+/// Inverse of a multivector.
+/**
+ * Only implemented for versors. Undefined for degenerate algebra.
+ */
+/// \ingroup ga_ops
 template <class A> inline
 gaalet::inverse<A>
 operator!(const gaalet::expression<A>& a) {

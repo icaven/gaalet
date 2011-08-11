@@ -126,6 +126,11 @@ protected:
 
 }  //end namespace gaalet
 
+/// Exponential of a multivector.
+/**
+ * Only implemented for scalars and bivectors.
+ */
+/// \ingroup ga_ops
 template <class A> inline
 gaalet::exponential<A>
 exp(const gaalet::expression<A>& a) {

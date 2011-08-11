@@ -161,6 +161,11 @@ protected:
 
 }  //end namespace gaalet
 
+/// Logarithm of a multivector.
+/**
+ * Only implemented for scalars, bivectors and spinors.
+ */
+/// \ingroup ga_ops
 template <class A> inline
 gaalet::logarithm<A>
 log(const gaalet::expression<A>& a) {

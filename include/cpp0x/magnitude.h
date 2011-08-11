@@ -31,7 +31,11 @@ protected:
 
 }  //end namespace gaalet
 
-
+/// \brief Magnitude of a multivector.
+/**
+ * Following Hestenes' definition. Undefined for degenerate algebra.
+ */
+/// \ingroup ga_ops
 template <class A> inline
 gaalet::magnitude<A>
 magnitude(const gaalet::expression<A>& a)
