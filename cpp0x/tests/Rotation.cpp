@@ -14,7 +14,7 @@ int main()
    auto R = eval(exp(-0.5*m));
 
    Vector a = {1.6, 3.2, 5.5}; 
-   auto b = eval(grade<1>(R*a*(~R)));
+   auto b = eval(grade<1>(R*a*~R));
 
    std::cout << "m: " << m << ", R: " << R << std::endl;
    std::cout << "a: " << a << ", b: " << b << std::endl;
