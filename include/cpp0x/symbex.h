@@ -49,6 +49,20 @@ std::ostream& operator<<(std::ostream& os, const gaalet::symbex& s)
    return os;
 }
 
+/// \brief Unary plus.
+/// \ingroup symbex_ops
+gaalet::symbex
+operator+(const gaalet::symbex& l) {
+   return gaalet::symbex("(+" + l.expr + ")");
+}
+
+/// \brief Unary minus.
+/// \ingroup symbex_ops
+gaalet::symbex
+operator-(const gaalet::symbex& l) {
+   return gaalet::symbex("(-" + l.expr + ")");
+}
+
 /// \brief Addition of two symbex operands.
 /// \ingroup symbex_ops
 gaalet::symbex
