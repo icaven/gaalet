@@ -212,48 +212,48 @@ struct StateEquation
    em::mv<0,6>::type q_w;
 
    //Carbody
-   static const double m_b = 1450.0;
-   static const double r_b = 3.0;
+   static constexpr double m_b = 1450.0;
+   static constexpr double r_b = 3.0;
    //Sphere
-   //static const double I_b = 2.0/5.0*m_b*r_b*r_b;
+   //static constexpr double I_b = 2.0/5.0*m_b*r_b*r_b;
 
    //Wheel
-   static const double m_w = 20;
-   static const double r_w = 0.325;
-   static const double I_w = 2.3;
-   static const double u_wn = 0.4;
-   static const double v_wn = 1.3;
-   static const double w_wn = 0.7;
-   static const double k_wf = 17400.0;
-   static const double k_wr = 26100.0;
-   static const double d_wf = 2600.0;
-   static const double d_wr = 2600.0;
+   static constexpr double m_w = 20;
+   static constexpr double r_w = 0.325;
+   static constexpr double I_w = 2.3;
+   static constexpr double u_wn = 0.4;
+   static constexpr double v_wn = 1.3;
+   static constexpr double w_wn = 0.7;
+   static constexpr double k_wf = 17400.0;
+   static constexpr double k_wr = 26100.0;
+   static constexpr double d_wf = 2600.0;
+   static constexpr double d_wr = 2600.0;
    gaalet::mv<0,3,5,6>::type R_n_wfl;
    gaalet::mv<0,3,5,6>::type R_n_wfr;
    gaalet::mv<0,3,5,6>::type R_n_wrl;
    gaalet::mv<0,3,5,6>::type R_n_wrr;
 
    //Braking system
-   static const double mu_b = 0.135;
-   static const double d_b = 0.01;
+   static constexpr double mu_b = 0.135;
+   static constexpr double d_b = 0.01;
 
    //Anti roll bar
-   //static const double k_arb = 50000;
-   static const double k_arb = 100000;
+   //static constexpr double k_arb = 50000;
+   static constexpr double k_arb = 100000;
 
    //Clutch
-   static const double k_cn = 1.5;
+   static constexpr double k_cn = 1.5;
 
    //Engine
-   static const double a_e = -0.000862;
-   static const double b_e = 0.83;
-   static const double c_e = 400;
-   static const double I_e = 0.5;
-   static const double d_e = 0.5;
+   static constexpr double a_e = -0.000862;
+   static constexpr double b_e = 0.83;
+   static constexpr double c_e = 400;
+   static constexpr double I_e = 0.5;
+   static constexpr double d_e = 0.5;
 
    //Transmission
    std::vector<double> i_g;
-   static const double i_a = 3.5;
+   static constexpr double i_a = 3.5;
 };
 
 }  //end namespace cardyn
