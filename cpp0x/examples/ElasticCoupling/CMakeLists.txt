@@ -7,7 +7,7 @@ if (NOT CMAKE_BUILD_TYPE)
 endif (NOT CMAKE_BUILD_TYPE)
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 
-find_package(OpenSceneGraph REQUIRED osg osgViewer)
+find_package(OpenSceneGraph REQUIRED osg osgViewer osgGA)
 include_directories (${OPENSCENEGRAPH_INCLUDE_DIRS})
 add_executable (ElasticCoupling ElasticCoupling.cpp)
 target_link_libraries(ElasticCoupling ${OPENSCENEGRAPH_LIBRARIES})
