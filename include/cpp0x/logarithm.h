@@ -135,7 +135,7 @@ struct logarithm<A, 2> : public expression<logarithm<A>>
          auto b = eval(::grade<2>(a));
          typedef decltype(b) b_type;
          element_t b_square = 0.0;
-         for(int bIt = 0; bIt < b_type::size; ++bIt) {
+         for(unsigned int bIt = 0; bIt < b_type::size; ++bIt) {
             b_square += b[bIt]*b[bIt];
          }
          element_t r = a.element<0>();

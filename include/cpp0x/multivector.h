@@ -30,7 +30,7 @@ struct multivector : public expression<multivector<CL, M, T>>
    {
       //std::fill(data, data+size, 0.0);
       //std::fill(data.begin(), data.end(), null_element);
-      for(int i=0; i<size; ++i) data[i] = null_element<element_t>::value();
+      for(unsigned int i=0; i<size; ++i) data[i] = null_element<element_t>::value();
    }
 
    multivector(std::initializer_list<element_t> s)
