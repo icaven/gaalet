@@ -54,4 +54,10 @@ std::basic_ostream<E, T>& operator<<(std::basic_ostream<E, T>& os, const gaalet:
    return os;
 }
 
+template<class E, class T, class G>
+std::basic_ostream<E, T>& operator<<(std::basic_ostream<E, T>&& os, const gaalet::expression<G>& e)
+{
+   return (os << e);
+}
+
 #endif
