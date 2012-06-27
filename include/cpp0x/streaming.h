@@ -4,6 +4,9 @@
 #include "expression.h"
 #include "multivector.h"
 
+namespace gaalet
+{
+
 //expression streaming
 template<typename G, typename clist>
 struct UnpackElementsToStream
@@ -39,6 +42,12 @@ struct UnpackConfigurationListToStream<gaalet::cl_null>
    static void unpack(std::basic_ostream<E, T>&) { }
 };
 
+} //end namespace gaalet
+
+//not allowed, but necessary to work within other scopes ("Argument-dependent name lookup")
+namespace std
+{
+
 template<class E, class T, class G>
 std::basic_ostream<E, T>& operator<<(std::basic_ostream<E, T>& os, const gaalet::expression<G>& e_)
 {
@@ -46,9 +55,9 @@ std::basic_ostream<E, T>& operator<<(std::basic_ostream<E, T>& os, const gaalet:
    //auto mv = eval(e_);
 
    os << "[ " << std::dec;
-      UnpackElementsToStream<G, typename G::clist>::unpack(os, e);
+      gaalet::UnpackElementsToStream<G, typename G::clist>::unpack(os, e);
    os << "] { " << std::hex;
-      UnpackConfigurationListToStream<typename G::clist>::unpack(os);
+      gaalet::UnpackConfigurationListToStream<typename G::clist>::unpack(os);
    os << '}';
 
    return os;
@@ -59,5 +68,7 @@ std::basic_ostream<E, T>& operator<<(std::basic_ostream<E, T>&& os, const gaalet
 {
    return (os << e);
 }
+
+}  // end namespace std
 
 #endif
