@@ -57,7 +57,7 @@ struct inverse<A, 1> : public expression<inverse<A>>
          div = 1.0/((~a)*a).template element<0x00>();
          first_eval=false;
       };
-      return a.element<conf>() * div * Power<-1, BitCount<conf>::value*(BitCount<conf>::value-1)/2>::value;
+      return a.template element<conf>() * div * Power<-1, BitCount<conf>::value*(BitCount<conf>::value-1)/2>::value;
    }
 
 protected:

@@ -24,7 +24,7 @@ struct scalar : public expression<scalar<L, R>>
 
    template<conf_t conf>
    element_t element() const {
-      return e.element<conf>();
+      return e.template element<conf>();
       //return l.element<conf>() - r.element<conf>();
    }
 

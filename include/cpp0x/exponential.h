@@ -84,7 +84,7 @@ struct exponential<A, 1> : public expression<exponential<A>>
       }
 
       if(conf!=0)
-         return a.element<conf>()*sada;
+         return a.template element<conf>()*sada;
       else
          return ca;
    }
@@ -116,7 +116,7 @@ struct exponential<A, 0> : public expression<exponential<A>>
 
    template<conf_t conf>
    element_t element() const {
-      return (conf==0) ? exp(a.element<conf>()) : 0.0;
+      return (conf==0) ? exp(a.template element<conf>()) : 0.0;
    }
 
 protected:

@@ -69,12 +69,12 @@ struct logarithm<A, 1> : public expression<logarithm<A>>
             b_square += b[bIt]*b[bIt];
          }
          inv_mag_b = 1.0/sqrt(b_square);
-         element_t r = a.element<0>();
+         element_t r = a.template element<0>();
          mag_s = sqrt(r*r+b_square);
          first_eval = false;
       }
 
-      return conf==0x00 ? log(mag_s) : a.element<conf>()*inv_mag_b*acos(0);
+      return conf==0x00 ? log(mag_s) : a.template element<conf>()*inv_mag_b*acos(0);
    }
    /*template<>
    element_t element<0>() const {
@@ -104,7 +104,7 @@ struct logarithm<A, 0> : public expression<logarithm<A>>
 
    template<conf_t conf>
    element_t element() const {
-      return (conf==0) ? log(a.element<conf>()) : 0.0;
+      return (conf==0) ? log(a.template element<conf>()) : 0.0;
    }
 
 protected:
@@ -138,13 +138,13 @@ struct logarithm<A, 2> : public expression<logarithm<A>>
          for(unsigned int bIt = 0; bIt < b_type::size; ++bIt) {
             b_square += b[bIt]*b[bIt];
          }
-         element_t r = a.element<0>();
+         element_t r = a.template element<0>();
          mag_s = sqrt(r*r+b_square);
          b_acos_r_s = acos(r/mag_s)/sqrt(b_square);
          first_eval = false;
       }
 
-      return conf==0x00 ? log(mag_s) : a.element<conf>()*b_acos_r_s;
+      return conf==0x00 ? log(mag_s) : a.template element<conf>()*b_acos_r_s;
    }
    /*template<>
    element_t element<0>() const {

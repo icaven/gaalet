@@ -20,7 +20,7 @@ struct part : public expression<part<A, elements...>>
 
    template<conf_t conf>
    element_t element() const {
-      return (search_element<conf, clist>::index>=clist::size) ? 0.0 : a.element<conf>();
+      return (search_element<conf, clist>::index>=clist::size) ? 0.0 : a.template element<conf>();
    }
 
 protected:
@@ -42,7 +42,7 @@ struct part_type: public expression<part_type<T, A>>
 
    template<conf_t conf>
    element_t element() const {
-      return (search_element<conf, clist>::index>=clist::size) ? 0.0 : a.element<conf>();
+      return (search_element<conf, clist>::index>=clist::size) ? 0.0 : a.template element<conf>();
    }
 
 protected:

@@ -70,7 +70,7 @@ struct multivector : public expression<multivector<CL, M, T>>
    }
 
    //evaluation
-   template<typename E, conf_t index = 0>
+   template<typename E, conf_t index = size>
    struct ElementEvaluation
    {                          //v no reference to pointer *& with gcc4.5 possible... What's going on?
       /*static void eval(element_t* const data, const E& e) {
@@ -78,18 +78,18 @@ struct multivector : public expression<multivector<CL, M, T>>
          ElementEvaluation<E, index+1>::eval(data, e);
       }*/
       static void eval(std::array<element_t, size>& data, const E& e) {
-         std::get<index>(data) = e.element<get_element<index, clist>::value>();
-         ElementEvaluation<E, index+1>::eval(data, e);
+         std::get<size-index>(data) = e.template element<get_element<size-index, clist>::value>();
+         ElementEvaluation<E, index-1>::eval(data, e);
       }
    };
    template<typename E>
-   struct ElementEvaluation<E, size-1>
+   struct ElementEvaluation<E, 1>
    {
       /*static void eval(element_t* const data, const E& e) {
          data[size-1] = e.element<get_element<size-1, clist>::value>();
       }*/
       static void eval(std::array<element_t, size>& data, const E& e) {
-         std::get<size-1>(data) = e.element<get_element<size-1, clist>::value>();
+         std::get<size-1>(data) = e.template element<get_element<size-1, clist>::value>();
       }
    };
 
@@ -195,14 +195,14 @@ struct multivector<configuration_list<0x00, cl_null>, M, T> : public expression<
    template<class E>
    multivector(const expression<E>& e_) {
       const E& e(e_);
-      value = e.element<0x00>();
+      value = e.template element<0x00>();
    }
 
    //   assignment evaluation
    template<class E>
    void operator=(const expression<E>& e_) {
       const E& e(e_);
-      value = e.element<0x00>();
+      value = e.template element<0x00>();
    }
 
 protected:

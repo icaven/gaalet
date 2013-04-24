@@ -42,7 +42,7 @@ struct grade : public expression<grade<G, A>>
 
    template<conf_t conf>
    element_t element() const {
-      return (gaalet::search_element<conf, clist>::index!=clist::size) ? a.element<conf>() : gaalet::null_element<element_t>::value();
+      return (gaalet::search_element<conf, clist>::index!=clist::size) ? a.template element<conf>() : gaalet::null_element<element_t>::value();
    }
 
 protected:

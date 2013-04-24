@@ -33,7 +33,7 @@ struct dual : public expression<dual<A>>
 
    template<conf_t conf>
    element_t element() const {
-      return (search_element<conf, clist>::index>=clist::size) ? 0.0 : a.element< I ^ conf >()
+      return (search_element<conf, clist>::index>=clist::size) ? 0.0 : a.template element< I ^ conf >()
                                                                      * (Power<-1, BitCount<I>::value*(BitCount<I>::value-1)/2>::value
                                                                      * CanonicalReorderingSign<I ^ conf, I>::value
                                                                      * ((BitCount<metric::signature_bitmap&((I ^ conf) & I)>::value % 2) ? -1 : 1));

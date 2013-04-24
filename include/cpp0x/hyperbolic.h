@@ -56,7 +56,7 @@ struct sinh<A, 1> : public expression<sinh<A>>
          first_eval = false;
       }
 
-      return a.element<conf>()*sada;
+      return a.template element<conf>()*sada;
    }
 
 protected:
@@ -81,7 +81,7 @@ struct sinh<A, 0> : public expression<sinh<A>>
 
    template<conf_t conf>
    element_t element() const {
-      return (conf==0) ? sinh(a.element<conf>()) : 0.0;
+      return (conf==0) ? sinh(a.template element<conf>()) : 0.0;
    }
 
 protected:
@@ -139,7 +139,7 @@ struct cosh<A, 0> : public expression<cosh<A>>
 
    template<conf_t conf>
    element_t element() const {
-      return (conf==0) ? cosh(a.element<conf>()) : 0.0;
+      return (conf==0) ? cosh(a.template element<conf>()) : 0.0;
    }
 
 protected:

@@ -7,6 +7,7 @@ namespace gaalet {
 template<conf_t u>
 struct BitCount
 {
+    //only for 32bit. For 64-bit numbers, we would have to add triples of octal digits and use modulus 1023. FIX IT!!!
    static const conf_t value = (((u - ((u >> 1) & 033333333333) - ((u >> 2) & 011111111111))
                                     + ((u - ((u >> 1) & 033333333333) - ((u >> 2) & 011111111111)) >> 3)) & 030707070707) % 63;
 };
