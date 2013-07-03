@@ -18,36 +18,36 @@ struct scalar : public expression<scalar<L, R>>
    typedef typename E::element_t element_t;
 
    scalar(const L& l_ , const R& r_ )
-      //:  l(l_), r(r_)
-      : e(::grade<0>(l_*r_))
+      :  l(l_), r(r_)
+      //: e(::grade<0>(l_*r_))
    { }
 
    template<conf_t conf>
    element_t element() const {
-      return e.template element<conf>();
-      //return l.element<conf>() - r.element<conf>();
+      //return e.template element<conf>();
+      return (conf==0x00) ? (::grade<0>(l*r).template element<conf>()) : 0.0; 
    }
 
 protected:
-   //const L& l;
-   //const R& r;
-   const E& e;
+   const L& l;
+   const R& r;
+   //const E& e;
 };
 
 }  //end namespace gaalet
 
 
-/*template <class L, class R> inline
+template <class L, class R> inline
 gaalet::scalar<L, R>
 scalar(const gaalet::expression<L>& l, const gaalet::expression<R>& r)
 {
    return gaalet::scalar<L, R>(l, r);
-}*/
+}
 
-template <class L, class R> inline
+/*template <class L, class R> inline
 auto scalar(const gaalet::expression<L>& l, const gaalet::expression<R>& r) -> decltype(grade<0>(l*r))
 {
    return grade<0>(l*r);
-}
+}*/
 
 #endif
