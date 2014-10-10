@@ -76,7 +76,7 @@ struct exponential<A, 1> : public expression<exponential<A> >
       }
 
       if(conf!=0)
-         return a.element<conf>()*sada;
+         return a.template element<conf>()*sada;
       else
          return ca;
    }

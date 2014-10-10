@@ -44,7 +44,7 @@ struct Grade : public expression<Grade<G, A> >
    template<conf_t conf>
    GAALET_CUDA_HOST_DEVICE
    element_t element() const {
-      return (gaalet::search_element<conf, clist>::index!=clist::size) ? a.element<conf>() : 0.0;
+      return (gaalet::search_element<conf, clist>::index!=clist::size) ? a.template element<conf>() : 0.0;
    }
 
 protected:

@@ -41,7 +41,7 @@ struct Part_type: public expression<Part_type<T, A> >
    template<conf_t conf>
    GAALET_CUDA_HOST_DEVICE
    element_t element() const {
-      return (search_element<conf, clist>::index>=clist::size) ? 0.0 : a.element<conf>();
+      return (search_element<conf, clist>::index>=clist::size) ? 0.0 : a.template element<conf>();
    }
 
 protected:
