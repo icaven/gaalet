@@ -57,7 +57,7 @@ int main()
    dim3 threads( r, r, r );
 
    test <<< 1, threads >>>();
-   cudaThreadSynchronize();
+   cudaDeviceSynchronize();
    error = cudaGetLastError();
    if(error != cudaSuccess) 
    {
@@ -77,5 +77,5 @@ int main()
 
    std::cout << "Pi: " << pi << std::endl;
 
-   cudaThreadExit();
+   cudaDeviceReset();
 }

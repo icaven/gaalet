@@ -2,7 +2,7 @@
 #include <sys/time.h>
 #include <cmath>
 #include <tbb/task.h>
-#include <google/profiler.h>
+#include <gperftools/profiler.h>
 
 typedef gaalet::mv<1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12>::type Multivector;
 

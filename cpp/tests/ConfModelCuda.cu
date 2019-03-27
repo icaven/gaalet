@@ -30,5 +30,5 @@ int main()
 
    test <<< 1, threads >>>();
 
-   cudaThreadExit();
+   cudaDeviceReset();
 }
