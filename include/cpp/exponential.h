@@ -86,7 +86,7 @@ struct exponential<A, 1> : public expression<exponential<A> >
    }*/
 
 protected:
-   const A& a;
+   const A a;
    mutable element_t ca;
    mutable element_t sada;
    mutable bool first_eval;

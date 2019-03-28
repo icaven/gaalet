@@ -48,7 +48,7 @@ struct Grade : public expression<Grade<G, A> >
    }
 
 protected:
-   const A& a;
+   const A a;
 };
 
 

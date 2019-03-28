@@ -25,7 +25,7 @@ struct reverse : public expression<reverse<A> >
    }
 
 protected:
-   const A& a;
+   const A a;
 };
 
 

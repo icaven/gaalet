@@ -24,8 +24,8 @@ struct addition : public expression<addition<L, R> >
    }
 
 protected:
-   const L& l;
-   const R& r;
+   const L l;
+   const R r;
 };
 
 template<class L, class R>
@@ -48,8 +48,8 @@ struct subtraction : public expression<subtraction<L, R> >
    }
 
 protected:
-   const L& l;
-   const R& r;
+   const L l;
+   const R r;
 };
 
 } //end namespace gaalet

@@ -72,7 +72,7 @@ struct inverse<A, 1> : public expression<inverse<A> >
    }
 
 protected:
-   const A& a;
+   const A a;
    mutable element_t div;
    mutable bool first_eval;
 };

@@ -28,7 +28,7 @@ struct Magnitude : public expression<Magnitude<A> >
    }
 
 protected:
-   const A& a;
+   const A a;
 };
 
 }  //end namespace gaalet
