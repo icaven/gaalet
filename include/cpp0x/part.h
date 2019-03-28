@@ -24,7 +24,7 @@ struct part : public expression<part<A, elements...>>
    }
 
 protected:
-   const A& a;
+   const A a;
 };
 
 template<class T, class A>
@@ -46,7 +46,7 @@ struct part_type: public expression<part_type<T, A>>
    }
 
 protected:
-   const A& a;
+   const A a;
 };
 
 

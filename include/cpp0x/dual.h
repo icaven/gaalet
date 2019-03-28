@@ -40,7 +40,7 @@ struct dual : public expression<dual<A>>
    }
 
 protected:
-   const A& a;
+   const A a;
 };
 
 

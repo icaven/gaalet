@@ -60,7 +60,7 @@ struct sinh<A, 1> : public expression<sinh<A>>
    }
 
 protected:
-   const A& a;
+   const A a;
    mutable element_t sada;
    mutable bool first_eval;
 };
@@ -85,7 +85,7 @@ struct sinh<A, 0> : public expression<sinh<A>>
    }
 
 protected:
-   const A& a;
+   const A a;
 };
 
 
@@ -120,7 +120,7 @@ struct cosh<A, 1> : public expression<cosh<A>>
    }
 
 protected:
-   const A& a;
+   const A a;
 };
 
 //scalar cosh
@@ -143,7 +143,7 @@ struct cosh<A, 0> : public expression<cosh<A>>
    }
 
 protected:
-   const A& a;
+   const A a;
 };
 
 

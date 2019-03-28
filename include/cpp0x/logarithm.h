@@ -82,7 +82,7 @@ struct logarithm<A, 1> : public expression<logarithm<A>>
    }*/
 
 protected:
-   const A& a;
+   const A a;
    mutable element_t mag_s;
    mutable element_t inv_mag_b;
    mutable bool first_eval;
@@ -108,7 +108,7 @@ struct logarithm<A, 0> : public expression<logarithm<A>>
    }
 
 protected:
-   const A& a;
+   const A a;
 };
 
 //spinor logarithm
@@ -152,7 +152,7 @@ struct logarithm<A, 2> : public expression<logarithm<A>>
    }*/
 
 protected:
-   const A& a;
+   const A a;
    mutable element_t mag_s;
    mutable element_t b_acos_r_s;
    mutable bool first_eval;

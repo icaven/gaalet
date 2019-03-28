@@ -221,8 +221,8 @@ struct inner_product : public expression<inner_product<L, R>>
    }
 
 protected:
-   const L& l;
-   const R& r;
+   const L l;
+   const R r;
 };
 
 } //end namespace gaalet

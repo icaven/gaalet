@@ -211,8 +211,8 @@ struct geometric_product : public expression<geometric_product<L, R>>
    }
 
 protected:
-   const L& l;
-   const R& r;
+   const L l;
+   const R r;
 };
 
 template<class A>
@@ -234,8 +234,8 @@ struct scalar_multivector_product : public expression<scalar_multivector_product
    }
 
 protected:
-   const element_t& s;
-   const A& a;
+   const element_t s;
+   const A a;
 };
 
 } //end namespace gaalet

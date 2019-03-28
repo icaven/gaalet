@@ -29,8 +29,8 @@ struct scalar : public expression<scalar<L, R>>
    }
 
 protected:
-   const L& l;
-   const R& r;
+   const L l;
+   const R r;
    //const E& e;
 };
 

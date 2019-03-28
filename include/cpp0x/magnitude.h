@@ -26,7 +26,7 @@ struct magnitude : public expression<magnitude<A>>
    }
 
 protected:
-   const A& a;
+   const A a;
 };
 
 }  //end namespace gaalet
