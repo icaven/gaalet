@@ -25,11 +25,13 @@
 #include "grade.h"
 #include "part.h"
 #include "inverse.h"
+#include "normalize.h"
 #include "exponential.h"
 #include "hyperbolic.h"
 #include "logarithm.h"
 #include "scalar.h"
 #include "magnitude.h"
 #include "dual.h"
+#include "polar.h"
 
 #endif

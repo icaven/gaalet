@@ -29,7 +29,7 @@ struct multivector : public expression<multivector<CL, M, T>>
    multivector()
    {
       //std::fill(data, data+size, 0.0);
-      //std::fill(data.begin(), data.end(), null_element);
+      //std::fill(data.begin(), data.end(), null_element);          
       for(unsigned int i=0; i<size; ++i) data[i] = null_element<element_t>::value();
    }
 
@@ -64,13 +64,13 @@ struct multivector : public expression<multivector<CL, M, T>>
    template<conf_t conf>
    ////reference return (const element_t& element() const) not applicable because of possible return of 0.0;
    element_t element() const {
-      static const conf_t index = search_element<conf, clist>::index;
+      static const int index = search_element<conf, clist>::index;
       //static_assert(index<size, "element<conf_t>(): no such element in configuration list");
       return (index<size) ? data[index] : null_element<element_t>::value();
    }
 
    //evaluation
-   template<typename E, conf_t index = size>
+   template<typename E, int index = size>
    struct ElementEvaluation
    {                          //v no reference to pointer *& with gcc4.5 possible... What's going on?
       /*static void eval(element_t* const data, const E& e) {
@@ -78,6 +78,7 @@ struct multivector : public expression<multivector<CL, M, T>>
          ElementEvaluation<E, index+1>::eval(data, e);
       }*/
       static void eval(std::array<element_t, size>& data, const E& e) {
+         static_assert(index > 1 && size >= index, "Wrong size!");
          std::get<size-index>(data) = e.template element<get_element<size-index, clist>::value>();
          ElementEvaluation<E, index-1>::eval(data, e);
       }
@@ -89,6 +90,8 @@ struct multivector : public expression<multivector<CL, M, T>>
          data[size-1] = e.template element<get_element<size-1, clist>::value>();
       }*/
       static void eval(std::array<element_t, size>& data, const E& e) {
+         static_assert(size > 0, "Wrong size!");
+
          std::get<size-1>(data) = e.template element<get_element<size-1, clist>::value>();
       }
    };
@@ -142,6 +145,75 @@ protected:
 //specialization for scalar multivector type
 template<typename M, typename T>
 struct multivector<configuration_list<0x00, cl_null>, M, T> : public expression<multivector<configuration_list<0x00, cl_null>, M, T>>
+{
+   typedef configuration_list<0x00, cl_null> clist;
+   static const conf_t size = clist::size;
+   
+   typedef M metric;
+
+   typedef T element_t;
+
+   //initialization
+   multivector()
+      :  value(null_element<element_t>::value())
+   { }
+
+   multivector(const element_t& setValue)
+      :  value(setValue)
+   { }
+
+   multivector(std::initializer_list<element_t> s)
+      :  value(*s.begin())
+   { }
+
+   //conversion operator
+   operator element_t() {
+      return value;
+   }
+
+   //return element by index, index known at runtime
+   const element_t& operator[](const conf_t&) const {
+      return value;
+   }
+   element_t& operator[](const conf_t& index) {
+      return value;
+   }
+
+   //return element by index, index known at compile time
+   template<conf_t index>
+   const element_t& get() const {
+      return value;
+   }
+
+   //return element by configuration (basis vector), configuration known at compile time
+   template<conf_t conf>
+   ////reference return (const element_t& element() const) not applicable because of possible return of 0.0;
+   element_t element() const {
+      //static const conf_t index = search_element<conf, clist>::index;
+      //static_assert(index<size, "element<conf_t>(): no such element in configuration list");
+      return (conf==0x00) ? value : null_element<element_t>::value();
+   }
+
+   //   constructor evaluation
+   template<class E>
+   multivector(const expression<E>& e_) {
+      const E& e(e_);
+      value = e.template element<0x00>();
+   }
+
+   //   assignment evaluation
+   template<class E>
+   void operator=(const expression<E>& e_) {
+      const E& e(e_);
+      value = e.template element<0x00>();
+   }
+
+protected:
+   element_t value;
+};
+//specialization for scalar multivector type
+template<typename M, typename T>
+struct multivector<cl_null, M, T> : public expression<multivector<configuration_list<0x00, cl_null>, M, T>>
 {
    typedef configuration_list<0x00, cl_null> clist;
    static const conf_t size = clist::size;

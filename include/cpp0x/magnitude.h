@@ -1,10 +1,10 @@
 #ifndef __GAALET_MAGNITUDE_H
 #define __GAALET_MAGNITUDE_H
 
+#include <cmath>
 #include "geometric_product.h"
 #include "reverse.h"
 #include "grade.h"
-#include "symbex.h"  //  This is included only to resolve sqrt() correctly for this type - there should be a better way
 
 namespace gaalet {
 

@@ -32,9 +32,9 @@ int main()
    std::cout << "U: " << U << std::endl;
 
    sem::mv<3,5,6>::type m = {"m12", "m13", "m23"};
-   auto mag_m = magnitude(m);
-   std::cout << "m: " << m << ", mag_m: " << mag_m << std::endl;
-   auto mag2_m = magnitude2(m);
-   std::cout << "m: " << m << ", mag_m squared: " << mag2_m << std::endl;
-
+//   auto mag_m = magnitude(m);
+//   std::cout << "m: " << m << ", mag_m: " << mag_m << std::endl;
+//   auto mag2_m = magnitude2(m);
+//   std::cout << "m: " << m << ", mag_m squared: " << mag2_m << std::endl;
+//
 }

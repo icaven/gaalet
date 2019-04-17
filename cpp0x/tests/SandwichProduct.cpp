@@ -55,7 +55,7 @@ int main()
    const auto& s = sandwich(v,R);
    std::cout << "sandwich(v,R): " << s << std::endl;
 
-   auto a = R*(v*~R);
-   
-   std::cout << "a: " << a << std::endl;
+   std::cout << "Testing operator precedence - these two lines given different results" << std::endl;
+   std::cout << "R*(v*~R): " << R*(v*~R) << std::endl;
+   std::cout << "R*v*(~R): " << R*v*(~R) << std::endl;
 }

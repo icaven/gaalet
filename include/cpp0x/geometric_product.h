@@ -165,6 +165,12 @@ struct build_multiplication_element_list<L, cl_null, metric, CL, 0>
    typedef mel_null melist;
 };
 
+template<typename metric>
+struct build_multiplication_element_list<cl_null, cl_null, metric, cl_null, 0>
+{
+   typedef mel_null melist;
+};
+
 //search melist
 template<conf_t conf, typename list, bool fit = (conf==list::conf)>
 struct search_conf_in_melist

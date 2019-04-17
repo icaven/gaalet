@@ -9,6 +9,9 @@ namespace gaalet
 
 ///symbex: symbolic expression
 struct symbex {
+
+   typedef typename std::string element_t;
+   
    symbex(const std::string& expr_ = "0")
       :  expr(expr_)
    { }

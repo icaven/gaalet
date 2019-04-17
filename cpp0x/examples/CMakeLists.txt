@@ -3,3 +3,4 @@ project (cpp0x_examples)
 
 add_subdirectory (ElasticCoupling)
 add_subdirectory (MonteCarloPi)
+add_subdirectory (PGA3)

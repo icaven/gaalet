@@ -1,0 +1,14 @@
+cmake_minimum_required (VERSION 2.6.3)
+project (PointsAndLines)
+
+include_directories ("../../../../include/cpp0x")
+if (NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif (NOT CMAKE_BUILD_TYPE)
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+
+# find_package(OpenSceneGraph REQUIRED osg osgViewer osgGA)
+find_package(OpenSceneGraph REQUIRED osg osgViewer)
+include_directories (${OPENSCENEGRAPH_INCLUDE_DIRS})
+add_executable (PointsAndLines PointsAndLines.cpp)
+target_link_libraries(PointsAndLines ${OPENSCENEGRAPH_LIBRARIES})

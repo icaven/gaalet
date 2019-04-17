@@ -1,6 +1,6 @@
 #include "gaalet.h"
 
-typedef gaalet::algebra<gaalet::signature<3,0>, double> iem;
+typedef gaalet::algebra<gaalet::signature<3,0>, int32_t> iem;
 typedef gaalet::algebra<gaalet::signature<3,0>, double> dem;
 
 int main()
