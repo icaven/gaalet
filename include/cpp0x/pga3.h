@@ -2,6 +2,8 @@
 #include <cmath>
 #include <iostream>
 
+#pragma once
+
 using namespace gaalet;
 
 // Projective Geometric Algebra 3d
@@ -41,12 +43,9 @@ const space::mv<vector_conf(2)>::type e2 = { 1.0 };
 const space::mv<vector_conf(3)>::type e3 = { 1.0 };
 
 // Bivectors (representing lines)
-//const space::mv<blade_conf(0, 1)>::type e01 = (e0 ^ e1);
-//const space::mv<blade_conf(0, 2)>::type e02 = (e0 ^ e2);
-//const space::mv<blade_conf(0, 3)>::type e03 = (e0 ^ e3);
-const space::mv<blade_conf(0, 1)>::type e01 = (e1 ^ e0);
-const space::mv<blade_conf(0, 2)>::type e02 = (e2 ^ e0);
-const space::mv<blade_conf(0, 3)>::type e03 = (e3 ^ e0);
+const space::mv<blade_conf(0, 1)>::type e01 = (e0 ^ e1);
+const space::mv<blade_conf(0, 2)>::type e02 = (e0 ^ e2);
+const space::mv<blade_conf(0, 3)>::type e03 = (e0 ^ e3);
 const space::mv<blade_conf(1, 2)>::type e12 = (e1 ^ e2);
 const space::mv<blade_conf(1, 3)>::type e13 = (e1 ^ e3);
 const space::mv<blade_conf(2, 3)>::type e23 = (e2 ^ e3);
@@ -73,12 +72,9 @@ constexpr conf_t EY_CONF = blade_conf(0, 1, 3);
 constexpr conf_t EZ_CONF = blade_conf(0, 2, 3);
 
 const space::mv<blade_conf(1, 2, 3)>::type e123 = (e1 ^ e2 ^ e3);
-//const space::mv<blade_conf(0, 1, 2)>::type e012 = (e0 ^ e1 ^ e2);
-//const space::mv<blade_conf(0, 1, 3)>::type e013 = (e0 ^ e1 ^ e3);
-//const space::mv<blade_conf(0, 2, 3)>::type e023 = (e0 ^ e2 ^ e3);
-const space::mv<blade_conf(0, 1, 2)>::type e012 = (e1 ^ e2 ^ e0);
-const space::mv<blade_conf(0, 1, 3)>::type e013 = (e1 ^ e3 ^ e0);
-const space::mv<blade_conf(0, 2, 3)>::type e023 = (e2 ^ e3 ^ e0);
+const space::mv<blade_conf(0, 1, 2)>::type e012 = (e0 ^ e1 ^ e2);
+const space::mv<blade_conf(0, 1, 3)>::type e013 = (e0 ^ e1 ^ e3);
+const space::mv<blade_conf(0, 2, 3)>::type e023 = (e0 ^ e2 ^ e3);
 // Alternative names
 const space::mv<blade_conf(1, 2, 3)>::type E0 = e123; // This is also the pseudoscalar for the Euclidean subspace
 const space::mv<blade_conf(0, 1, 2)>::type E3 = e012;
@@ -97,6 +93,72 @@ const space::mv<pseudoscalar_conf>::type I = (e1 ^ e2 ^ e3 ^ e0);
 typedef space::mv<E0_CONF, EX_CONF, EY_CONF, EZ_CONF>::type Point_t;
 typedef space::mv<DUAL_K_CONF, DUAL_J_CONF, DUAL_I_CONF, I_CONF, J_CONF, K_CONF>::type Line_t;
 typedef space::mv<vector_conf(1), vector_conf(2), vector_conf(3), vector_conf(0)>::type Plane_t;
+
+//
+// Specialized version of the dual function for the PGA algebra 
+// TODO: modify the library dual function to support this algebra, since this version
+// is only a slight modification of the library function
+// Implements the Poincare duality
+// See: section 2.3.1.3 of "Geometry, Kinematics, and Rigid Body Mechanics in Cayley-Klein Geometries"
+// A sign change may be needed since the basis vectors in dual configuration will be in the canonical order
+// instead of being permuted (as described by the referenced section)
+
+namespace detail
+{
+template<conf_t I, typename list, typename colist = cl_null>
+struct dual_list
+{
+   typedef typename dual_list<I, typename list::tail, typename insert_element< I ^ list::head, colist>::clist>::clist clist;
+};
+template<conf_t I, typename colist>
+struct dual_list<I, cl_null, colist>
+{
+   typedef colist clist;
+};
+
+template<class A>
+struct dual : public expression<dual<A>>
+{
+   static const conf_t I = Power<2, A::metric::dimension>::value-1;
+
+   typedef typename dual_list<I, typename A::clist>::clist clist;
+
+   typedef typename A::metric metric;
+   
+   typedef typename A::element_t element_t;
+
+   dual(const A& a_)
+      :  a(a_)
+   { }
+
+   template<conf_t conf>
+   element_t element() const {
+      return (search_element<conf, clist>::index>=clist::size) ? 0.0 : a.template element< I ^ conf >()
+                                                                     * ((conf == blade_conf(0, 2) || conf == blade_conf(1, 3) || 
+                                                                         conf == vector_conf(2)  || conf == blade_conf(0, 1, 3) ||
+                                                                         conf == vector_conf(0) || conf == blade_conf(1, 2, 3)
+                                                                         ? -1 : 1)
+                                                                     );
+   }
+
+protected:
+   const A a;
+};
+
+} // end namespace detail
+
+/// Dual of a multivector.
+/**  Specialized version for PGA3
+  */
+/// \ingroup ga_ops
+
+#undef dual
+template <class A> inline
+detail::dual<A>
+dual(const gaalet::expression<A>& a) {
+   return detail::dual<A>(a);
+}
+
 
 //
 // Functions to generate common entities
@@ -127,15 +189,26 @@ template <typename T> auto ideal_point(T x, T y, T z)
 // Lines can be defined by Plücker coordinates
 // Note that the e13 component is negated to match the way Plücker coordinates are defined
 template <typename TX, typename TY, typename TZ, typename DX, typename DY, typename DZ>
-auto line(TX px, TY py, TZ pz, DX dx, DY dy, DZ dz)
+auto make_line(TX px, TY py, TZ pz, DX dx, DY dy, DZ dz)
 {
 //    return normalize(px * e01 + py * e02 + pz * e03 + dx * e12 - dy * e13 + dz * e23);
     return normalize(px * dual_k + py * dual_j + pz * dual_i + dx * i + dy * j + dz * k);
 }
 
+// TODO: Uncomment and test this function 
+//template <typename CL>
+//auto make_line(const Point_t& origin, const space::mv<CL>& direction)
+//{
+//    auto extracted_direction = ::grade<2>(direction);
+//    return Point_x(origin) * dual_k + Point_y(origin) * dual_j + Point_z(origin) * dual_i 
+//            + extracted_direction.template element<I_CONF>() * i
+//            + extracted_direction.template element<J_CONF>() * j 
+//            + extracted_direction.template element<K_CONF>() * k;
+//}
+
 
 // Four values define a plane
-template <typename T> auto plane(T a, T b, T c, T d)
+template <typename T> auto make_plane(T a, T b, T c, T d)
 {
     return normalize(d * e0 + a * e1 + b * e2 + c * e3);
 }
@@ -164,7 +237,7 @@ auto sandwich(const gaalet::expression<L>& l, const gaalet::expression<R>& r)
 template<typename L, typename R> inline
 auto vee(const gaalet::expression<L>& l, const gaalet::expression<R>& r)
 {
-    return ::dual(::dual(l) ^ ::dual(r));
+    return pga3::dual(pga3::dual(l) ^ pga3::dual(r));
 }
 
 template<typename L, typename R> inline

@@ -32,6 +32,6 @@
 #include "scalar.h"
 #include "magnitude.h"
 #include "dual.h"
-#include "polar.h"
+//#include "polar.h"
 
 #endif

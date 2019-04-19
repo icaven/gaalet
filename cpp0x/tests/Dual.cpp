@@ -31,19 +31,23 @@ int main()
    std::cout << "*(*(e1*e2) ^ *(e3*e0)): " << dual(dual(e1*e2) ^ dual(e3*e0)) << std::endl;
    
    static const pga::mv<0x0>::type one = { 1.0 };
+   static const pga::mv<8>::type e0_pga={1.0};
    static const pga::mv<1>::type e1_pga={1.0};
    static const pga::mv<2>::type e2_pga={1.0};
    static const pga::mv<4>::type e3_pga={1.0};
-   static const pga::mv<8>::type e0_pga={1.0};
    static const pga::mv<(1<<(3+1))-1>::type Ipga={1.0};  // The pseudoscalar for the pga algebra
 
    std::cout << "one: " << one << ", *one: " << dual(one) << ", **Ipga: " << dual(dual(one)) << std::endl;
    std::cout << "one: " << one << ", *one: " << ::dual(one) << ", **Ipga: " << ::dual(::dual(one)) << std::endl;
    std::cout << "Ipga: " << Ipga << ", *Ipga: " << dual(Ipga) << ", **Ipga: " << dual(dual(Ipga)) << std::endl;
+   std::cout << "e0_pga: " << (e0_pga) << std::endl;
    std::cout << "e0_pga^e1_pga: " << (e0_pga^e1_pga) << std::endl;
    std::cout << "e2_pga^e3_pga: " << (e2_pga^e3_pga) << std::endl;
 
+   std::cout << "dual(e0_pga): " << dual(e0_pga) << std::endl;
    std::cout << "dual(e0_pga^e1_pga): " << dual(e0_pga^e1_pga) << std::endl;
    std::cout << "dual(e2_pga^e3_pga): " << dual(e2_pga^e3_pga) << std::endl;
+   std::cout << "dual(~(e0_pga^e1_pga)): " << dual(~(e0_pga^e1_pga)) << std::endl;
+   std::cout << "dual(~(e2_pga^e3_pga)): " << dual(~(e2_pga^e3_pga)) << std::endl;
 
 }

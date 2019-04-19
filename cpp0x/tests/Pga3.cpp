@@ -10,14 +10,17 @@ template <class MV>
 void print_basis_info(const MV& p, const std::string& name) {
     std::cout << name << ": " << p 
 //              << " polar of " << name << ": " << pga3::polar(p) 
-              << " dual of " << name << ": " << ::dual(p) 
+              << " dual of " << name << ": " << pga3::dual(p) 
+              << " " << name << " ^ dual(" << name << ") " << (p ^ pga3::dual(p))
               << " square of " << name << ": " << p * p // + 0. * pga3::one)
               << std::endl;
 }
 
 
 void print_point_info(const pga3::Point_t& p, const std::string& name) {
-    std::cout << name << ": " << p << " polar of " << name << ": " << pga3::polar(p) << " dual of " << name << ": " << ::dual(p) << std::endl;
+    std::cout << name << ": " << p 
+//              << " polar of " << name << ": " << pga3::polar(p) 
+              << " dual of " << name << ": " << pga3::dual(p) << std::endl;
     std::cout << "normalized " << name << ": " << normalize(p) << std::endl;
     std::cout << name << "[0]: " << p[0] << " " << name << "[1]: " << p[1] << " " 
               << name << "[2]: " << p[2] << " " << name << "[3]: " << p[3] << std::endl;
@@ -25,7 +28,9 @@ void print_point_info(const pga3::Point_t& p, const std::string& name) {
 
 
 void print_line_info(const pga3::Line_t& l, const std::string& name) {
-    std::cout << name << ": " << l << " polar of " << name << ": " << pga3::polar(l) << " dual of " << name << ": " << ::dual(l) << std::endl;
+    std::cout << name << ": " << l 
+//              << " polar of " << name << ": " << pga3::polar(l) 
+              << " dual of " << name << ": " << ::dual(l) << std::endl;
     std::cout << "normalized " << name << ": " << normalize(l) << std::endl;
     std::cout << name << "[0]: " << l[0] << " " << name << "[1]: " << l[1] << " " << name << "[2]: " << l[2] << std::endl;
     std::cout << name << "[3]: " << l[3] << " " << name << "[4]: " << l[4] << " " << name << "[5]: " << l[5] << std::endl;
@@ -69,16 +74,33 @@ int main()
     print_basis_info(pga3::EY, "EY");
     print_basis_info(pga3::EZ, "EZ");
     
-    std::cout << "::polar(pga3::one) " << ::polar(pga3::one) << std::endl;
-    std::cout << "::polar(pga3::I) " << ::polar(pga3::I) << std::endl;
-    std::cout << "::dual(pga3::one) " << ::dual(pga3::one) << std::endl;
-    std::cout << "::dual(pga3::I) " << ::dual(pga3::I) << "::dual(::dual(pga3::I)) " << ::dual(::dual(pga3::I)) << std::endl;
-    std::cout << "::dual(pga3::I) " << ::dual(pga3::I) << std::endl;
+//    std::cout << "::polar(pga3::one) " << ::polar(pga3::one) << std::endl;
+//    std::cout << "::polar(pga3::I) " << ::polar(pga3::I) << std::endl;
+    std::cout << "pga3::dual(pga3::one) " << pga3::dual(pga3::one) << std::endl;
+    std::cout << "pga3::dual(pga3::I) " << pga3::dual(pga3::I) << "pga3::dual(pga3::dual(pga3::I)) " << pga3::dual(pga3::dual(pga3::I)) << std::endl;
+    std::cout << "pga3::dual(pga3::I) " << pga3::dual(pga3::I) << std::endl;
     std::cout << ~pga3::one << std::endl;
     std::cout << ~pga3::I << std::endl;
+    std::cout << "(pga3::i*pga3::j) " << (pga3::i*pga3::j) << std::endl;
+    std::cout << "(pga3::i*pga3::k) " << (pga3::i*pga3::k) << std::endl;
+
+    std::cout << "(pga3::j*pga3::i) " << (pga3::j*pga3::i) << std::endl;
+    std::cout << "(pga3::j*pga3::k) " << (pga3::j*pga3::k) << std::endl;
+    
+    std::cout << "(pga3::k*pga3::i) " << (pga3::k*pga3::i) << std::endl;
+    std::cout << "(pga3::k*pga3::j) " << (pga3::k*pga3::j) << std::endl;
+
     std::cout << " " << std::endl;
     
-    std::cout << (pga3::e1 ^ pga3::e2 ^ pga3::e0) << std::endl;
+//    std::cout << (pga3::e0 ^ pga3::e1 ^ pga3::e2 ^ pga3::e3) << std::endl;
+//    std::cout << (pga3::e1 ^ pga3::e0 ^ pga3::e2 ^ pga3::e3) << std::endl;
+//    std::cout << (pga3::e2 ^ pga3::e0 ^ pga3::e1 ^ pga3::e3) << std::endl;
+//    std::cout << (pga3::e3 ^ pga3::e0 ^ pga3::e1 ^ pga3::e2) << std::endl;
+
+    std::cout << (pga3::e0 ^ pga3::dual(pga3::e0)) << std::endl;
+    std::cout << (pga3::e1 ^ pga3::dual(pga3::e1)) << std::endl;
+    std::cout << (pga3::e2 ^ pga3::dual(pga3::e2)) << std::endl;
+    std::cout << (pga3::e3 ^ pga3::dual(pga3::e3)) << std::endl;
 
 //    auto a_line = pga3::line(2, 3, 4, 5, 6, 7);
 //    auto a_plane = pga3::plane(2, 3, 4, 7);
