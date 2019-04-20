@@ -157,41 +157,35 @@ void print_point_info(const pga3::Point_t& p, const std::string& name) {
 }
 
 void print_line_info(const pga3::Line_t& l, const std::string& name) {
-//    std::cout << name << ": " << l 
+    std::cout << name << ": " << l 
 //              << " polar of " << name << ": " << pga3::polar(l) 
 //              << " dual of " << name << ": " << pga3::dual(l) 
-//              << std::endl;
-//    std::cout << "normalized " << name << ": " << normalize(l)
+              << std::endl;
+    std::cout << "normalized " << name << ": " << normalize(l)
 ////              << "normalized " << name << " squared: " << normalize(l*l) 
-//              << std::endl;
-//    std::cout << name << "[0]: " << l[0] << " " << name << "[1]: " << l[1] << " " << name << "[2]: " << l[2] << std::endl;
-//    std::cout << name << "[3]: " << l[3] << " " << name << "[4]: " << l[4] << " " << name << "[5]: " << l[5] << std::endl;
+              << std::endl;
+    std::cout << name << "[0]: " << l[0] << " " << name << "[1]: " << l[1] << " " << name << "[2]: " << l[2] << std::endl;
+    std::cout << name << "[3]: " << l[3] << " " << name << "[4]: " << l[4] << " " << name << "[5]: " << l[5] << std::endl;
 }
 
-const float DEFAULT_LINE_THICKNESS = 0.025f;
+const float DEFAULT_LINE_THICKNESS = 0.0125f;
+
 
 osg::ShapeDrawable*
 new_drawable_line(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt, 
                   const osg::Vec4& colour = grey(0.5),
                   const float line_thickness=DEFAULT_LINE_THICKNESS)
 {
-//    print_point_info(start_pt, "start");
-//    print_point_info(end_pt, "end");
     pga3::Line_t line = pga3::line_from_points(start_pt, end_pt);
-//    print_line_info(line, "line");
-    osg::Vec3 origin = Vec3(start_pt);
-    osg::Vec3 direction = Vec3(end_pt) - origin;
+    osg::Vec3 direction = Vec3(end_pt) - Vec3(start_pt);
     float length = direction.length();
-//    std::cout << "direction: (" << direction.x() << ", " 
-//              << direction.y() << ", " << direction.z() << ") length: " << length << std::endl;
               
     // OSG Cylinders always start out in the vertical direction (+Z-axis) and centered on the starting point
     // so rotate and translate as needed
-    osg::Cylinder* cylinder = new osg::Cylinder(origin, line_thickness, length);
+    osg::Cylinder* cylinder = new osg::Cylinder(Vec3(start_pt), line_thickness, length);
 
     // Determine the angle between the line described by the start and end points and the Z-axis
     double angle = acos((pga3::k & normalize(line)).template element<0>());
-//    std::cout << "Angle between vertical and line direction " << angle *180./M_PI << std::endl;
     if (isclose(angle, 0.)) {
         // Parallel to the Z-axis, just shift along that axis in the positive direction
         cylinder->setCenter(cylinder->getCenter() + osg::Vec3(0., 0., length*0.5f));
@@ -206,22 +200,10 @@ new_drawable_line(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
         auto end_of_cylinder = normalize(pga3::sandwich(start_pt, pga3::translator(pga3::k, length)));
         auto plane_with_lines = pga3::plane_from_points(start_pt,  end_pt, end_of_cylinder);
         auto perpendicular_to_plane = start_pt & plane_with_lines;
-
-//        std::cout << "plane_from_points(start_pt,  end_pt, end_of_cylinder) " 
-//                  << plane_with_lines
-//                  << std::endl;
-//        std::cout << "perpendicular_to_plane " 
-//                  << perpendicular_to_plane
-//                  << std::endl;
         
         // Rotate the cylinder to be in the direction of the line
         osg::Quat q = Quat(angle/2.0, perpendicular_to_plane);
         cylinder->setRotation(q);
-
-//        double angle_radians;
-//        double x, y, z;
-//        q.getRotate(angle_radians, x, y, z);
-//        std::cout << angle_radians << " " << x << " " << y << " " << z << std::endl;
     
         // Translate the center point
         auto t = pga3::translator(line, -length*0.5);
@@ -230,6 +212,74 @@ new_drawable_line(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
     }
 
     osg::ShapeDrawable* drawable = new osg::ShapeDrawable(cylinder);
+    drawable->setColor(colour);
+    return drawable;
+}
+
+osg::ShapeDrawable*
+new_drawable_arrow(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt, 
+                  const osg::Vec4& colour = grey(0.5),
+                  const float line_thickness=DEFAULT_LINE_THICKNESS)
+{
+    pga3::Line_t line = pga3::line_from_points(start_pt, end_pt);
+    osg::Vec3 origin = Vec3(start_pt);
+    osg::Vec3 direction = Vec3(end_pt) - origin;
+    float length = direction.length();
+              
+    // OSG Cylinders and Cones always start out in the vertical direction (+Z-axis) 
+    // and origined on the starting point so rotate and translate as needed
+    float arrow_head_length = 5.f*line_thickness;
+    float arrow_base_radius = 3.f*line_thickness;
+    osg::Cone* arrow_head = new osg::Cone(origin, arrow_base_radius, 5.f*line_thickness);
+
+    // Determine the offset of the tip from the location of the cone origin
+    float head_offset = (1.f - arrow_head->getBaseOffsetFactor()) * arrow_head_length;
+    float shaft_length = length - head_offset;
+    osg::Cylinder* shaft = new osg::Cylinder(origin, line_thickness, shaft_length);
+
+    // Determine the angle between the line described by the start and end points and the Z-axis
+    double angle = acos((pga3::k & normalize(line)).template element<0>());
+    if (isclose(angle, 0.)) {
+        // Parallel to the Z-axis, just shift along that axis in the positive direction
+        shaft->setCenter(shaft->getCenter() + osg::Vec3(0., 0., shaft_length*0.5f));
+        arrow_head->setCenter(shaft->getCenter() + 
+            osg::Vec3(0., 0., fmax((length-head_offset)*0.5f, arrow_head_length)));
+    }
+    else if (isclose(angle, M_PI)) {
+        // Parallel to the Z-axis, just shift along that axis in the negative direction
+        shaft->setCenter(shaft->getCenter() + osg::Vec3(0., 0., -shaft_length*0.5f));
+        arrow_head->setRotation(osg::Quat(M_PI, osg::Vec3d(1., 0., 0.))); // Reflect the arrow head
+        arrow_head->setCenter(shaft->getCenter() + 
+            osg::Vec3(0., 0., fmin(-(length-head_offset)*0.5f, -arrow_head_length)));
+   }
+    else {
+        // Determine the plane that the Z-axis and the line forms and then compute the perpendicular
+        // to that plane; the angle will correspond to the angle around that perpendicular
+        auto end_of_shaft = normalize(pga3::sandwich(start_pt, pga3::translator(pga3::k, shaft_length)));
+        auto plane_with_lines = pga3::plane_from_points(start_pt,  end_pt, end_of_shaft);
+        auto perpendicular_to_plane = start_pt & plane_with_lines;
+        
+        // Rotate the shaft to be in the direction of the line
+        osg::Quat q = Quat(angle/2.0, perpendicular_to_plane);
+        shaft->setRotation(q);
+
+        // Translate the center point of the arrow shaft
+        auto t = pga3::translator(line, -shaft_length*0.5);
+        auto new_center = pga3::sandwich(start_pt, t);
+        shaft->setCenter(Vec3(new_center));
+        
+        // Rotate and translate the arrow head
+        arrow_head->setRotation(q);
+        auto arrow_translator = pga3::translator(line, (double) -fmax(length-head_offset, arrow_head_length));
+        auto arrow_center = pga3::sandwich(start_pt, arrow_translator);
+        arrow_head->setCenter(Vec3(arrow_center));
+    }
+
+    osg::CompositeShape* arrow = new osg::CompositeShape();
+    arrow->addChild(shaft);
+    arrow->addChild(arrow_head);
+    
+    osg::ShapeDrawable* drawable = new osg::ShapeDrawable(arrow);
     drawable->setColor(colour);
     return drawable;
 }

@@ -36,15 +36,12 @@ void print_line_info(const pga3::Line_t& l, const std::string& name) {
     std::cout << name << "[3]: " << l[3] << " " << name << "[4]: " << l[4] << " " << name << "[5]: " << l[5] << std::endl;
 }
 
-
-int main()
+void print_info_all_basis()
 {
-//    std::cout << pga3::e0 << std::endl;
-
     std::cout << pga3::space::algebra::metric::dimension << std::endl;
     std::cout << pga3::space::algebra::metric::signature_bitmap << std::endl;
     std::cout << pga3::space::algebra::metric::degenerate_bitmap << std::endl;
-//
+
     print_basis_info(pga3::one, "1");
     print_basis_info(pga3::e0, "e0");
     print_basis_info(pga3::e1, "e1");
@@ -73,14 +70,9 @@ int main()
     print_basis_info(pga3::EX, "EX");
     print_basis_info(pga3::EY, "EY");
     print_basis_info(pga3::EZ, "EZ");
-    
-//    std::cout << "::polar(pga3::one) " << ::polar(pga3::one) << std::endl;
-//    std::cout << "::polar(pga3::I) " << ::polar(pga3::I) << std::endl;
-    std::cout << "pga3::dual(pga3::one) " << pga3::dual(pga3::one) << std::endl;
-    std::cout << "pga3::dual(pga3::I) " << pga3::dual(pga3::I) << "pga3::dual(pga3::dual(pga3::I)) " << pga3::dual(pga3::dual(pga3::I)) << std::endl;
-    std::cout << "pga3::dual(pga3::I) " << pga3::dual(pga3::I) << std::endl;
-    std::cout << ~pga3::one << std::endl;
-    std::cout << ~pga3::I << std::endl;
+}
+
+void print_bivector_info() {
     std::cout << "(pga3::i*pga3::j) " << (pga3::i*pga3::j) << std::endl;
     std::cout << "(pga3::i*pga3::k) " << (pga3::i*pga3::k) << std::endl;
 
@@ -90,48 +82,41 @@ int main()
     std::cout << "(pga3::k*pga3::i) " << (pga3::k*pga3::i) << std::endl;
     std::cout << "(pga3::k*pga3::j) " << (pga3::k*pga3::j) << std::endl;
 
-    std::cout << " " << std::endl;
-    
-//    std::cout << (pga3::e0 ^ pga3::e1 ^ pga3::e2 ^ pga3::e3) << std::endl;
-//    std::cout << (pga3::e1 ^ pga3::e0 ^ pga3::e2 ^ pga3::e3) << std::endl;
-//    std::cout << (pga3::e2 ^ pga3::e0 ^ pga3::e1 ^ pga3::e3) << std::endl;
-//    std::cout << (pga3::e3 ^ pga3::e0 ^ pga3::e1 ^ pga3::e2) << std::endl;
+}
 
+void print_plane_info() {
     std::cout << (pga3::e0 ^ pga3::dual(pga3::e0)) << std::endl;
     std::cout << (pga3::e1 ^ pga3::dual(pga3::e1)) << std::endl;
     std::cout << (pga3::e2 ^ pga3::dual(pga3::e2)) << std::endl;
     std::cout << (pga3::e3 ^ pga3::dual(pga3::e3)) << std::endl;
+}
 
-//    auto a_line = pga3::line(2, 3, 4, 5, 6, 7);
-//    auto a_plane = pga3::plane(2, 3, 4, 7);
-//    auto a_point = pga3::point(2, 3, 4);
-//    auto an_ideal_point = pga3::ideal_point(2, 3, 4);
-//    auto another_point = pga3::point(4, 7, 8) * 2.;
-//    auto A = pga3::point(0, -1, 0), B = pga3::point(1, 1, -1), C = pga3::point(-1, 1, -1), D = pga3::point(1, 1, 1),
-//         E = pga3::point(-1, 1, 1), F = pga3::point(5, 6, 7);
-//    auto centroid = A + B + C + D + E;
-//
-//    std::cout << "polar(e1 ^ e2): " << pga3::polar(pga3::e1 ^ pga3::e2) << std::endl;
-//    std::cout << "dual(e1 ^ e2): " << ::dual(pga3::e1 ^ pga3::e2) << std::endl;
-//    std::cout << "polar(e1): " << pga3::polar(pga3::e1) << std::endl;
-//    std::cout << "polar(E1): " << pga3::polar(pga3::E1) << std::endl;
-//    std::cout << "dual(e1): " << ::dual(pga3::e1) << std::endl;
-//    std::cout << "dual(E1): " << ::dual(pga3::E1) << std::endl;
-//    std::cout << "dual(1): " << ::dual(pga3::one) << std::endl;
-//    std::cout << "dual(I): " << ::dual(pga3::I) << std::endl;
-//    std::cout << "polar(1): " << pga3::polar(pga3::one) << std::endl;
-//    std::cout << "polar(I): " << pga3::polar(pga3::I) << std::endl;
-//
-//    std::cout << "I " << (pga3::I) << std::endl;
-//    std::cout << "polar(e012)" << pga3::polar(pga3::e012) << std::endl;
-//    std::cout << "e013 * I " << pga3::e013 * pga3::I << std::endl;
-//    std::cout << "e023 * I " << pga3::e023 * pga3::I << std::endl;
-//    std::cout << "e123 * I " << pga3::e123 * pga3::I << std::endl;
-//    std::cout << "polar(e123) " << pga3::polar(pga3::e123) << std::endl;
-//
+int main()
+{
+//    print_info_all_basis();
+//    print_bivector_info();
+//    print_plane_info();
+
+    std::cout << " " << std::endl;
+    
+    auto origin = pga3::make_point(0, 0, 0);
+    auto A = pga3::make_point(0, -1, 0);
+    auto B = pga3::make_point(1, 1, -1);
+    auto C = pga3::make_point(-1, 1, -1);
+    auto D = pga3::make_point(1, 1, 1);
+    auto E = pga3::make_point(-1, 1, 1);
+    
+    print_point_info(A, "A");
+    print_point_info(B, "B");
+
+    auto line_AB = pga3::line_from_points(A, B);
+    print_line_info(line_AB, "line_AB");
+    std::cout << "e0 ^ line_AB " << (pga3::e0^line_AB) << std::endl;
+    std::cout << "e1 ^ line_AB " << (pga3::e1^line_AB) << std::endl;
+    std::cout << "e2 ^ line_AB " << (pga3::e2^line_AB) << std::endl;
+    std::cout << "e3 ^ line_AB " << (pga3::e3^line_AB) << std::endl;
+
 //    print_point_info(F, "F");
-//    print_point_info(A, "A");
-//    print_point_info(B, "B");
 //    std::cout << "(A ^ B): " << (A ^ B) << std::endl;
 //    std::cout << "(polar(A) ^ polar(B)): " << (pga3::polar(A) ^ pga3::polar(B)) << std::endl;
 //    std::cout << "vee(A, B): " << pga3::vee(A, B) << std::endl;

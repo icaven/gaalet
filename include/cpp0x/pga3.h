@@ -100,8 +100,8 @@ typedef space::mv<vector_conf(1), vector_conf(2), vector_conf(3), vector_conf(0)
 // is only a slight modification of the library function
 // Implements the Poincare duality
 // See: section 2.3.1.3 of "Geometry, Kinematics, and Rigid Body Mechanics in Cayley-Klein Geometries"
-// A sign change may be needed since the basis vectors in dual configuration will be in the canonical order
-// instead of being permuted (as described by the referenced section)
+// The sign change is needed for some blades since the basis vectors in dual configuration 
+// are ordered to be in the canonical order instead of being permuted (as described by the referenced section)
 
 namespace detail
 {
@@ -165,7 +165,7 @@ dual(const gaalet::expression<A>& a) {
 //
 
 // Eulidean point as a homogeneous point
-template <typename T> auto point(T x, T y, T z)
+template <typename T> auto make_point(T x, T y, T z)
 {
     return E0 + x * EX + y * EY + z * EZ;
 }
@@ -181,19 +181,25 @@ inline space::algebra::element_t Point_z(const Point_t& p) {
 };
 
 // Ideal point
-template <typename T> auto ideal_point(T x, T y, T z)
+template <typename T> auto make_ideal_point(T x, T y, T z)
 {
     return normalize(space::algebra::element_t(0) * E0 + x * EX + y * EY + z * EZ);
 }
 
+
+// Ideal point from Point
+auto make_ideal_point(const Point_t& p)
+{
+    return normalize(space::algebra::element_t(0) * E0 + p[1] * EX + p[2] * EY + p[3] * EZ);
+}
+
 // Lines can be defined by Plücker coordinates
-// Note that the e13 component is negated to match the way Plücker coordinates are defined
 template <typename TX, typename TY, typename TZ, typename DX, typename DY, typename DZ>
 auto make_line(TX px, TY py, TZ pz, DX dx, DY dy, DZ dz)
 {
-//    return normalize(px * e01 + py * e02 + pz * e03 + dx * e12 - dy * e13 + dz * e23);
     return normalize(px * dual_k + py * dual_j + pz * dual_i + dx * i + dy * j + dz * k);
 }
+
 
 // TODO: Uncomment and test this function 
 //template <typename CL>
