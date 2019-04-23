@@ -40,7 +40,7 @@ public:
 
         sumFrameTime += frameTime;
         if(counter == 1000) {
-            std::cout << "Average frame time: " << sumFrameTime / 1000.0 << std::endl;
+//            std::cout << "Average frame time: " << sumFrameTime / 1000.0 << std::endl;
             sumFrameTime = 0.0;
             counter = 0;
         } else {
@@ -127,7 +127,7 @@ inline auto Quat2Rotor(const osg::Quat q)
     q.getRotate(angle, axis);
     auto pga_axis = axis[0] * pga3::i + axis[1] * pga3::j + axis[2] * pga3::k;
     auto R = pga3::rotor(pga_axis, angle);
-    std::cout << "Rotor: " << R << "R*~R: " << R*(~R) << std::endl;
+//    std::cout << "Rotor: " << R << "R*~R: " << R*(~R) << std::endl;
     return R;
 }
 
@@ -216,10 +216,11 @@ new_drawable_line(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
     return drawable;
 }
 
-osg::ShapeDrawable*
-new_drawable_arrow(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt, 
-                  const osg::Vec4& colour = grey(0.5),
-                  const float line_thickness=DEFAULT_LINE_THICKNESS)
+
+/// Arrow shape
+osg::CompositeShape*
+new_arrow(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt, 
+          const float line_thickness=DEFAULT_LINE_THICKNESS)
 {
     pga3::Line_t line = pga3::line_from_points(start_pt, end_pt);
     osg::Vec3 origin = Vec3(start_pt);
@@ -279,6 +280,17 @@ new_drawable_arrow(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
     arrow->addChild(shaft);
     arrow->addChild(arrow_head);
     
+    return arrow;
+}
+
+
+/// Drawable arrow
+osg::ShapeDrawable*
+new_drawable_arrow(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt, 
+                  const osg::Vec4& colour = grey(0.5),
+                  const float line_thickness=DEFAULT_LINE_THICKNESS)
+{
+    osg::CompositeShape* arrow = new_arrow(start_pt, end_pt, line_thickness);
     osg::ShapeDrawable* drawable = new osg::ShapeDrawable(arrow);
     drawable->setColor(colour);
     return drawable;
@@ -290,30 +302,55 @@ osg::ShapeDrawable*
 new_drawable_plane(const pga3::Point_t& p1, const pga3::Point_t& p2, const pga3::Point_t& p3,
                    const osg::Vec4& colour = grey(0.5), const float plane_thickness=DEFAULT_THICKNESS_OF_PLANE)
 {
+    // Determine the plane, its normal vector, and the point at the end of the normal
     pga3::Plane_t the_plane = pga3::plane_from_points(p1, p2, p3);
-    std::cout << "The plane from points: " << the_plane << std::endl;
-    osg::Plane implicit_plane = osg::Plane(the_plane[1], the_plane[2], the_plane[3], the_plane[0]);
-    osg::Vec4 v = implicit_plane.asVec4();
-    std::cout << "The plane implicitly from the points: " << v[0] << " " << v[1] << " " << v[2] << " " << v[3] << std::endl;
+    auto perpendicular_to_plane = normalize(p1 & the_plane);
+    auto direction_of_normal = pga3::translator(perpendicular_to_plane, 1.0);
+    auto end_of_normal = pga3::sandwich(p1, direction_of_normal);
+    
+    // The box that will be used to represent the plane is initially oriented so that
+    // its thickness is in the Y-axis.  There a rotation will need to be computed to
+    // rotate the box into place.  The axis of this rotation is the perpendicular to the
+    // plane formed by the p1 point (the initial center of the box), the end of the normal
+    // to the original desired plane, and the point that is unit distance "upwards" from
+    // the p1 point.  So there are two planes involved: the desired plane represented by a
+    // box, and the plane of rotation of that box.
+    auto up = pga3::translator(pga3::j, 1.0);
+    auto p1_upwards = pga3::sandwich(p1, up);
 
-    osg::Plane plane_directly = osg::Plane(Vec3(p1), Vec3(p2), Vec3(p3));;
-    v = plane_directly.asVec4();
-    std::cout << "The plane directly from the points: " << v[0] << " " << v[1] << " " << v[2] << " " << v[3] << std::endl;
+    auto plane_with_normal = pga3::plane_from_points(p1,  end_of_normal, p1_upwards);
+    auto perpendicular_to_plane_with_normal = p1 & plane_with_normal;
+    auto direction_of_normal_rotation = pga3::translator(perpendicular_to_plane_with_normal, 1.0);
+    auto end_of_normal_to_rotation_plane = pga3::sandwich(p1, direction_of_normal_rotation);
 
-    double x_length = eval(::magnitude(pga3::line_from_points(p1, p2)));
-    double y_length = eval(::magnitude(pga3::line_from_points(p1, p3)));
-    double angle = acos((pga3::i & normalize(pga3::line_from_points(p1, p2))).template element<0>());
-    std::cout << angle << " " << x_length << " " << y_length << std::endl;
+    auto bisecting_line = pga3::line_from_points(p1, normalize(p2 + p3));
+    double x_length = eval(::magnitude(bisecting_line));
+    double z_length = eval(::magnitude(pga3::line_from_points(p2, p3)));
+    auto towards_bisecting_point = pga3::translator(bisecting_line, -x_length/2.0);
+    auto plane_center = pga3::sandwich(p1, towards_bisecting_point);
 
-    osg::Box* box_as_plane = new osg::Box(Vec3(p1),float(x_length),float(y_length), plane_thickness);
-    auto perpendicular_to_plane = p1 & the_plane;
+    double angle = acos((pga3::j & perpendicular_to_plane).template element<0>());
 
-    osg::Quat q = Quat(angle/2.0, perpendicular_to_plane);
+    osg::Box* box_as_plane = new osg::Box(Vec3(p1),float(x_length), plane_thickness, float(z_length));
+    osg::Quat q = Quat(-angle/2.0, perpendicular_to_plane_with_normal);
     box_as_plane->setRotation(q);
+    box_as_plane->setCenter(Vec3(plane_center));
     osg::ShapeDrawable* drawable = new osg::ShapeDrawable(box_as_plane);
+
+    // For debugging, it is helpful to draw the normals together with the rotated box,
+    // instead of just the box
+//    osg::CompositeShape* plane_and_normal= new osg::CompositeShape();
+//    plane_and_normal->addChild(box_as_plane);
+//    plane_and_normal->addChild(new osg::Sphere(Vec3(plane_center), DEFAULT_RADIUS_OF_DRAWN_POINT));
+//    plane_and_normal->addChild(new osg::Sphere(Vec3(normalize(p2 + p3)), DEFAULT_RADIUS_OF_DRAWN_POINT));
+//    plane_and_normal->addChild(new_arrow(p1, normalize(p2 + p3)));
+
+//    plane_and_normal->addChild(new_arrow(p1, end_of_normal));
+//    plane_and_normal->addChild(new_arrow(p1, end_of_normal_to_rotation_plane));
+
+//    osg::ShapeDrawable* drawable = new osg::ShapeDrawable(plane_and_normal);
     
     
-//    drawable->setColor(colour);
-    drawable->setColor(osg::Vec4(0.5, 0.5, 0.5, 0.1));
+    drawable->setColor(colour);
     return drawable;
 }
