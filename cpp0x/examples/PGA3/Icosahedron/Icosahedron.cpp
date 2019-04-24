@@ -1,7 +1,10 @@
 
 #include "OSG_Utilities.h"
 
-inline double sq(double x) { return x * x; }
+inline double sq(double x)
+{
+    return x * x;
+}
 
 // Re-implementation of https://enkimute.github.io/ganja.js/examples/coffeeshop.html#pga3d_icosahedron
 int main()
@@ -11,10 +14,10 @@ int main()
 
     // We construct faces, edges and vertices of an icosahedron.
     auto r = pga3::rotor(pga3::e13, M_PI / 2.5);
-    pga3::Point_t A = pga3::point(0., 1., 0.);
-    pga3::Point_t B = pga3::point(sqrt(1. - sq(atan(0.5))), atan(0.5), 0.);
-    pga3::Point_t C = pga3::sandwich(pga3::rotor(pga3::e13, M_PI / 5), pga3::sandwich(pga3::e2, B));
-    pga3::Point_t D = pga3::sandwich(pga3::e2, A);
+    pga3::Point_t A = pga3::make_point(0., 1., 0.);
+    pga3::Point_t B = pga3::make_point(sqrt(1. - sq(atan(0.5))), atan(0.5), 0.);
+    pga3::Point_t C = pga3::sandwich(pga3::sandwich(B, pga3::e2), pga3::rotor(pga3::e13, M_PI / 5));
+    pga3::Point_t D = pga3::sandwich(A, pga3::e2);
 
     // Graph the 3D items
     osg::Group* sceneRoot = new osg::Group;
@@ -23,48 +26,57 @@ int main()
     cubeTransform->addChild(cubeGeode);
     sceneRoot->addChild(cubeTransform);
 
-    std::vector<osg::ShapeDrawable*> drawable_points;
-    drawable_points.push_back(new_drawable_point(A, white()));
-    //  drawable_points.push_back(new_drawable_point(B, white()));
-    //  drawable_points.push_back(new_drawable_point(C, white()));
+    std::vector<osg::ShapeDrawable*> drawables;
+    const float VERTEX_RADIUS = 0.02f;
+    drawables.push_back(new_drawable_point(A, white(), VERTEX_RADIUS));
 
     // vertices
-    // items.push(0x4444FF);
     auto vertex_colour = colour(float(0x44) / 255., float(0x44) / 255., 1.0);
     for(int i = 0; i < 5; i++) {
-        //    drawable_points.push_back(new_drawable_point(A, vertex_colour));
-        pga3::Point_t newB(pga3::sandwich(r, B));
-        B = newB;
-        drawable_points.push_back(new_drawable_point(newB, vertex_colour));
-        C = pga3::sandwich(r, C);
-        drawable_points.push_back(new_drawable_point(C, vertex_colour));
-        drawable_points.push_back(new_drawable_point(D, vertex_colour));
+        B = pga3::sandwich(B, r);
+        drawables.push_back(new_drawable_point(B, vertex_colour, VERTEX_RADIUS));
+        C = pga3::sandwich(C, r);
+        drawables.push_back(new_drawable_point(C, vertex_colour, VERTEX_RADIUS));
+        drawables.push_back(new_drawable_point(D, vertex_colour, VERTEX_RADIUS));
     }
 
-    for(auto p : drawable_points) {
+    // edges
+    const float EDGE_THICKNESS = 0.01f;
+    auto line_colour = colour(float(0x44) / 255., float(0x44) / 255., float(0x44) / 255.);
+    for(int i = 0; i < 5; i++) {
+        drawables.push_back(new_drawable_line(A, B, line_colour, EDGE_THICKNESS));
+        drawables.push_back(new_drawable_line(B, C, line_colour, EDGE_THICKNESS));
+        
+        auto next_B = pga3::sandwich(B, r);
+        drawables.push_back(new_drawable_line(B, next_B, line_colour, EDGE_THICKNESS));
+        B = next_B;
+
+        drawables.push_back(new_drawable_line(B, C, line_colour, EDGE_THICKNESS));
+
+        auto next_C = pga3::sandwich(C, r);
+        drawables.push_back(new_drawable_line(C, next_C, line_colour, EDGE_THICKNESS));
+        C = next_C;
+
+        drawables.push_back(new_drawable_line(D, C, line_colour, EDGE_THICKNESS));
+    }
+    
+    // faces
+    auto face_colour = colour(float(0xff) / 255., float(0xcc) / 255., float(0xcc) / 255.);
+    for(int i = 0; i < 5; i++) {
+        auto next_B = pga3::sandwich(B, r);
+        drawables.push_back(new_drawable_triangle(A, B, next_B, face_colour, EDGE_THICKNESS));
+        drawables.push_back(new_drawable_triangle(B, next_B, C, face_colour, EDGE_THICKNESS));
+        B = next_B;
+        auto next_C = pga3::sandwich(C, r);
+        
+        drawables.push_back(new_drawable_triangle(C, B, next_C, face_colour, EDGE_THICKNESS));
+        drawables.push_back(new_drawable_triangle(C, D, next_C, face_colour, EDGE_THICKNESS));
+        C = next_C;
+    }
+
+    for(auto p : drawables) {
         cubeGeode->addDrawable(p);
     }
-
-    return 0; // XXXX DEBUGGING ONLY
-              //
-              //  // edges
-              //  i//  items.push(0x444444);
-              //  for (var i=0;i<5;i++) items.push([A,B],[B,C],[B,B=r>>>  return 0; // XXXX DEBUGGING ONLY
-  //
-  //  // edges
-  //  i//  items.push(0x444444);
-//  for (var i=0;i<5;i++) items.push([A,B],[B,C],[B,B=r>>>B],[B,C],[C,C=r>>>C],[1e2>>>A,C]);
-//  
-//  // faces
-//  items.push(0xFFCCCC);
-//  for (var i=0;i<5;i++) items.push([A,B,r>>>B],[B,B=r>>>B,C],[C,B,r>>>C],[C,1e2>>>A,C=r>>>C]);
-//  
-//  // Graph the 3D items
-//  document.body.appendChild(this.graph(()=>{
-//    var time=performance.now()/4000;    
-//    camera.set(rotor(1e13,time)*rotor(1e12,time*1.23131));                // animate camera
-//    return items.slice(0,1+((Math.floor(time*50))%(items.length+20)));    // show more and more elements
-//  },{gl:true,animate:true,camera})); 
 
     osgViewer::Viewer viewer;
     viewer.setSceneData(sceneRoot);
@@ -80,16 +92,13 @@ int main()
 
     // Animation loop:
     FrameThrottle throttle;
-    while (false && !viewer.done()) {
+    while(!viewer.done()) {
         throttle.begin();
-        
-        // Updating new position of cube
-        //      auto p_m = eval(grade<1>(D*e0*(~D)));
-        //      cubeTransform->setPosition(osg::Vec3(p_m[0], p_m[1], p_m[2]));
-        //      cubeTransform->setAttitude(osg::Quat(-D[3], D[2], -D[1], D[0]));
+
+        // Update objects and camera position here
 
         viewer.frame();
         throttle.end();
     }
-    return 0;  
+    return 0;
 }

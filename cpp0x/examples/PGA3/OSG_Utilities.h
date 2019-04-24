@@ -354,3 +354,26 @@ new_drawable_plane(const pga3::Point_t& p1, const pga3::Point_t& p2, const pga3:
     drawable->setColor(colour);
     return drawable;
 }
+
+osg::ShapeDrawable*
+new_drawable_triangle(const pga3::Point_t& p1, const pga3::Point_t& p2, const pga3::Point_t& p3,
+                     const osg::Vec4& colour = grey(0.5), const float plane_thickness=DEFAULT_THICKNESS_OF_PLANE)
+{
+    osg::TriangleMesh* triangle_as_plane = new osg::TriangleMesh();
+    osg::Vec3Array* vertices = new osg::Vec3Array();
+    vertices->push_back(Vec3(p1));
+    vertices->push_back(Vec3(p2));
+    vertices->push_back(Vec3(p3));
+    triangle_as_plane->setVertices(vertices);
+    std::vector<int> triangle_indices;
+    triangle_indices.push_back(0);
+    triangle_indices.push_back(1);
+    triangle_indices.push_back(2);
+    osg::IntArray* indices = new osg::IntArray(triangle_indices.begin(), triangle_indices.end());
+    triangle_as_plane->setIndices(indices);
+    osg::ShapeDrawable* drawable = new osg::ShapeDrawable(triangle_as_plane);    
+    
+    drawable->setColor(colour);
+    return drawable;
+    
+}

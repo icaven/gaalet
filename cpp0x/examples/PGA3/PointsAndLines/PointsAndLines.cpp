@@ -49,7 +49,14 @@ int main()
     drawables.push_back(new_drawable_arrow(A, E));
     drawables.push_back(new_drawable_arrow(E, D));
 
-    drawables.push_back(new_drawable_plane(A, D, B));
+//    drawables.push_back(new_drawable_plane(A, D, B));
+    drawables.push_back(new_drawable_triangle(A, B, C));
+    
+    auto sum_of_lines = pga3::line_from_points(B, C) + pga3::line_from_points(C, E);
+    std::cout << "line_from_points(B, C): " << pga3::line_from_points(B, C) << std::endl;
+    std::cout << "line_from_points(C, E): " << pga3::line_from_points(C, E) << std::endl;
+    std::cout << "sum of lines: " << sum_of_lines << std::endl;
+    std::cout << "sum of lines normalized: " << ::normalize(sum_of_lines) << std::endl;
 
     for(auto d : drawables) {
         cubeGeode->addDrawable(d);
