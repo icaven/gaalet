@@ -64,13 +64,13 @@ int main()
     auto face_colour = colour(float(0xff) / 255., float(0xcc) / 255., float(0xcc) / 255.);
     for(int i = 0; i < 5; i++) {
         auto next_B = pga3::sandwich(B, r);
-        drawables.push_back(new_drawable_triangle(A, B, next_B, face_colour, EDGE_THICKNESS));
-        drawables.push_back(new_drawable_triangle(B, next_B, C, face_colour, EDGE_THICKNESS));
+        drawables.push_back(new_drawable_triangle(A, B, next_B, face_colour, true));
+        drawables.push_back(new_drawable_triangle(B, next_B, C, face_colour, true));
         B = next_B;
         auto next_C = pga3::sandwich(C, r);
         
-        drawables.push_back(new_drawable_triangle(C, B, next_C, face_colour, EDGE_THICKNESS));
-        drawables.push_back(new_drawable_triangle(C, D, next_C, face_colour, EDGE_THICKNESS));
+        drawables.push_back(new_drawable_triangle(C, B, next_C, face_colour, true));
+        drawables.push_back(new_drawable_triangle(C, D, next_C, face_colour, true));
         C = next_C;
     }
 

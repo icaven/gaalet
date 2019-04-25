@@ -277,6 +277,11 @@ template <class TP, class TL> auto point_from_line_and_plane(const TL& L, const 
     return normalize(L ^ P);
 }
 
+// Points are in a CCW direction
+template <class T1, class T2, class T3> auto normal_to_plane(const T1& P1, const T2& P2, const T3& P3) {
+    return -1. * normalize(P1 & plane_from_points(P1, P2, P3));
+}
+
 //
 // Rigid motions
 //

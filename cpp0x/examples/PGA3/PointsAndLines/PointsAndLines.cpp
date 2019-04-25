@@ -49,8 +49,8 @@ int main()
     drawables.push_back(new_drawable_arrow(A, E));
     drawables.push_back(new_drawable_arrow(E, D));
 
-//    drawables.push_back(new_drawable_plane(A, D, B));
-    drawables.push_back(new_drawable_triangle(A, B, C));
+//    drawables.push_back(new_drawable_plane(A, B, D));
+    drawables.push_back(new_drawable_triangle(A, B, D, grey(0.5), true));
     
     auto sum_of_lines = pga3::line_from_points(B, C) + pga3::line_from_points(C, E);
     std::cout << "line_from_points(B, C): " << pga3::line_from_points(B, C) << std::endl;
