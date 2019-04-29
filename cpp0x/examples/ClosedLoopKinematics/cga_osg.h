@@ -6,32 +6,30 @@
 
 namespace cga {
 
-typedef gaalet::algebra<gaalet::signature<4,1>> cga;
-
 //defintion of basisvectors, null basis, pseudoscalars, helper unit scalar
-cga::mv<0x01>::type e1 = {1.0};
-cga::mv<0x02>::type e2 = {1.0};
-cga::mv<0x04>::type e3 = {1.0};
-cga::mv<0x08>::type ep = {1.0};
-cga::mv<0x10>::type em = {1.0};
+gaalet::cm::mv<0x01>::type e1 = {1.0};
+gaalet::cm::mv<0x02>::type e2 = {1.0};
+gaalet::cm::mv<0x04>::type e3 = {1.0};
+gaalet::cm::mv<0x08>::type ep = {1.0};
+gaalet::cm::mv<0x10>::type em = {1.0};
 
-cga::mv<0x00>::type one = {1.0};
+gaalet::cm::mv<0x00>::type one = {1.0};
 
-cga::mv<0x08, 0x10>::type e0 = 0.5*(em-ep);
-cga::mv<0x08, 0x10>::type einf = em+ep;
+gaalet::cm::mv<0x08, 0x10>::type e0 = 0.5*(em-ep);
+gaalet::cm::mv<0x08, 0x10>::type einf = em+ep;
 
-cga::mv<0x18>::type E = ep*em;
+gaalet::cm::mv<0x18>::type E = ep*em;
 
-cga::mv<0x1f>::type Ic = e1*e2*e3*ep*em;
-cga::mv<0x07>::type Ie = e1*e2*e3;
+gaalet::cm::mv<0x1f>::type Ic = e1*e2*e3*ep*em;
+gaalet::cm::mv<0x07>::type Ie = e1*e2*e3;
 
-typedef cga::mv<0x03, 0x05, 0x06, 0x09, 0x0a, 0x0c, 0x11, 0x12, 0x14>::type S_type;
-typedef cga::mv<0x00, 0x03, 0x05, 0x06, 0x09, 0x0a, 0x0c, 0x0f, 0x11, 0x12, 0x14, 0x17>::type D_type;
+typedef gaalet::cm::mv<0x03, 0x05, 0x06, 0x09, 0x0a, 0x0c, 0x11, 0x12, 0x14>::type S_type;
+typedef gaalet::cm::mv<0x00, 0x03, 0x05, 0x06, 0x09, 0x0a, 0x0c, 0x0f, 0x11, 0x12, 0x14, 0x17>::type D_type;
 
 
 namespace osg {
 
-   class Sphere : public cga::mv<1,2,4,8,16>::type, public ::osg::Sphere
+   class Sphere : public gaalet::cm::mv<1,2,4,8,16>::type, public ::osg::Sphere
    {
    public:
       //initialization
@@ -74,7 +72,7 @@ namespace osg {
    };
 
 
-   class Point : public cga::mv<1,2,4,8,16>::type, public ::osg::Sphere
+   class Point : public gaalet::cm::mv<1,2,4,8,16>::type, public ::osg::Sphere
    {
    public:
       //initialization
