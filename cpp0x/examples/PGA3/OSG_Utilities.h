@@ -80,7 +80,7 @@ public:
         return cubeGeode;
     };
 
-    void loop(void (*loop_update)())
+    void loop(void (*loop_update)(float frame_time, void* data), void* user_data)
     {
         viewer.setSceneData(sceneRoot);
         viewer.addEventHandler(new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()));
@@ -99,7 +99,7 @@ public:
             throttle.begin();
 
             // Update objects and camera here
-            (*loop_update)();
+            (*loop_update)(throttle.time(), user_data);
             
             viewer.frame();
             throttle.end();
