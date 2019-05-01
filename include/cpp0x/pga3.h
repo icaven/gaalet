@@ -187,12 +187,6 @@ template <typename T> auto make_ideal_point(T x, T y, T z)
 }
 
 
-// Ideal point from Point
-auto make_ideal_point(const Point_t& p)
-{
-    return normalize(space::algebra::element_t(0) * E0 + p[1] * EX + p[2] * EY + p[3] * EZ);
-}
-
 // Lines can be defined by Plücker coordinates
 template <typename TX, typename TY, typename TZ, typename DX, typename DY, typename DZ>
 auto make_line(TX px, TY py, TZ pz, DX dx, DY dy, DZ dz)
@@ -249,7 +243,7 @@ auto vee(const gaalet::expression<L>& l, const gaalet::expression<R>& r)
 template<typename L, typename R> inline
 auto line_from_points(const gaalet::expression<L>& start, const gaalet::expression<R>& end)
 {
-    return vee(end, start);
+    return vee(start, end);
 }
 
 template <class T1, class T2, class T3> auto plane_from_points(const T1& P1, const T2& P2, const T3& P3)

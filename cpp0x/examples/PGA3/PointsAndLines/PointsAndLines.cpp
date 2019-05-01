@@ -19,7 +19,7 @@ int main()
     // Need to normalize when computing the centroid
     auto centroid = normalize(A + B + C + D + E);  
     
-    auto camera = 0.0 * pga3::e0;
+//    auto camera = 0.0 * pga3::e0;
 
     // Graph the 3D items
     osg::Group* sceneRoot = new osg::Group;

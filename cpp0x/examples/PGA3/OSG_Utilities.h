@@ -237,11 +237,11 @@ new_drawable_line(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
     double angle = acos((pga3::k & normalize(line)).template element<0>());
     if (isclose(angle, 0.)) {
         // Parallel to the Z-axis, just shift along that axis in the positive direction
-        cylinder->setCenter(cylinder->getCenter() + osg::Vec3(0., 0., length*0.5f));
+        cylinder->setCenter(cylinder->getCenter() + osg::Vec3(0., 0., -length*0.5f));
     }
     else if (isclose(angle, M_PI)) {
         // Parallel to the Z-axis, just shift along that axis in the negative direction
-        cylinder->setCenter(cylinder->getCenter() + osg::Vec3(0., 0., -length*0.5f));
+        cylinder->setCenter(cylinder->getCenter() + osg::Vec3(0., 0., length*0.5f));
     }
     else {
         // Determine the plane that the Z-axis and the line forms and then compute the perpendicular
@@ -250,11 +250,11 @@ new_drawable_line(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
         auto perpendicular_to_plane = pga3::normal_to_plane(start_pt,  end_pt, end_of_cylinder);
 
         // Rotate the cylinder to be in the direction of the line
-        osg::Quat q = Quat(-angle/2.0, perpendicular_to_plane);
+        osg::Quat q = Quat(M_PI/2.0+angle/2.0, perpendicular_to_plane);
         cylinder->setRotation(q);
     
         // Translate the center point
-        auto t = pga3::translator(line, -length*0.5);
+        auto t = pga3::translator(line, length*0.5);
         auto new_center = pga3::sandwich(start_pt, t);
         cylinder->setCenter(Vec3(new_center));
     }
@@ -290,35 +290,35 @@ new_arrow(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
     double angle = acos((pga3::k & normalize(line)).template element<0>());
     if (isclose(angle, 0.)) {
         // Parallel to the Z-axis, just shift along that axis in the positive direction
-        shaft->setCenter(shaft->getCenter() + osg::Vec3(0., 0., shaft_length*0.5f));
-        arrow_head->setCenter(shaft->getCenter() + 
-            osg::Vec3(0., 0., fmax((length-head_offset)*0.5f, arrow_head_length)));
-    }
-    else if (isclose(angle, M_PI)) {
-        // Parallel to the Z-axis, just shift along that axis in the negative direction
         shaft->setCenter(shaft->getCenter() + osg::Vec3(0., 0., -shaft_length*0.5f));
         arrow_head->setRotation(osg::Quat(M_PI, osg::Vec3d(1., 0., 0.))); // Reflect the arrow head
         arrow_head->setCenter(shaft->getCenter() + 
             osg::Vec3(0., 0., fmin(-(length-head_offset)*0.5f, -arrow_head_length)));
+    }
+    else if (isclose(angle, M_PI)) {
+        // Parallel to the Z-axis, just shift along that axis in the negative direction
+        shaft->setCenter(shaft->getCenter() + osg::Vec3(0., 0., shaft_length*0.5f));
+        arrow_head->setCenter(shaft->getCenter() + 
+            osg::Vec3(0., 0., fmax((length-head_offset)*0.5f, arrow_head_length)));
    }
     else {
         // Determine the plane that the Z-axis and the line forms and then compute the perpendicular
         // to that plane; the angle will correspond to the angle around that perpendicular
         auto end_of_shaft = normalize(pga3::sandwich(start_pt, pga3::translator(pga3::k, shaft_length)));
-        auto perpendicular_to_plane = pga3::normal_to_plane(start_pt,  end_pt, end_of_shaft);
+        auto perpendicular_to_plane = pga3::normal_to_plane(start_pt, end_pt, end_of_shaft);
 
         // Rotate the shaft to be in the direction of the line
-        osg::Quat q = Quat(-angle/2.0, perpendicular_to_plane);
+        osg::Quat q = Quat(M_PI/2.+angle/2.0, perpendicular_to_plane);
         shaft->setRotation(q);
 
         // Translate the center point of the arrow shaft
-        auto t = pga3::translator(line, -shaft_length*0.5);
+        auto t = pga3::translator(line, shaft_length*0.5);
         auto new_center = pga3::sandwich(start_pt, t);
         shaft->setCenter(Vec3(new_center));
         
         // Rotate and translate the arrow head
         arrow_head->setRotation(q);
-        auto arrow_translator = pga3::translator(line, (double) -fmax(length-head_offset, arrow_head_length));
+        auto arrow_translator = pga3::translator(line, (double) fmax(length-head_offset, arrow_head_length));
         auto arrow_center = pga3::sandwich(start_pt, arrow_translator);
         arrow_head->setCenter(Vec3(arrow_center));
     }
@@ -371,7 +371,7 @@ new_drawable_plane(const pga3::Point_t& p1, const pga3::Point_t& p2, const pga3:
     auto bisecting_line = pga3::line_from_points(p1, normalize(p2 + p3));
     double x_length = eval(::magnitude(bisecting_line));
     double z_length = eval(::magnitude(pga3::line_from_points(p2, p3)));
-    auto towards_bisecting_point = pga3::translator(bisecting_line, -x_length/2.0);
+    auto towards_bisecting_point = pga3::translator(bisecting_line, x_length/2.0);
     auto plane_center = pga3::sandwich(p1, towards_bisecting_point);
 
     double angle = acos((pga3::j & perpendicular_to_plane).template element<0>());
@@ -388,7 +388,7 @@ new_drawable_plane(const pga3::Point_t& p1, const pga3::Point_t& p2, const pga3:
 //    plane_and_normal->addChild(box_as_plane);
 //    plane_and_normal->addChild(new osg::Sphere(Vec3(plane_center), DEFAULT_RADIUS_OF_DRAWN_POINT));
 //    plane_and_normal->addChild(new osg::Sphere(Vec3(normalize(p2 + p3)), DEFAULT_RADIUS_OF_DRAWN_POINT));
-//    plane_and_normal->addChild(new_arrow(p1, normalize(p2 + p3)));
+//    plane_and_normal->addChild(new_arrow(p1, normalize(p2 + p3), DEFAULT_RADIUS_OF_DRAWN_POINT/3.));
 //
 //    plane_and_normal->addChild(new_arrow(p1, end_of_normal));
 //    plane_and_normal->addChild(new_arrow(p1, end_of_normal_to_rotation_plane));
