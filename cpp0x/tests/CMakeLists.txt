@@ -5,7 +5,7 @@ include_directories ("../../include/cpp0x")
 if (NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Debug)
 endif (NOT CMAKE_BUILD_TYPE)
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -ftemplate-backtrace-limit=0")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-backtrace-limit=0")
 
 file (GLOB test_sources RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.cpp")
 foreach (test_source ${test_sources})
@@ -20,11 +20,13 @@ foreach (test_source ${test_sources})
    message("Adding ${test_source}")
    string (REPLACE ".cpp" "" test_prefix ${test_source})
    add_executable (${test_prefix} ${test_source})
+set_property(TARGET ${test_prefix} PROPERTY CXX_STANDARD 14)
   endif(${test_source} STREQUAL "Ginac.cpp")
 endforeach (test_source)
 
 message("Adding Ginac.cpp")
 add_executable(Ginac Ginac.cpp)
+set_property(TARGET Ginac PROPERTY CXX_STANDARD 14)
 target_link_libraries(Ginac ginac cln dl)
 
 
