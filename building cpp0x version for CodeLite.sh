@@ -3,9 +3,14 @@
 # for evaluating the library on Linux x64 architectures (a different build script will be needed on other platforms)
 
 
+if [ -z "$CMAKE" ]; then
+	CMAKE='cmake'
+fi
+
+mkdir -p ./cmake/cpp0x/build-Release
 pushd ./cmake/cpp0x/build-Release
 BUILD_ROOT=`pwd`
-cmake -G "CodeLite - Ninja" \
+${CMAKE} -G "CodeLite - Ninja" \
 -DOPENTHREADS_LIBRARY_DEBUG:FILEPATH="/usr/local/lib64/libOpenThreads.so" \
 -DOSGVIEWER_LIBRARY_DEBUG:FILEPATH="/usr/local/lib64/libosgViewer.so" \
 -DOSGVIEWER_LIBRARY:FILEPATH="/usr/local/lib64/libosgViewer.so" \
@@ -22,9 +27,10 @@ cmake -G "CodeLite - Ninja" \
 
 popd
 
+mkdir -p ./cmake/cpp0x/build-Debug
 pushd ./cmake/cpp0x/build-Debug
 BUILD_ROOT=`pwd`
-cmake -G "CodeLite - Ninja" \
+${CMAKE} -G "CodeLite - Ninja" \
 -DOPENTHREADS_LIBRARY_DEBUG:FILEPATH="/usr/local/lib64/libOpenThreads.so" \
 -DOSGVIEWER_LIBRARY_DEBUG:FILEPATH="/usr/local/lib64/libosgViewer.so" \
 -DOSGVIEWER_LIBRARY:FILEPATH="/usr/local/lib64/libosgViewer.so" \
