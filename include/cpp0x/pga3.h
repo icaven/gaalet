@@ -183,7 +183,7 @@ inline space::algebra::element_t Point_z(const Point_t& p) {
 // Ideal point
 template <typename T> auto make_ideal_point(T x, T y, T z)
 {
-    return normalize(space::algebra::element_t(0) * E0 + x * EX + y * EY + z * EZ);
+    return space::algebra::element_t(0) * E0 + x * EX + y * EY + z * EZ;
 }
 
 
