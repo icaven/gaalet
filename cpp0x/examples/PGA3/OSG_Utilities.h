@@ -318,7 +318,8 @@ new_arrow(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
         
         // Rotate and translate the arrow head
         arrow_head->setRotation(q);
-        auto arrow_translator = pga3::translator(line, (double) fmax(length-head_offset, arrow_head_length));
+//        auto arrow_translator = pga3::translator(line, (double) fmax(length-head_offset, arrow_head_length));
+        auto arrow_translator = pga3::translator(line, (double) fmax(length-head_offset, arrow_head_length-head_offset));
         auto arrow_center = pga3::sandwich(start_pt, arrow_translator);
         arrow_head->setCenter(Vec3(arrow_center));
     }
@@ -338,6 +339,28 @@ new_drawable_arrow(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
                   const float line_thickness=DEFAULT_LINE_THICKNESS)
 {
     osg::CompositeShape* arrow = new_arrow(start_pt, end_pt, line_thickness);
+    osg::ShapeDrawable* drawable = new osg::ShapeDrawable(arrow);
+    drawable->setColor(colour);
+    return drawable;
+}
+
+// Ideal point
+pga3::Point_t make_ideal_point(pga3::Line_t l)
+{
+    return pga3::space::algebra::element_t(0) * pga3::E0 + 
+        l.template element<pga3::I_CONF>() * pga3::EX + 
+        l.template element<pga3::J_CONF>() * pga3::EY + 
+        l.template element<pga3::K_CONF>() * pga3::EZ;
+}
+
+
+/// Drawable arrow
+osg::ShapeDrawable*
+new_drawable_arrow(const pga3::Point_t& start_pt, const pga3::Line_t& line, 
+                  const osg::Vec4& colour = grey(0.5),
+                  const float line_thickness=DEFAULT_LINE_THICKNESS)
+{
+    osg::CompositeShape* arrow = new_arrow(start_pt, start_pt + make_ideal_point(line), line_thickness);
     osg::ShapeDrawable* drawable = new osg::ShapeDrawable(arrow);
     drawable->setColor(colour);
     return drawable;
@@ -370,8 +393,9 @@ new_drawable_plane(const pga3::Point_t& p1, const pga3::Point_t& p2, const pga3:
 
     auto bisecting_line = pga3::line_from_points(p1, normalize(p2 + p3));
     double x_length = eval(::magnitude(bisecting_line));
-    double z_length = eval(::magnitude(pga3::line_from_points(p2, p3)));
-    auto towards_bisecting_point = pga3::translator(bisecting_line, x_length/2.0);
+    pga3::Line_t other_line = pga3::line_from_points(p2, p3);
+    double z_length = eval(::magnitude(other_line));
+    auto towards_bisecting_point = pga3::translator(bisecting_line, x_length/2.0) * pga3::translator(other_line, z_length/4.0);
     auto plane_center = pga3::sandwich(p1, towards_bisecting_point);
 
     double angle = acos((pga3::j & perpendicular_to_plane).template element<0>());
