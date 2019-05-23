@@ -9,6 +9,6 @@ endif (NOT CMAKE_BUILD_TYPE)
 
 find_package(OpenSceneGraph REQUIRED osg osgViewer osgGA)
 include_directories (${OPENSCENEGRAPH_INCLUDE_DIRS})
-add_executable (Icosahedron Icosahedron.cpp)
+add_executable (Icosahedron Icosahedron.cpp ../OSG_Utilities.cpp)
 set_property(TARGET Icosahedron PROPERTY CXX_STANDARD 14)
 target_link_libraries(Icosahedron ${OPENSCENEGRAPH_LIBRARIES})

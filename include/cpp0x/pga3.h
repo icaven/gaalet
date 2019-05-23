@@ -1,8 +1,10 @@
+#pragma once
+
+
 #include "gaalet.h"
 #include <cmath>
 #include <iostream>
 
-#pragma once
 
 using namespace gaalet;
 
@@ -165,7 +167,8 @@ dual(const gaalet::expression<A>& a) {
 //
 
 // Eulidean point as a homogeneous point
-template <typename T> auto make_point(T x, T y, T z)
+template <typename T> inline 
+auto make_point(T x, T y, T z)
 {
     return E0 + x * EX + y * EY + z * EZ;
 }
@@ -181,14 +184,21 @@ inline space::algebra::element_t Point_z(const Point_t& p) {
 };
 
 // Ideal point
-template <typename T> auto make_ideal_point(T x, T y, T z)
+template <typename T> inline 
+auto make_ideal_point(T x, T y, T z)
 {
     return space::algebra::element_t(0) * E0 + x * EX + y * EY + z * EZ;
 }
 
+template <typename L> inline 
+auto make_ideal_point(const gaalet::expression<L>& l)
+{
+    return ::grade<I_CONF>(l) * EX + ::grade<J_CONF>(l) * EY + ::grade<K_CONF>(l) * EZ;
+}
+
 
 // Lines can be defined by Plücker coordinates
-template <typename TX, typename TY, typename TZ, typename DX, typename DY, typename DZ>
+template <typename TX, typename TY, typename TZ, typename DX, typename DY, typename DZ> inline
 auto make_line(TX px, TY py, TZ pz, DX dx, DY dy, DZ dz)
 {
     return normalize(px * dual_k + py * dual_j + pz * dual_i + dx * i + dy * j + dz * k);
@@ -208,7 +218,8 @@ auto make_line(TX px, TY py, TZ pz, DX dx, DY dy, DZ dz)
 
 
 // Four values define a plane
-template <typename T> auto make_plane(T a, T b, T c, T d)
+template <typename T> inline 
+auto make_plane(T a, T b, T c, T d)
 {
     return normalize(d * e0 + a * e1 + b * e2 + c * e3);
 }
@@ -217,7 +228,8 @@ template <typename T> auto make_plane(T a, T b, T c, T d)
 // Geometric operations
 //
 
-template <typename X> inline auto polar(const gaalet::expression<X>& x)
+template <typename X> inline 
+auto polar(const gaalet::expression<X>& x)
 {
 //    return x * I;
     // Need to add the zero scalar so that the configuration list won't be empty after some geometric products
@@ -246,33 +258,39 @@ auto line_from_points(const gaalet::expression<L>& start, const gaalet::expressi
     return vee(start, end);
 }
 
-template <class T1, class T2, class T3> auto plane_from_points(const T1& P1, const T2& P2, const T3& P3)
+template <class T1, class T2, class T3> inline
+auto plane_from_points(const T1& P1, const T2& P2, const T3& P3)
 {
     return normalize(vee(vee(P1, P2), P3));
 }
 
-template <class TP, class TL> auto plane_from_point_and_line(const TP& P, const TL& L)
+template <class TP, class TL> inline
+auto plane_from_point_and_line(const TP& P, const TL& L)
 {
     return normalize(vee(P, L));
 }
 
 // Meets
-template <class T1, class T2> auto line_from_planes(const T1& p1, const T2& p2)
+template <class T1, class T2> inline
+auto line_from_planes(const T1& p1, const T2& p2)
 {
     return normalize(p1) ^ normalize(p2);
 }
-template <class T1, class T2, class T3> auto point_from_planes(const T1& p1, const T2& p2, const T3& p3)
+template <class T1, class T2, class T3> inline
+auto point_from_planes(const T1& p1, const T2& p2, const T3& p3)
 {
     return normalize(p1 ^ p2 ^ p3);
 }
 
-template <class TP, class TL> auto point_from_line_and_plane(const TL& L, const TP& P)
+template <class TP, class TL> inline
+auto point_from_line_and_plane(const TL& L, const TP& P)
 {
     return normalize(L ^ P);
 }
 
 // Points are in a CCW direction
-template <class T1, class T2, class T3> auto normal_to_plane(const T1& P1, const T2& P2, const T3& P3) {
+template <class T1, class T2, class T3> inline
+auto normal_to_plane(const T1& P1, const T2& P2, const T3& P3) {
     return -1. * normalize(P1 & plane_from_points(P1, P2, P3));
 }
 
@@ -281,20 +299,22 @@ template <class T1, class T2, class T3> auto normal_to_plane(const T1& P1, const
 //
 
 // Rotation around an axis
-template <class A, class T> auto rotor(const A& axis, const T& angle)
+template <class A, class T> inline
+auto rotor(const A& axis, const T& angle)
 {
     return one * cos(-angle * 0.5) + sin(-angle * 0.5) * normalize(axis);
 };
 
 // Translation in the direction of a line
-template <class L, class T> auto translator(const L& line, const T& distance)
+template <class L, class T> inline
+auto translator(const L& line, const T& distance)
 {
     return one + 0.5 * distance * normalize(line) * I;
 }
 
 // Motor operation implements a rotation followed by a translation, which is similar to
 // a screw operation, which is a rotation around a line while travelling a distance along the line
-template <class L, class T, typename P = space::algebra::element_t>
+template <class L, class T, typename P = space::algebra::element_t> inline
 auto motor(const L& line, const T& distance, const P angle)
 {
     return translator(line, distance) * rotor(line, angle);

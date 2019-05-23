@@ -9,12 +9,12 @@
 int main()
 {
     // Create 5 points and there will be some joining lines between them
-    auto origin = pga3::make_point(0, 0, 0);
-    auto A = pga3::make_point(0, -1, 0);
-    auto B = pga3::make_point(1, 1, -1);
-    auto C = pga3::make_point(-1, 1, -1);
-    auto D = pga3::make_point(1, 1, 1);
-    auto E = pga3::make_point(-1, 1, 1);
+    pga3::Point_t origin = pga3::make_point(0, 0, 0);
+    pga3::Point_t A = pga3::make_point(0, -1, 0);
+    pga3::Point_t B = pga3::make_point(1, 1, -1);
+    pga3::Point_t C = pga3::make_point(-1, 1, -1);
+    pga3::Point_t D = pga3::make_point(1, 1, 1);
+    pga3::Point_t E = pga3::make_point(-1, 1, 1);
     
     // Need to normalize when computing the centroid
     auto centroid = normalize(A + B + C + D + E);  
