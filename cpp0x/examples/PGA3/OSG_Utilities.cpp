@@ -71,17 +71,22 @@ new_arrow(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
     osg::Vec3 origin = Vec3(start_pt);
     osg::Vec3 direction = Vec3(end_pt) - origin;
     float length = direction.length();
-              
+    
+    // Limit the shaft line thickness by the length (the 0.75 factor below is based on the 
+    // default osg::Cone::getBaseOffsetFactor() value)
+    const float arrow_head_base_to_length_ratio = 3.f/5.f;
+    float shaft_thickness = fmin(line_thickness, length * 0.75f * arrow_head_base_to_length_ratio);
+    
     // OSG Cylinders and Cones always start out in the vertical direction (+Z-axis) 
     // and origined on the starting point so rotate and translate as needed
-    float arrow_head_length = 5.f*line_thickness;
-    float arrow_base_radius = 3.f*line_thickness;
-    osg::Cone* arrow_head = new osg::Cone(origin, arrow_base_radius, 5.f*line_thickness);
+    float arrow_head_length = fmin(length, 5.f*shaft_thickness);
+    float arrow_base_radius = arrow_head_base_to_length_ratio * arrow_head_length;
+    osg::Cone* arrow_head = new osg::Cone(origin, arrow_base_radius, arrow_head_length);
 
     // Determine the offset of the tip from the location of the cone origin
     float head_offset = (1.f - arrow_head->getBaseOffsetFactor()) * arrow_head_length;
     float shaft_length = length - head_offset;
-    osg::Cylinder* shaft = new osg::Cylinder(origin, line_thickness, shaft_length);
+    osg::Cylinder* shaft = new osg::Cylinder(origin, shaft_thickness, shaft_length);
 
     // Determine the angle between the line described by the start and end points and the Z-axis
     double angle = acos((pga3::k & normalize(line)).template element<0>());
@@ -148,7 +153,8 @@ new_drawable_arrow(const pga3::Point_t& start_pt, const pga3::Line_t& line,
                   const osg::Vec4& colour,
                   const float line_thickness)
 {
-    osg::CompositeShape* arrow = new_arrow(start_pt, start_pt + pga3::make_ideal_point(line), line_thickness);
+    // The meet of the line with the ideal plane yields an ideal point which is a direction
+    osg::CompositeShape* arrow = new_arrow(start_pt, start_pt + (line ^ pga3::e0), line_thickness);
     osg::ShapeDrawable* drawable = new osg::ShapeDrawable(arrow);
     drawable->setColor(colour);
     return drawable;

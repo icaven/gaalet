@@ -190,13 +190,6 @@ auto make_ideal_point(T x, T y, T z)
     return space::algebra::element_t(0) * E0 + x * EX + y * EY + z * EZ;
 }
 
-template <typename L> inline 
-auto make_ideal_point(const gaalet::expression<L>& l)
-{
-    return ::grade<I_CONF>(l) * EX + ::grade<J_CONF>(l) * EY + ::grade<K_CONF>(l) * EZ;
-}
-
-
 // Lines can be defined by Plücker coordinates
 template <typename TX, typename TY, typename TZ, typename DX, typename DY, typename DZ> inline
 auto make_line(TX px, TY py, TZ pz, DX dx, DY dy, DZ dz)
