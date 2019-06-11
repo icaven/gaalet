@@ -9,9 +9,14 @@
 using namespace gaalet;
 
 // Projective Geometric Algebra 3d
-// For a description of these operations, see:
+// For a description of these operations, see [Gunn2019]:
 // Gunn, Charles, “Projective geometric algebra: A new framework for doing euclidean geometry”,
 // https://export.arxiv.org/abs/1901.05873
+//
+// and: 
+// Gunn, Charles, "Geometry, Kinematics, and Rigid Body Mechanics in Cayley-Klein Geometries" [Gunn2011]
+
+
 //
 // Also, for a javascript implementation and description, see:
 // https://github.com/enkimute/ganja.js
@@ -59,9 +64,9 @@ constexpr conf_t DUAL_K_CONF = blade_conf(0, 1);
 constexpr conf_t I_CONF = blade_conf(1, 2);
 constexpr conf_t J_CONF = blade_conf(1, 3);
 constexpr conf_t K_CONF = blade_conf(2, 3);
-const space::mv<I_CONF>::type i = e12;
-const space::mv<J_CONF>::type j = -1 * e13;
-const space::mv<K_CONF>::type k = e23;
+const space::mv<I_CONF>::type i = e12;      // z-axis      - see Section 7.4.3 of [Gunn2011]
+const space::mv<J_CONF>::type j = -1 * e13; // y-axis
+const space::mv<K_CONF>::type k = e23;      // x-axis
 const space::mv<DUAL_K_CONF>::type dual_k = e01;
 const space::mv<DUAL_J_CONF>::type dual_j = e02;
 const space::mv<DUAL_I_CONF>::type dual_i = e03;
@@ -95,13 +100,14 @@ const space::mv<pseudoscalar_conf>::type I = (e1 ^ e2 ^ e3 ^ e0);
 typedef space::mv<E0_CONF, EX_CONF, EY_CONF, EZ_CONF>::type Point_t;
 typedef space::mv<DUAL_K_CONF, DUAL_J_CONF, DUAL_I_CONF, I_CONF, J_CONF, K_CONF>::type Line_t;
 typedef space::mv<vector_conf(1), vector_conf(2), vector_conf(3), vector_conf(0)>::type Plane_t;
+typedef space::mv<0, DUAL_K_CONF, DUAL_J_CONF, DUAL_I_CONF, I_CONF, J_CONF, K_CONF, pseudoscalar_conf>::type Motor_t;
 
 //
 // Specialized version of the dual function for the PGA algebra 
 // TODO: modify the library dual function to support this algebra, since this version
 // is only a slight modification of the library function
 // Implements the Poincare duality
-// See: section 2.3.1.3 of "Geometry, Kinematics, and Rigid Body Mechanics in Cayley-Klein Geometries"
+// See: section 2.3.1.3 of Gunn, Charles, "Geometry, Kinematics, and Rigid Body Mechanics in Cayley-Klein Geometries" [Gunn2011]
 // The sign change is needed for some blades since the basis vectors in dual configuration 
 // are ordered to be in the canonical order instead of being permuted (as described by the referenced section)
 
@@ -197,19 +203,6 @@ auto make_line(TX px, TY py, TZ pz, DX dx, DY dy, DZ dz)
     return normalize(px * dual_k + py * dual_j + pz * dual_i + dx * i + dy * j + dz * k);
 }
 
-
-// TODO: Uncomment and test this function 
-//template <typename CL>
-//auto make_line(const Point_t& origin, const space::mv<CL>& direction)
-//{
-//    auto extracted_direction = ::grade<2>(direction);
-//    return Point_x(origin) * dual_k + Point_y(origin) * dual_j + Point_z(origin) * dual_i 
-//            + extracted_direction.template element<I_CONF>() * i
-//            + extracted_direction.template element<J_CONF>() * j 
-//            + extracted_direction.template element<K_CONF>() * k;
-//}
-
-
 // Four values define a plane
 template <typename T> inline 
 auto make_plane(T a, T b, T c, T d)
@@ -227,8 +220,6 @@ auto polar(const gaalet::expression<X>& x)
 //    return x * I;
     // Need to add the zero scalar so that the configuration list won't be empty after some geometric products
     return 0.0 * one + x * I;
-    // The next line may be removed after the current strategy of adding the zero scalar is shown to work
-//    return -(I * x);  // Wanted to do: (x * I) but ran into a template expansion ambiguity compiler error, so use anti-symmetric property
 }
 
 // Versor sandwich product
@@ -320,10 +311,36 @@ auto motor(const L& line, const T& distance, const P angle)
 //}
 
 // Alternative form of the screw operation, to be used for comparison
-//template <class L, class T, typename P = space::algebra::element_t>
-//auto screw2(const L& line, const T& distance, const P pitch)
-//{
-//    return exp(0.5 * distance * (one + pitch * I) * normalize(line));
-//}
+template <class L, class T, typename P = space::algebra::element_t>
+auto screw(const L& line, const T& distance, const P pitch)
+{
+    return 0.5 * distance * (one + pitch * I) * normalize(line);
+}
+
+inline bool isclose(double a, double b, double rtol=1e-05, double atol=DBL_EPSILON) {
+    return fabs(a - b) <= (atol + rtol * fabs(b));
+}
+
+/// Return the Study number and the axis (a normalized bivector) associated with the given bivector
+// See: Section 7.7 of Gunn, Charles, "Geometry, Kinematics, and Rigid Body Mechanics in Cayley-Klein Geometries" [Gunn2011]
+// Normalize the bivector by multiplying it by the inverse of the square root of the associated Study number z, and the result
+// is B, which is the axis of the given bivector
+std::pair<std::pair<double, double>, Line_t> inline 
+bivector_axis(pga3::Line_t bivector) {
+    auto z = eval(bivector * (~bivector));
+    double a = ::grade<0>(z).template element<0>();
+    auto axis = eval(bivector);   // In the case that the inverse sqrt of z doesn't exist (when a == 0), the B is equal to the bivector
+    double b = 0.0;
+    std::pair<double, double> study_number = {0.0, 0.0};
+    if (!isclose(a, 0.0)) {
+        auto sqrt_a = sqrt(a);
+        b = ::grade<4>(z).template element<pseudoscalar_conf>();
+        auto inv_sqrt_z = sqrt_a/a * one - ((b)/(2 * a * sqrt_a))*I;
+        axis = inv_sqrt_z * axis;
+        study_number = std::make_pair(sqrt_a, b/(2.0 * sqrt_a));
+        return std::make_pair(study_number, axis);
+    }
+    return std::make_pair(study_number, axis);
+}
 
 } // end of namespace pga3
