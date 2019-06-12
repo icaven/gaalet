@@ -10,7 +10,7 @@
 
 //
 // Specialized version of the exponential function for the PGA algebra
-// TODO: modify the library dual function to support this algebra, since this version
+// TODO: modify the library exponential function to support this algebra, since this version
 // is only a slight modification of the library function
 
 namespace pga3
