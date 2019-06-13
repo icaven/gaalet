@@ -3,6 +3,7 @@
 
 #include "gaalet.h"
 #include <cmath>
+#include <cfloat>
 #include <iostream>
 
 
