@@ -126,7 +126,7 @@ struct dual_list<I, cl_null, colist>
 };
 
 template<class A>
-struct dual : public expression<dual<A>>
+struct dual : public expression <detail::dual<A >>
 {
    static const conf_t I = Power<2, A::metric::dimension>::value-1;
 
