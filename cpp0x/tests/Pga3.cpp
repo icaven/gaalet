@@ -111,6 +111,8 @@ int main()
 
     auto line_AB = pga3::line_from_points(A, B);
     print_line_info(line_AB, "line_AB");
+    print_line_info(-1.0 * line_AB, "-line_AB");
+    print_line_info(pga3::Line_t() - line_AB, "0-line_AB");
     std::cout << "e0 ^ line_AB " << (pga3::e0^line_AB) << std::endl;
     std::cout << "e1 ^ line_AB " << (pga3::e1^line_AB) << std::endl;
     std::cout << "e2 ^ line_AB " << (pga3::e2^line_AB) << std::endl;
