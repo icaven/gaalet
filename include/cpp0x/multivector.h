@@ -175,7 +175,7 @@ struct multivector<configuration_list<0x00, cl_null>, M, T> : public expression<
    const element_t& operator[](const conf_t&) const {
       return value;
    }
-   element_t& operator[](const conf_t& index) {
+   element_t& operator[](const conf_t&) {
       return value;
    }
 
@@ -244,7 +244,7 @@ struct multivector<cl_null, M, T> : public expression<multivector<configuration_
    const element_t& operator[](const conf_t&) const {
       return value;
    }
-   element_t& operator[](const conf_t& index) {
+   element_t& operator[](const conf_t&) {
       return value;
    }
 
