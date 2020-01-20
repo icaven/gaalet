@@ -9,7 +9,7 @@
 #include "pga3.h"
 
 //
-// Specialized version of the exponential function for the PGA algebra
+// Specialized version of the exponential function for the PGA algebra; see Section 7.8 in [Gunn2011]
 // TODO: modify the library exponential function to support this algebra, since this version
 // is only a slight modification of the library function
 
@@ -86,47 +86,41 @@ namespace detail
                 auto z = study_number_and_axis.first;
                 B = study_number_and_axis.second; // axis of the bivector
                 B_polar = B * I;
-                auto a = z.first;
-                b = z.second;
-
-//                std::cout << "<sn>:" << a << " " << b << " </sn>" << std::endl;
-//                std::cout << "<axis>:" << B << " </axis>" << std::endl;
-//                std::cout << "<B_polar>:" << B_polar << " </B_polar>" << std::endl;
-//                std::cout << "<a*a>:" << (a * a) << " </a*a>" << std::endl;
-
-                if(a > 0.0) {
-                    ca = cos(a);
-                    sa = sin(a);
-                    ca_b = ca * b;
-                    sign_ca = signbit(ca) ? -1.0 : 1.0;
-//                    std::cout << "ca:" << ca << " sa: " << sa << " ca_b: " << ca_b << std::endl;
-                } else {
-                    ca = 1.0;
-                    sa = 1.0;
-                    ca_b = 0.0;
-                    sign_ca = 1.0;
-                }
+				
+				// Specialize this exponential for PGA3D where I*I == 0
+				B2 = ::part<0>(B * B).template element<0>();
+				if(isclose(B2, -1.0)) {
+					f1 = cos(z.first);
+					f2 = sin(z.first);
+					f3 = 1.0;
+					f4 = z.second;
+				}
+				else { 
+					// B*B == 0
+					f1 = 1.0;
+					f2 = z.first;
+					f3 = 1.0;
+					f4 = z.second;
+				}
+			
                 first_eval = false;
             }
 
-            if(conf == pseudoscalar_conf) {
-                return -sign_ca * sa * b;
-            } else if(conf == 0) {
-                return sign_ca * ca;
-            } else {
-                return sign_ca * (B.template element<conf>() * sa + B_polar.template element<conf>() * ca_b);
-            }
+			return ((f1 * f3) * pga3::one + 
+					(B2 * f2 * f4) * pga3::I + 
+					(f2 * f3) * B + 
+					(f1 * f4) * B_polar).template element<conf>();
         }
 
     protected:
         const A a;
         mutable Line_t B;       // The bivector axis
         mutable Line_t B_polar; // The axis that is polar to the bivector axis
-        mutable element_t b;
-        mutable element_t ca;
-        mutable element_t sa;
-        mutable element_t ca_b;
-        mutable element_t sign_ca;
+        mutable element_t B2;	// The square of the simple bivector (either is -1 or 0)
+		mutable element_t f1;
+		mutable element_t f2;
+		mutable element_t f3;
+		mutable element_t f4;
         mutable bool first_eval;
     };
 

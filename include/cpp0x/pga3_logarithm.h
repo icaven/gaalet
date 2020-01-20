@@ -107,12 +107,10 @@ protected:
 // and t, u are real scalars and B is a bivector that is the axis of the bivector (s2 + p2*I)*B
 //
 // There are two cases for the axis B: B^2 = 0 or B^2 = -1
-// If s1 == 0 or p1 == 0 then B^2 == 0
-// This means that the screw is in the form: e^((t+uI)B) = 1 + (t + u*I)*B  (see Gunn2011, Table 7.3)
-// and   s1 = 1
-//       s2 = t
-//       p1 = 0
-//       p2 = u
+// If B^2 == 0
+// This means that the exponential is in the form: e^((t+uI)B) = 1 + (t + u*I)*B  (see Gunn2011, Table 7.4)
+// and t = s2/s1 and u = p2/s1, unless s1 == 0, in which case u is arbitrary (set it to 0), and set t = 1
+
 //
 // However, if B^2 == -1:
 //   the screw is of the form: e^((t+uI)B) = cos(t) + (sin (t) + cos (t)uI)B − sin (t)*u*I
@@ -165,44 +163,29 @@ struct logarithm<A, 3> : public expression<logarithm<A>> {
 //            std::cout << "s1: " << s1 << " p1: " << p1 << " s2: " << s2 << " p2: " << p2 << std::endl;
 //            std::cout << "B: " << B << " B_Polar: " << B_polar << std::endl;
 
-            t = 0.0;
+            t = 1.0;
             u = 0.0;
-            if(!isclose(s1, 0.0)) {
-                // These will be used in the case where B^2 == 0
-                u = p2 / s1; // u is always set here, since I^2 == 0
-                t = s2 / s1;
-            }
 
             double B2 = ::part<0>(B * B).template element<0>();
             if(isclose(B2, -1.0)) {
-                // According to the paper Gunn2011, section 7.10.2.2:
-                // The choice between t1 and t2 is settled by which formula involves the largest absolute value in the
-                // set C: (s1, s2, p1, p2)
-                if(!isclose(s1, 0.0) && !isclose(p2, 0.0)) {
-                    auto max_s = fabs(s1) > fabs(s2) ? s1 : s2;
-                    auto max_p = fabs(p1) > fabs(p2) ? p1 : p2;
-                    t = (fabs(max_s) > fabs(max_p)) ? atan2(s2, s1) : atan2(-p1, p2);
-//                    std::cout << "Choosing t based on max(s,p); max_s: " << max_s << " max_p: " << max_p << " t: " << t << std::endl;
-               } else if(!isclose(s1, 0.0)) {
-                    t = atan2(s2, s1);
-//                    std::cout << "s1 != 0: t based on s: " << " t: " << t << std::endl;
-                } else if(!isclose(p2, 0.0)) {
-                    t = atan2(-p1, p2);
-//                    std::cout << "p2 != 0: t based on p: " << " t: " << t << std::endl;
-                } else {
-                    t = acos(s1);
-//                    std::cout << "t based on acos(s1): " << " t: " << t << std::endl;
-                }
+				// Modified from the SIGGRAPH 2019 course notes, p. 44
+				if (!isclose(s1, 0.0)) {
+					t = atan2(s2, s1);
+					u = p2 / s1;
+				}
+				else if (!isclose(p2, 0.0)) {
+					t = atan2(-p1, p2);
+					u = -p1 / s2;
+				}
+			//  else:
+			//  both s1 and p2 are zero, the bivector is simple,
+			//  u is arbitrary so leave it set to 0, and t to 1
 
-            } else {
-                if(isclose(t, 0.0)) {
-                    // Translation only
-//                     std::cout << "t == 0: " << std::endl;
-                    t = 1.0;
-                    u = 0.0;
-                    B = a;
-                }
             }
+			//else:  # b_squared == 0, therefore  b is an ideal line
+				// Translation only - don't modify the default values above
+				// t = 1.0
+				// u = 0.0
             
             first_eval = false;
         }
@@ -212,7 +195,7 @@ struct logarithm<A, 3> : public expression<logarithm<A>> {
     }
 
 protected:
-    const A a;
+    const A a;				// The input value
     mutable A B;            // The bivector axis
     mutable A B_polar;      // The axis that is polar to the bivector axis
     mutable element_t t;
