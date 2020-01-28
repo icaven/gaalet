@@ -1,6 +1,9 @@
 cmake_minimum_required (VERSION 2.6.3)
 project (Icosahedron)
 
+#message("${CMAKE_SOURCE_DIR}/../../include/cpp0x")
+#include_directories ("${CMAKE_SOURCE_DIR}/../../include/cpp0x")
+
 include_directories ("../../../../include/cpp0x")
 include_directories ("../")
 if (NOT CMAKE_BUILD_TYPE)

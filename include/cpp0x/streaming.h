@@ -5,46 +5,72 @@
 #include "expression.h"
 #include "multivector.h"
 
-namespace gaalet
-{
+namespace gaalet {
+
+        // These are specific to PGA3, and are ordered so that the configuration bit pattern can index into it
+        // therefore they are out of the standard order
+        static std::string basis_vector_names[16] = {"    ", "e1  ", "e2  ", "e12  ", "e3  ", "e13  ", "e23  ", "e123 ", "e0  ",
+                                                     "e01  ", "e02  ", "e012 ", "e03  ", "e013 ", "e023 ", "e0123"};
 
 //expression streaming
-template<typename G, typename clist>
-struct UnpackElementsToStream
-{
-   template<class E, class T>
-   //static void unpack(std::basic_ostream<E, T>& os, const G& e) {
-   static void unpack(std::basic_ostream<E, T>& os, const gaalet::expression<G>& e_) {
-      const G& e(e_);
-      os << e.template element<clist::head>() << " ";
-      UnpackElementsToStream<G, typename clist::tail>::unpack(os, e_);
-   }
-};
+        template<typename G, typename clist>
+        struct UnpackElementsToStream {
+            template<class E, class T>
+            //static void unpack(std::basic_ostream<E, T>& os, const G& e) {
+            static void unpack(std::basic_ostream<E, T> &os, const gaalet::expression<G> &e_, bool previous_non_zero=false) {
+                const G &e(e_);
+                bool found_non_zero = previous_non_zero;
+                if (e.template element<clist::head>() != 0) {
+                    found_non_zero = true;
+                    if (clist::head == 0) {
+                        os << std::right << std::setw(8) << e.template element<0>();
+                    } else {
+//                        os << (std::signbit(e.template element<clist::head>()) ? "-" : " ");
+//                        os << fabs(e.template element<clist::head>()) << basis_vector_names[clist::head];
+                        os << std::right << std::setw(8) << e.template element<clist::head>() << basis_vector_names[clist::head];
+                    }
+                }
 
-template<typename G>
-struct UnpackElementsToStream<G, gaalet::cl_null>
-{
-   template<class E, class T>
-   //static void unpack(std::basic_ostream<E, T>&, const G&) { }
-   static void unpack(std::basic_ostream<E, T>&, const gaalet::expression<G>&) { }
-};
+                UnpackElementsToStream<G, typename clist::tail>::unpack(os, e_, found_non_zero);
+            }
+        };
 
-template<typename clist>
-struct UnpackConfigurationListToStream
-{
-   template<class E, class T>
-   static void unpack(std::basic_ostream<E, T>& os) {
-      os << clist::head << " ";
-      UnpackConfigurationListToStream<typename clist::tail>::unpack(os);
-   }
-};
 
-template<>
-struct UnpackConfigurationListToStream<gaalet::cl_null>
-{
-   template<class E, class T>
-   static void unpack(std::basic_ostream<E, T>&) { }
-};
+        template<typename G>
+        struct UnpackElementsToStream<G, gaalet::cl_null> {
+            template<class E, class T>
+            static void unpack(std::basic_ostream<E, T> &os, const gaalet::expression<G> &, bool previous_non_zero=false)
+            {
+                if (!previous_non_zero) {
+                    os << std::right << std::setw(8) << "0";
+                }
+            }
+        };
+
+        template<typename G, typename clist>
+        struct UnpackConfigurationListToStream {
+            template<class E, class T>
+            static void unpack(std::basic_ostream<E, T> &os, const gaalet::expression<G> &e_, bool previous_non_zero=false) {
+                const G &e(e_);
+                bool non_zero_found = previous_non_zero;
+                if (e.template element<clist::head>() != 0) {
+                    non_zero_found = true;
+                    os << std::hex << clist::head << " ";
+                }
+                UnpackConfigurationListToStream<G, typename clist::tail>::unpack(os, e_, non_zero_found);
+            }
+        };
+
+        template<typename G>
+        struct UnpackConfigurationListToStream<G, gaalet::cl_null> {
+            template<class E, class T>
+            static void unpack(std::basic_ostream<E, T> &os, const gaalet::expression<G> &, bool previous_non_zero=false)
+            {
+                if (!previous_non_zero) {
+                    os << "0 ";
+                }
+            }
+        };
 
 } //end namespace gaalet
 
@@ -58,11 +84,12 @@ std::basic_ostream<E, T>& operator<<(std::basic_ostream<E, T>& os, const gaalet:
    //const G& e(e_);
    //auto mv = eval(e_);
 
-   os << "[ " << std::dec;
+//   os << "[ " << std::dec;
       gaalet::UnpackElementsToStream<G, typename G::clist>::unpack(os, e);
-   os << "] { " << std::hex;
-      gaalet::UnpackConfigurationListToStream<typename G::clist>::unpack(os);
-   os << '}';
+//   os << "] ";
+//   os << " { " << std::hex;
+//      gaalet::UnpackConfigurationListToStream<G, typename G::clist>::unpack(os, e);
+//   os << "}";
 
    return os;
 }
