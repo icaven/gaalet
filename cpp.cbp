@@ -1,0 +1,964 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="cpp"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="clang"/>
+		<Option virtualFolders="CMake Files\;CMake Files\examples\;CMake Files\examples\ElasticCoupling\;CMake Files\examples\MonteCarloPi\;CMake Files\examples\RotationCuda\;CMake Files\benchmarks\;CMake Files\tests\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="MonteCarloPiCuda">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/MonteCarloPiCuda" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/../../include/cpp"/>
+					<Add directory="/usr/lib/cuda/include/thrust"/>
+					<Add directory="/usr/lib/cuda/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 MonteCarloPiCuda"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="MonteCarloPiCuda/fast">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/MonteCarloPiCuda" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/../../include/cpp"/>
+					<Add directory="/usr/lib/cuda/include/thrust"/>
+					<Add directory="/usr/lib/cuda/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 MonteCarloPiCuda/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ConfModelCuda">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/ConfModelCuda" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/../../include/cpp"/>
+					<Add directory="/usr/lib/cuda/include/thrust"/>
+					<Add directory="/usr/lib/cuda/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 ConfModelCuda"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ConfModelCuda/fast">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/ConfModelCuda" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/../../include/cpp"/>
+					<Add directory="/usr/lib/cuda/include/thrust"/>
+					<Add directory="/usr/lib/cuda/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 ConfModelCuda/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Reverse">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Reverse" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/../../include/cpp"/>
+					<Add directory="/usr/lib/cuda/include/thrust"/>
+					<Add directory="/usr/lib/cuda/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 Reverse"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Reverse/fast">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Reverse" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/../../include/cpp"/>
+					<Add directory="/usr/lib/cuda/include/thrust"/>
+					<Add directory="/usr/lib/cuda/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 Reverse/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ConfModel">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/ConfModel" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/../../include/cpp"/>
+					<Add directory="/usr/lib/cuda/include/thrust"/>
+					<Add directory="/usr/lib/cuda/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 ConfModel"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ConfModel/fast">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/ConfModel" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/../../include/cpp"/>
+					<Add directory="/usr/lib/cuda/include/thrust"/>
+					<Add directory="/usr/lib/cuda/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 ConfModel/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ElementTraits">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/ElementTraits" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/../../include/cpp"/>
+					<Add directory="/usr/lib/cuda/include/thrust"/>
+					<Add directory="/usr/lib/cuda/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 ElementTraits"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ElementTraits/fast">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/ElementTraits" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/../../include/cpp"/>
+					<Add directory="/usr/lib/cuda/include/thrust"/>
+					<Add directory="/usr/lib/cuda/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 ElementTraits/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Inverse">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Inverse" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/../../include/cpp"/>
+					<Add directory="/usr/lib/cuda/include/thrust"/>
+					<Add directory="/usr/lib/cuda/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 Inverse"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Inverse/fast">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Inverse" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/../../include/cpp"/>
+					<Add directory="/usr/lib/cuda/include/thrust"/>
+					<Add directory="/usr/lib/cuda/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 Inverse/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Scalar">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Scalar" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/../../include/cpp"/>
+					<Add directory="/usr/lib/cuda/include/thrust"/>
+					<Add directory="/usr/lib/cuda/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 Scalar"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Scalar/fast">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Scalar" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/../../include/cpp"/>
+					<Add directory="/usr/lib/cuda/include/thrust"/>
+					<Add directory="/usr/lib/cuda/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 Scalar/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Basic">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Basic" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/../../include/cpp"/>
+					<Add directory="/usr/lib/cuda/include/thrust"/>
+					<Add directory="/usr/lib/cuda/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 Basic"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Basic/fast">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Basic" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/../../include/cpp"/>
+					<Add directory="/usr/lib/cuda/include/thrust"/>
+					<Add directory="/usr/lib/cuda/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 Basic/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Exponential">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Exponential" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/../../include/cpp"/>
+					<Add directory="/usr/lib/cuda/include/thrust"/>
+					<Add directory="/usr/lib/cuda/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 Exponential"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Exponential/fast">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Exponential" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/../../include/cpp"/>
+					<Add directory="/usr/lib/cuda/include/thrust"/>
+					<Add directory="/usr/lib/cuda/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 Exponential/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="MultiplicationList">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/MultiplicationList" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/../../include/cpp"/>
+					<Add directory="/usr/lib/cuda/include/thrust"/>
+					<Add directory="/usr/lib/cuda/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 MultiplicationList"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="MultiplicationList/fast">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/MultiplicationList" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/../../include/cpp"/>
+					<Add directory="/usr/lib/cuda/include/thrust"/>
+					<Add directory="/usr/lib/cuda/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 MultiplicationList/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Horizon">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Horizon" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/benchmarks/../../include/cpp"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 Horizon"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Horizon/fast">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Horizon" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/benchmarks/../../include/cpp"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 Horizon/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="VectorMultiply">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/VectorMultiply" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/benchmarks/../../include/cpp"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 VectorMultiply"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="VectorMultiply/fast">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/VectorMultiply" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/benchmarks/../../include/cpp"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 VectorMultiply/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="VectorAdd">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/VectorAdd" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/benchmarks/../../include/cpp"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 VectorAdd"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="VectorAdd/fast">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/VectorAdd" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/benchmarks/../../include/cpp"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 VectorAdd/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/benchmarks/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ElasticCoupling">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/ElasticCoupling/ElasticCoupling" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/ElasticCoupling"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/examples/ElasticCoupling/../../../include/cpp"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/ElasticCoupling/Makefile&quot;  VERBOSE=1 ElasticCoupling"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/ElasticCoupling/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/ElasticCoupling/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/ElasticCoupling/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ElasticCoupling/fast">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/ElasticCoupling/ElasticCoupling" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/ElasticCoupling"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/examples/ElasticCoupling/../../../include/cpp"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/ElasticCoupling/Makefile&quot;  VERBOSE=1 ElasticCoupling/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/ElasticCoupling/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/ElasticCoupling/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/ElasticCoupling/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="MonteCarloPi">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/MonteCarloPi/MonteCarloPi" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/MonteCarloPi"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/examples/MonteCarloPi/../../../include/cpp"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/MonteCarloPi/Makefile&quot;  VERBOSE=1 MonteCarloPi"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/MonteCarloPi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/MonteCarloPi/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/MonteCarloPi/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="MonteCarloPi/fast">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/MonteCarloPi/MonteCarloPi" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/MonteCarloPi"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/examples/MonteCarloPi/../../../include/cpp"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/MonteCarloPi/Makefile&quot;  VERBOSE=1 MonteCarloPi/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/MonteCarloPi/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/MonteCarloPi/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/MonteCarloPi/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="RotationCuda">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/RotationCuda/RotationCuda" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/RotationCuda"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/examples/RotationCuda/../../../include/cpp"/>
+					<Add directory="/usr/lib/cuda/include/thrust"/>
+					<Add directory="/usr/lib/cuda/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/RotationCuda/Makefile&quot;  VERBOSE=1 RotationCuda"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/RotationCuda/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/RotationCuda/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/RotationCuda/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="RotationCuda/fast">
+				<Option output="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/RotationCuda/RotationCuda" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/RotationCuda"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/examples/RotationCuda/../../../include/cpp"/>
+					<Add directory="/usr/lib/cuda/include/thrust"/>
+					<Add directory="/usr/lib/cuda/include"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/bin/../lib/gcc/x86_64-linux-gnu/9/../../../../include/c++/9/backward"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/llvm-9/lib/clang/9.0.0/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/RotationCuda/Makefile&quot;  VERBOSE=1 RotationCuda/fast"/>
+					<CompileFile command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/RotationCuda/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/RotationCuda/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j12 -f &quot;/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/RotationCuda/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/benchmarks/Horizon.cpp">
+			<Option target="Horizon"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/benchmarks/VectorAdd.cpp">
+			<Option target="VectorAdd"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/benchmarks/VectorMultiply.cpp">
+			<Option target="VectorMultiply"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/examples/ElasticCoupling/ElasticCoupling.cpp">
+			<Option target="ElasticCoupling"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/examples/MonteCarloPi/MonteCarloPi.cpp">
+			<Option target="MonteCarloPi"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/examples/RotationCuda/RotationCuda.cu">
+			<Option target="RotationCuda"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/Basic.cpp">
+			<Option target="Basic"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/ConfModel.cpp">
+			<Option target="ConfModel"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/ConfModelCuda.cu">
+			<Option target="ConfModelCuda"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/ElementTraits.cpp">
+			<Option target="ElementTraits"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/Exponential.cpp">
+			<Option target="Exponential"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/Inverse.cpp">
+			<Option target="Inverse"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/MonteCarloPiCuda.cu">
+			<Option target="MonteCarloPiCuda"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/MultiplicationList.cpp">
+			<Option target="MultiplicationList"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/Reverse.cpp">
+			<Option target="Reverse"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/Scalar.cpp">
+			<Option target="Scalar"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/examples/RotationCuda/CMakeFiles/RotationCuda.dir/RotationCuda_generated_RotationCuda.cu.o">
+			<Option target="RotationCuda"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/CMakeFiles/ConfModelCuda.dir/ConfModelCuda_generated_ConfModelCuda.cu.o">
+			<Option target="ConfModelCuda"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/tests/CMakeFiles/MonteCarloPiCuda.dir/MonteCarloPiCuda_generated_MonteCarloPiCuda.cu.o">
+			<Option target="MonteCarloPiCuda"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/examples/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\examples\"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/examples/ElasticCoupling/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\examples\ElasticCoupling\"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/examples/MonteCarloPi/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\examples\MonteCarloPi\"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/examples/RotationCuda/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\examples\RotationCuda\"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/benchmarks/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\benchmarks\"/>
+		</Unit>
+		<Unit filename="/home/ian/Documents/third_party/sourceforge/gaalet-verify-pga/cpp/tests/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\tests\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
