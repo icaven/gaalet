@@ -7,7 +7,7 @@
 namespace gaalet
 {
 
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define GA_SIG_MAX(a, b) ((a) > (b) ? (a) : (b))
 
 //metric of multivector
 // --- only definable by signature yet
@@ -37,9 +37,9 @@ struct metric_combination_traits<signature<PL, QL, RL>, signature<PR, QR, RR>>
                  "Combination of different metrics: different number of positive signatures");
    static_assert(PL+QL==PR+QR || (PL+QL<PR+QR && RL==0) || (PR+QR<PL+QL && RR==0),
                  "Combination of different metrics: different number of positive plus negative signatures");
-   static const unsigned int P = MAX(PL, PR);
-   static const unsigned int Q = MAX(QL, QR);
-   static const unsigned int R = MAX(RL, RR);
+   static const unsigned int P = GA_SIG_MAX(PL, PR);
+   static const unsigned int Q = GA_SIG_MAX(QL, QR);
+   static const unsigned int R = GA_SIG_MAX(RL, RR);
 
    typedef signature<P, Q, R> metric;
    //typedef ::gaalet::metric<SL | SR> metric;
