@@ -6,7 +6,6 @@ if (NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif (NOT CMAKE_BUILD_TYPE)
 
-set(OSG_DIR /usr/local)
 find_package(OpenSceneGraph REQUIRED osg osgViewer osgGA osgDB)
 include_directories (${OPENSCENEGRAPH_INCLUDE_DIRS})
 add_executable (CarDynamicsCGA mainCarDynamicsCGA.cpp)
