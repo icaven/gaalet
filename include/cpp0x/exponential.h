@@ -24,12 +24,12 @@ struct check_bivector<cl_null>
 template<typename CL>
 struct check_scalar
 {
-   static const bool value = (CL::size==1 && BitCount<CL::head>::value==0) ? true : false;
+   static const bool value = CL::size == 1 && BitCount<CL::head>::value == 0;
 };
 
-//go through inversion evaluation type checks
+//go through exponent evaluation type checks
 //value=1 - bivector exponential
-//value=2 - scalar exponential
+//value=0 - scalar exponential
 template<class A>
 struct exponential_evaluation_type
 {

@@ -13,16 +13,16 @@ int main()
     auto camera = 0.0 * pga3::e0;
 
     // We construct faces, edges and vertices of an icosahedron.
-    auto r = pga3::rotor(pga3::e13, M_PI / 2.5);
+    auto r = pga3::rotor(pga3::j, M_PI / 2.5);
     pga3::Point_t A = pga3::make_point(0., 1., 0.);
     pga3::Point_t B = pga3::make_point(sqrt(1. - sq(atan(0.5))), atan(0.5), 0.);
-    pga3::Point_t C = pga3::sandwich(pga3::sandwich(B, pga3::e2), pga3::rotor(pga3::e13, M_PI / 5));
+    pga3::Point_t C = pga3::sandwich(pga3::sandwich(B, pga3::e2), pga3::rotor(pga3::j, M_PI / 5));
     pga3::Point_t D = pga3::sandwich(A, pga3::e2);
 
     // Graph the 3D items
-    osg::Group* sceneRoot = new osg::Group;
-    osg::Geode* cubeGeode = new osg::Geode();
-    osg::PositionAttitudeTransform* cubeTransform = new osg::PositionAttitudeTransform();
+    auto sceneRoot = new osg::Group;
+    auto cubeGeode = new osg::Geode();
+    auto cubeTransform = new osg::PositionAttitudeTransform();
     cubeTransform->addChild(cubeGeode);
     sceneRoot->addChild(cubeTransform);
 
@@ -60,16 +60,16 @@ int main()
         drawables.push_back(new_drawable_line(D, C, line_colour, EDGE_THICKNESS));
     }
     
-    // faces
+    // faces with all normals pointing outwards
     auto face_colour = colour(float(0xff) / 255., float(0xcc) / 255., float(0xcc) / 255.);
     for(int i = 0; i < 5; i++) {
         auto next_B = pga3::sandwich(B, r);
         drawables.push_back(new_drawable_triangle(A, B, next_B, face_colour, true));
-        drawables.push_back(new_drawable_triangle(B, next_B, C, face_colour, true));
+        drawables.push_back(new_drawable_triangle(next_B, B, C, face_colour, true));
         B = next_B;
         auto next_C = pga3::sandwich(C, r);
-        
-        drawables.push_back(new_drawable_triangle(C, B, next_C, face_colour, true));
+
+        drawables.push_back(new_drawable_triangle(B, C, next_C, face_colour, true));
         drawables.push_back(new_drawable_triangle(C, D, next_C, face_colour, true));
         C = next_C;
     }
@@ -79,6 +79,11 @@ int main()
     }
 
     osgViewer::Viewer viewer;
+    osgViewer::ViewerBase::Views views;
+    viewer.getViews(views);
+    osg::ref_ptr<osgViewer::SingleWindow> win = new osgViewer::SingleWindow(20,30, 1800, 1000, 0);
+    views[0]->apply(win);
+
     viewer.setSceneData(sceneRoot);
     viewer.addEventHandler(new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()));
     if(!viewer.getCameraManipulator() && viewer.getCamera()->getAllowEventFocus()) {

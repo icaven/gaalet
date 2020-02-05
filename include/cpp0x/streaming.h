@@ -1,6 +1,7 @@
 #ifndef __GAALET_STREAMING_H
 #define __GAALET_STREAMING_H
 
+#include <cmath>
 #include "expression.h"
 #include "multivector.h"
 

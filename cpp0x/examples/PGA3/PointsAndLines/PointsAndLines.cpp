@@ -10,6 +10,9 @@ int main()
 {
     // Create 5 points and there will be some joining lines between them
     pga3::Point_t origin = pga3::make_point(0, 0, 0);
+    pga3::Point_t point_on_x = pga3::make_point(1, 0, 0);
+    pga3::Point_t point_on_y = pga3::make_point(0, 1, 0);
+    pga3::Point_t point_on_z = pga3::make_point(0, 0, 1);
     pga3::Point_t A = pga3::make_point(0, -1, 0);
     pga3::Point_t B = pga3::make_point(1, 1, -1);
     pga3::Point_t C = pga3::make_point(-1, 1, -1);
@@ -22,9 +25,9 @@ int main()
 //    auto camera = 0.0 * pga3::e0;
 
     // Graph the 3D items
-    osg::Group* sceneRoot = new osg::Group;
-    osg::Geode* cubeGeode = new osg::Geode();
-    osg::PositionAttitudeTransform* cubeTransform = new osg::PositionAttitudeTransform();
+    auto* sceneRoot = new osg::Group;
+    auto* cubeGeode = new osg::Geode();
+    auto* cubeTransform = new osg::PositionAttitudeTransform();
     cubeTransform->addChild(cubeGeode);
     sceneRoot->addChild(cubeTransform);
 
@@ -37,11 +40,17 @@ int main()
     drawables.push_back(new_drawable_point(D, green(), point_size));
     drawables.push_back(new_drawable_point(E, yellow(), point_size));
     drawables.push_back(new_drawable_point(centroid, grey(0.5), point_size));
-    
+
     // Use arrows to show the direction of the lines
+
+    // Draw in the x, y, and z axes
+    drawables.push_back(new_drawable_arrow(origin, pga3::Point_t(origin + pga3::E1), red()));
+    drawables.push_back(new_drawable_arrow(origin, pga3::Point_t(origin + pga3::E2), green()));
+    drawables.push_back(new_drawable_arrow(origin, pga3::Point_t(origin + pga3::E3), blue()));
+
     drawables.push_back(new_drawable_arrow(origin, A));
     drawables.push_back(new_drawable_arrow(A, B, cyan(0.25f)));
-    drawables.push_back(new_drawable_arrow(A, C));
+    drawables.push_back(new_drawable_arrow(A, C, green()));
     drawables.push_back(new_drawable_arrow(A, D));
     drawables.push_back(new_drawable_arrow(B, C));
     drawables.push_back(new_drawable_arrow(B, D, red(0.25f)));
@@ -49,9 +58,9 @@ int main()
     drawables.push_back(new_drawable_arrow(A, E));
     drawables.push_back(new_drawable_arrow(E, D));
 
-//    drawables.push_back(new_drawable_plane(A, B, D));
+    drawables.push_back(new_drawable_plane(A, B, D));
     drawables.push_back(new_drawable_triangle(A, B, D, grey(0.5), true));
-    
+
     auto sum_of_lines = pga3::line_from_points(B, C) + pga3::line_from_points(C, E);
     std::cout << "line_from_points(B, C): " << pga3::line_from_points(B, C) << std::endl;
     std::cout << "line_from_points(C, E): " << pga3::line_from_points(C, E) << std::endl;
@@ -62,7 +71,13 @@ int main()
         cubeGeode->addDrawable(d);
     }
 
+    // Ensure that the window is displayed on only one monitor (instead of being split across them)
     osgViewer::Viewer viewer;
+    osgViewer::ViewerBase::Views views;
+    viewer.getViews(views);
+    osg::ref_ptr<osgViewer::SingleWindow> win = new osgViewer::SingleWindow(20,30, 1800, 1000, 0);
+    views[0]->apply(win);
+
     viewer.setSceneData(sceneRoot);
     viewer.addEventHandler(new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()));
     if(!viewer.getCameraManipulator() && viewer.getCamera()->getAllowEventFocus()) {

@@ -28,19 +28,14 @@ namespace detail
         static const bool value = true;
     };
 
-    // check for scalar
-    template <typename CL>
-    struct check_scalar {
-        static const bool value = (CL::size == 1 && BitCount<CL::head>::value == 0) ? true : false;
-    };
-
-    // go through inversion evaluation type checks
+    // go through exponent evaluation type checks
+    // value=0 - scalar exponential
     // value=1 - bivector exponential
-    // value=2 - scalar exponential
     template <class A>
     struct exponential_evaluation_type {
         static const int value =
-            (check_bivector<typename A::clist>::value) ? 1 : (check_scalar<typename A::clist>::value) ? 0 : -1;
+                (check_scalar<typename A::clist>::value) ? 0 :
+                (check_bivector<typename A::clist>::value) ? 1  : -1;
     };
 
     template <class A, int ET = exponential_evaluation_type<A>::value>
@@ -48,7 +43,7 @@ namespace detail
         static_assert(ET != -1, "no method for evaluating this type of multivector implemented");
     };
 
-    // bivector exponential
+    // PGA3 exponential:bivectors
     template <class A>
     struct exponential<A, 1> : public expression<exponential<A>> {
         static const conf_t pseudoscalar_conf = Power<2, A::metric::dimension>::value - 1;
@@ -70,8 +65,15 @@ namespace detail
 
         // dangerous implementation: constructor only called when expression is defined, not when evaluated
         exponential(const A& a_)
-            : a(a_)
-            , first_eval(true)
+                : a(a_)
+                , B(pga3::Line_t())
+                , B_polar(pga3::Line_t())
+                , B2(0.0)
+                , f1(1.0)
+                , f2(0.0)
+                , f3(1.0)
+                , f4(1.0)
+                , first_eval(true)
         {
         }
 

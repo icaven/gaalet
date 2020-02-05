@@ -23,7 +23,7 @@ struct check_spinor<cl_null>
    static const bool value = true;
 };
 
-//go through inversion evaluation type checks
+//go through value evaluation type checks
 //value=1 - bivector logarithm
 //value=0 - scalar logarithm
 //value=2 - spinor logarithm

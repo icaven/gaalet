@@ -34,8 +34,9 @@ struct space {
 };
 
 // Convenience function and macro to generate the configuration list values
-// Note that the null basis e0 has a bit representation that is expected by the gaalet implementation to square to 0
-inline constexpr conf_t vector_conf(const int v=-1) { return v < 0 ? 0 : 1 << ((v - 1) < 0 ? 3 : (v - 1)); };
+// Note that the order of the vectors in the blade_conf is not retained (because the result is just a bit string),
+// but for consistency they will be shown in the order of the basis vectors in the blades
+inline constexpr conf_t vector_conf(const int v=-1) { return v < 0 ? 0 : 1 << v; };
 #define blade_conf(v1, v2, ...) (pga3::vector_conf(v1) | pga3::vector_conf(v2) | pga3::vector_conf( __VA_ARGS__ ) )
 
 
@@ -55,7 +56,7 @@ const space::mv<blade_conf(0, 1)>::type e01 = (e0 ^ e1);
 const space::mv<blade_conf(0, 2)>::type e02 = (e0 ^ e2);
 const space::mv<blade_conf(0, 3)>::type e03 = (e0 ^ e3);
 const space::mv<blade_conf(1, 2)>::type e12 = (e1 ^ e2);
-const space::mv<blade_conf(1, 3)>::type e13 = (e1 ^ e3);
+const space::mv<blade_conf(1, 3)>::type e31 = (e3 ^ e1);
 const space::mv<blade_conf(2, 3)>::type e23 = (e2 ^ e3);
 
 // Alternative names for biquaternion components
@@ -63,10 +64,10 @@ constexpr conf_t DUAL_I_CONF = blade_conf(0, 3);
 constexpr conf_t DUAL_J_CONF = blade_conf(0, 2);
 constexpr conf_t DUAL_K_CONF = blade_conf(0, 1);
 constexpr conf_t I_CONF = blade_conf(1, 2);
-constexpr conf_t J_CONF = blade_conf(1, 3);
+constexpr conf_t J_CONF = blade_conf(3, 1);
 constexpr conf_t K_CONF = blade_conf(2, 3);
 const space::mv<I_CONF>::type i = e12;      // z-axis      - see Section 7.4.3 of [Gunn2011]
-const space::mv<J_CONF>::type j = -1 * e13; // y-axis
+const space::mv<J_CONF>::type j = e31;      // y-axis
 const space::mv<K_CONF>::type k = e23;      // x-axis
 const space::mv<DUAL_K_CONF>::type dual_k = e01;
 const space::mv<DUAL_J_CONF>::type dual_j = e02;
@@ -75,30 +76,29 @@ const space::mv<DUAL_I_CONF>::type dual_i = e03;
 
 // The tri-vectors (representing points)
 constexpr conf_t E0_CONF = blade_conf(1, 2, 3);
-constexpr conf_t EX_CONF = blade_conf(0, 1, 2);
-constexpr conf_t EY_CONF = blade_conf(0, 1, 3);
-constexpr conf_t EZ_CONF = blade_conf(0, 2, 3);
+constexpr conf_t E1_CONF = blade_conf(0, 3, 2);
+constexpr conf_t E2_CONF = blade_conf(0, 1, 3);
+constexpr conf_t E3_CONF = blade_conf(0, 2, 1);
 
-const space::mv<blade_conf(1, 2, 3)>::type e123 = (e1 ^ e2 ^ e3);
-const space::mv<blade_conf(0, 1, 2)>::type e012 = (e0 ^ e1 ^ e2);
-const space::mv<blade_conf(0, 1, 3)>::type e013 = (e0 ^ e1 ^ e3);
-const space::mv<blade_conf(0, 2, 3)>::type e023 = (e0 ^ e2 ^ e3);
-// Alternative names
-const space::mv<blade_conf(1, 2, 3)>::type E0 = e123; // This is also the pseudoscalar for the Euclidean subspace
-const space::mv<blade_conf(0, 1, 2)>::type E3 = e012;
-const space::mv<blade_conf(0, 1, 3)>::type E2 = e013;
-const space::mv<blade_conf(0, 2, 3)>::type E1 = e023;
-const space::mv<blade_conf(0, 1, 2)>::type EX = e012;
-const space::mv<blade_conf(0, 1, 3)>::type EY = e013;
-const space::mv<blade_conf(0, 2, 3)>::type EZ = e023;
+
+const space::mv<E0_CONF>::type e123 = (e1 ^ e2 ^ e3);
+const space::mv<E1_CONF>::type e032 = (e0 ^ e3 ^ e2);
+const space::mv<E2_CONF>::type e013 = (e0 ^ e1 ^ e3);
+const space::mv<E3_CONF>::type e021 = (e0 ^ e2 ^ e1);
+
+    // Alternative names
+const space::mv<E0_CONF>::type E0 = e123; // This is also the pseudoscalar for the Euclidean subspace
+const space::mv<E1_CONF>::type E1 = e032;
+const space::mv<E2_CONF>::type E2 = e013;
+const space::mv<E3_CONF>::type E3 = e021;
 
 // The pseudoscalar (representing all space), with the null vector at the end to match the order
 // of the configuration bits
 const gaalet::conf_t pseudoscalar_conf = (1 << space::algebra::metric::dimension)-1;
-const space::mv<pseudoscalar_conf>::type I = (e1 ^ e2 ^ e3 ^ e0);
+const space::mv<pseudoscalar_conf>::type I = (e0 ^ e1 ^ e2 ^ e3);
 
 // Types for common geometric entities
-typedef space::mv<E0_CONF, EX_CONF, EY_CONF, EZ_CONF>::type Point_t;
+typedef space::mv<E0_CONF, E1_CONF, E2_CONF, E3_CONF>::type Point_t;
 typedef space::mv<DUAL_K_CONF, DUAL_J_CONF, DUAL_I_CONF, I_CONF, J_CONF, K_CONF>::type Line_t;
 typedef space::mv<vector_conf(1), vector_conf(2), vector_conf(3), vector_conf(0)>::type Plane_t;
 typedef space::mv<0, DUAL_K_CONF, DUAL_J_CONF, DUAL_I_CONF, I_CONF, J_CONF, K_CONF, pseudoscalar_conf>::type Motor_t;
@@ -114,13 +114,13 @@ typedef space::mv<0, DUAL_K_CONF, DUAL_J_CONF, DUAL_I_CONF, I_CONF, J_CONF, K_CO
 
 namespace detail
 {
-template<conf_t I, typename list, typename colist = cl_null>
+template<conf_t I_conf, typename list, typename colist = cl_null>
 struct dual_list
 {
-   typedef typename dual_list<I, typename list::tail, typename insert_element< I ^ list::head, colist>::clist>::clist clist;
+   typedef typename dual_list<I_conf, typename list::tail, typename insert_element< I_conf ^ list::head, colist>::clist>::clist clist;
 };
-template<conf_t I, typename colist>
-struct dual_list<I, cl_null, colist>
+template<conf_t I_conf, typename colist>
+struct dual_list<I_conf, cl_null, colist>
 {
    typedef colist clist;
 };
@@ -128,9 +128,9 @@ struct dual_list<I, cl_null, colist>
 template<class A>
 struct dual : public expression <detail::dual<A >>
 {
-   static const conf_t I = Power<2, A::metric::dimension>::value-1;
+   static const conf_t I_conf = Power<2, A::metric::dimension>::value-1;
 
-   typedef typename dual_list<I, typename A::clist>::clist clist;
+   typedef typename dual_list<I_conf, typename A::clist>::clist clist;
 
    typedef typename A::metric metric;
    
@@ -142,10 +142,12 @@ struct dual : public expression <detail::dual<A >>
 
    template<conf_t conf>
    element_t element() const {
-      return (search_element<conf, clist>::index>=clist::size) ? 0.0 : a.template element< I ^ conf >()
-                                                                     * ((conf == blade_conf(0, 2) || conf == blade_conf(1, 3) || 
-                                                                         conf == vector_conf(2)  || conf == blade_conf(0, 1, 3) ||
-                                                                         conf == vector_conf(0) || conf == blade_conf(1, 2, 3)
+       // The odd permutation blades are stored negated, so change the sign when computing the dual
+      return (search_element<conf, clist>::index>=clist::size) ? 0.0 : a.template element< I_conf ^ conf >()
+              //                                                                even                            odd
+                                                                     * ((conf == blade_conf(0, 2) || conf == blade_conf(3, 1) ||
+                                                                         conf == vector_conf(1)  || conf == blade_conf(0, 3, 2) ||
+                                                                         conf == vector_conf(3) || conf == blade_conf(0, 2, 1)
                                                                          ? -1 : 1)
                                                                      );
    }
@@ -173,35 +175,178 @@ dual(const gaalet::expression<A>& a) {
 // Functions to generate common entities
 //
 
-// Eulidean point as a homogeneous point
-template <typename T> inline 
-auto make_point(T x, T y, T z)
+// Euclidean point as a homogeneous point
+template <typename X, typename Y, typename Z> inline
+auto make_point(X x, Y y, Z z)
 {
-    return E0 + x * EX + y * EY + z * EZ;
+    return E0 + static_cast<pga3::space::algebra::element_t>(x) * E1 +
+                static_cast<pga3::space::algebra::element_t>(y) * E2 +
+                static_cast<pga3::space::algebra::element_t>(z) * E3;
 }
-
-inline space::algebra::element_t Point_x(const Point_t& p) {
-    return p.template element<EX_CONF>();
-};
-inline space::algebra::element_t Point_y(const Point_t& p) {
-    return p.template element<EY_CONF>();
-};
-inline space::algebra::element_t Point_z(const Point_t& p) {
-    return p.template element<EZ_CONF>();
-};
 
 // Ideal point
-template <typename T> inline 
-auto make_ideal_point(T x, T y, T z)
+template <typename X, typename Y, typename Z> inline
+auto make_ideal_point(X x, Y y, Z z)
 {
-    return space::algebra::element_t(0) * E0 + x * EX + y * EY + z * EZ;
+    return static_cast<pga3::space::algebra::element_t>(x) * E1 +
+           static_cast<pga3::space::algebra::element_t>(y) * E2 +
+           static_cast<pga3::space::algebra::element_t>(z) * E3;
 }
+
+template<class A>
+struct Point : public gaalet::expression<Point<A>>
+{
+    typedef typename A::clist clist;
+
+    typedef typename A::metric metric;
+
+    typedef typename A::element_t element_t;
+
+    explicit Point(const A& a_)
+            :  a(a_)
+    { }
+
+    template<conf_t conf>
+    element_t element() const {
+        return a.template element<conf>();
+    }
+
+    // Need to negate the x and z values since the value is stored for even permutation of the basis vectors,
+    // but they are for an odd permutation.  This is an implementation detail.
+
+    element_t origin() const {
+        return a.template element<E0_CONF>();
+    }
+
+    // x direction
+    element_t x() const {
+        return -a.template element<E1_CONF>();
+    }
+
+    // y direction
+    element_t y() const {
+        return a.template element<E2_CONF>();
+    }
+
+    // z direction
+    element_t z() const {
+        return -a.template element<E3_CONF>();
+    }
+
+    Point_t normalized() const {
+        return origin() * E0 + x() * E1 + y() * E2 + z() * E3;
+    }
+
+
+protected:
+    const A a;
+};
+
+// Ensure that the point is normalized
+template <class A> inline
+Point<gaalet::unit<A>>
+as_point(const gaalet::expression<A>& a) {
+    gaalet::unit<A> na = ::normalize(a);
+    return Point<decltype(na)>(na);
+}
+
+template <class A>
+std::ostream& operator << (std::ostream& out, const Point<A>& p)
+{
+    return out << "(x: " << p.x() << ", y: " << p.y() << ", z: " << p.z() << ", O: " << p.origin() << ")";
+}
+
+// Need to negate the x and z values since the value is stored for even permutation of the basis vectors,
+// but they are for an odd permutation.  This is an implementation detail.
+inline space::algebra::element_t Point_x(const Point_t& p) {
+    return -p.template element<E1_CONF>();
+};
+inline space::algebra::element_t Point_y(const Point_t& p) {
+    return p.template element<E2_CONF>();
+};
+inline space::algebra::element_t Point_z(const Point_t& p) {
+    return -p.template element<E3_CONF>();
+};
+
 
 // Lines can be defined by Plücker coordinates
 template <typename TX, typename TY, typename TZ, typename DX, typename DY, typename DZ> inline
 auto make_line(TX px, TY py, TZ pz, DX dx, DY dy, DZ dz)
 {
-    return normalize(px * dual_k + py * dual_j + pz * dual_i + dx * i + dy * j + dz * k);
+    return normalize(dx * dual_k + dy * dual_j + dz * dual_i + px * k + py * j + pz * i);
+}
+
+template<class A>
+struct Line : public gaalet::expression<Line<A>>
+{
+    typedef typename A::clist clist;
+
+    typedef typename A::metric metric;
+
+    typedef typename A::element_t element_t;
+
+    explicit Line(const A& a_)
+            :  a(a_)
+    { }
+
+    template<conf_t conf>
+    element_t element() const {
+        return a.template element<conf>();
+    }
+
+    // Need to negate the j value since the value is stored for even permutation of the basis vectors,
+    // but it is for an odd permutation.  This is an implementation detail.
+
+    element_t i() const {
+        return a.template element<I_CONF>();
+    }
+
+    element_t j() const {
+        return -a.template element<J_CONF>();
+    }
+
+    element_t k() const {
+        return a.template element<K_CONF>();
+    }
+
+    element_t dual_i() const {
+        return a.template element<DUAL_I_CONF>();
+    }
+
+    element_t dual_j() const {
+        return a.template element<DUAL_J_CONF>();
+    }
+
+    element_t dual_k() const {
+        return a.template element<DUAL_K_CONF>();
+    }
+
+    Line_t normalized() const {
+        return make_line(k(), j(), i(), dual_k(), dual_j(), dual_i());
+    }
+
+protected:
+    const A a;
+};
+
+template <class A>
+std::ostream& operator << (std::ostream& out, const Line<A>& l)
+{
+    return out << "(i: " << l.i()
+               << ", j: " << l.j()
+               << ", k: " << l.k()
+               << ", di: " << l.dual_i()
+               << ", dj: " << l.dual_j()
+               << ", dk: " << l.dual_k()
+               << ")";
+}
+
+// Ensure that the line is normalized
+template <class A> inline
+Line<gaalet::unit<A>>
+as_line(const gaalet::expression<A>& a) {
+    gaalet::unit<A> na = ::normalize(a);
+    return Line<decltype(na)>(na);
 }
 
 // Four values define a plane
@@ -345,3 +490,73 @@ bivector_axis(pga3::Line_t bivector) {
 }
 
 } // end of namespace pga3
+
+namespace pga3 {
+// These functions may be used to print out PGA3 multivectors in a more descriptive way than just
+// using the functions in streaming.h.
+// @todo: Find a way to call these functions for gaalet::expressions that contain pga3 multivectors
+
+
+// These are specific to PGA3, and are ordered so that the configuration bit pattern can index into it
+static std::string basis_vector_names[16] = {"    ", "e0  ", "e1  ", "e01 ", "e2  ", "e02 ", "e12 ", "e021 ", "e3  ",
+                                             "e03 ", "e31 ", "e013 ", "e23 ", "e032 ", "e123 ", "e0123"};
+
+// PGA3 multivector streaming
+
+    template <typename clist>
+    struct UnpackElementsToStream {
+        template<class E, class T>
+        static void unpack(std::basic_ostream<E, T> &os, const gaalet::multivector<clist,
+                pga3::space::algebra::metric, pga3::space::algebra::element_t>& e,
+                bool previous_non_zero=false) {
+            bool found_non_zero = previous_non_zero;
+            if (e.template element<clist::head>() != 0) {
+                found_non_zero = true;
+                if (clist::head == 0) {
+                    os << std::right << std::setw(8) << e.template element<0>();
+                }
+                else if (clist::head == 7 || clist::head == 10 || clist::head == 13) {
+                    // The odd permutation blades are stored with negated values, so change the sign
+                    os << std::right << std::setw(8) << -1 * e.template element<clist::head>() << basis_vector_names[clist::head];
+                }
+                else {
+                    os << std::right << std::setw(8) << e.template element<clist::head>() << basis_vector_names[clist::head];
+                }
+            }
+            UnpackElementsToStream<typename clist::tail>::unpack(os, e, found_non_zero);
+        }
+
+    };
+
+    template<>
+    struct UnpackElementsToStream<gaalet::cl_null> {
+        template<class E, class T>
+        static void unpack(std::basic_ostream<E, T> &os, const gaalet::multivector<gaalet::cl_null,
+                pga3::space::algebra::metric, pga3::space::algebra::element_t>& , bool previous_non_zero=false)
+        {
+            if (!previous_non_zero) {
+                os << std::right << std::setw(8) << "0";
+            }
+        }
+    };
+
+} // end of namespace pga3
+
+namespace std {
+
+    template<typename CL>
+    std::ostream &operator<<(std::ostream &os, const gaalet::multivector<CL,
+            pga3::space::algebra::metric, pga3::space::algebra::element_t> &e) {
+        pga3::UnpackElementsToStream<CL>::unpack(os, e);
+        return os;
+    }
+
+    template<class E, class T, class CL>
+    std::basic_ostream<E, T> &operator<<(std::basic_ostream<E, T> &&os,
+                                         const gaalet::expression<gaalet::multivector<CL, pga3::space::algebra::metric,
+                                                 pga3::space::algebra::element_t>> &e) {
+        pga3::UnpackElementsToStream<CL>::unpack(os, e);
+        return os;
+    }
+
+} // end of namespace std

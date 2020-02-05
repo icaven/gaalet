@@ -7,6 +7,8 @@
 namespace gaalet
 {
 
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+
 //metric of multivector
 // --- only definable by signature yet
 // --- interface may change in order to allow for a general metric tensor
@@ -18,9 +20,12 @@ struct signature
    static const unsigned int r = R;
    static const unsigned int dimension = P+Q+R;
 
-   static const conf_t signature_bitmap = (Power<2, Q>::value-1)<<P;
-   static const conf_t degenerate_bitmap = (Power<2, R>::value-1)<<(P+Q);
+   // The bits for the degenerate basis will be rightmost in the bitmap
+   static const conf_t degenerate_bitmap = (Power<2, R>::value-1);
+    static const conf_t euclidean_bitmap = (Power<2, P>::value-1)<<(R);
+    static const conf_t signature_bitmap = (Power<2, Q>::value-1)<<(P+R);
 };
+
 template<typename ML, typename MR>
 struct metric_combination_traits;
 
@@ -32,9 +37,9 @@ struct metric_combination_traits<signature<PL, QL, RL>, signature<PR, QR, RR>>
                  "Combination of different metrics: different number of positive signatures");
    static_assert(PL+QL==PR+QR || (PL+QL<PR+QR && RL==0) || (PR+QR<PL+QL && RR==0),
                  "Combination of different metrics: different number of positive plus negative signatures");
-   static const unsigned int P = (PL>PR) ? PL : PR;
-   static const unsigned int Q = (QL>QR) ? QL : QR;
-   static const unsigned int R = (RL>RR) ? RL : RR;
+   static const unsigned int P = MAX(PL, PR);
+   static const unsigned int Q = MAX(QL, QR);
+   static const unsigned int R = MAX(RL, RR);
 
    typedef signature<P, Q, R> metric;
    //typedef ::gaalet::metric<SL | SR> metric;

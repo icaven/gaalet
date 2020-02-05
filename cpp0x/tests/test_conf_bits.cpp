@@ -1,4 +1,5 @@
 #include "gaalet.h"
+#include "pga3.h"
 #include <cmath>
 #include <iostream>
 
@@ -20,7 +21,7 @@ struct space {
     typedef gaalet::algebra<signature<P, Q, R>, double> algebra;
 
     template <gaalet::conf_t... elements> struct mv {
-        typedef typename algebra::mv<elements...>::type type;
+        typedef typename algebra::template mv<elements...>::type type;
     };
 };
 
@@ -32,23 +33,25 @@ inline constexpr conf_t vector_conf(const int v=-1) {
         return 0;
     else if (R > 0 && v == 0) {
         // Special case for the first degenerate base - allow it to be named with index 0
-        return 1 << P+Q+R-1;
+        return 1 << (P+Q+R-1);
     }
     else {
         return 1 << (v - 1); 
     }
-}
+};
 
 template <int P, int Q, int R, int v_max=P+Q+R-(R>0?1:0)>
-inline constexpr conf_t blade_conf(const int v=-1) {
+constexpr conf_t blade_conf(const int v=-1) {
     return vector_conf(v) | blade_conf<P, Q, R, v_max-1>(v);
-}
+};
+
 template <int P, int Q, int R, int v_max>
-inline constexpr conf_t blade_conf(const int v=-1) {
+constexpr conf_t blade_conf(const int v=-1) {
     return blade_conf<P, Q, R, v_max-1>(v);
-}
+};
+
 template <int P, int Q, int R, 1>
-inline constexpr conf_t blade_conf(const int v=-1) {
+constexpr conf_t blade_conf(const int v=-1) {
     return vector_conf(v);
 }
 

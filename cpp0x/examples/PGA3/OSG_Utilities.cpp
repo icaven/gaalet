@@ -9,8 +9,8 @@
 osg::ShapeDrawable* new_drawable_point(const pga3::Point_t& p, const osg::Vec4& colour,
                                        float point_radius)
 {
-    osg::Sphere* sphere = new osg::Sphere(Vec3(p), point_radius);
-    osg::ShapeDrawable* drawable = new osg::ShapeDrawable(sphere);
+    auto sphere = new osg::Sphere(Vec3(p), point_radius);
+    auto drawable = new osg::ShapeDrawable(sphere);
     drawable->setColor(colour);
     return drawable;
 }
@@ -28,10 +28,10 @@ new_drawable_line(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
               
     // OSG Cylinders always start out in the vertical direction (+Z-axis) and centered on the starting point
     // so rotate and translate as needed
-    osg::Cylinder* cylinder = new osg::Cylinder(Vec3(start_pt), line_thickness, length);
+    auto cylinder = new osg::Cylinder(Vec3(start_pt), line_thickness, length);
 
     // Determine the angle between the line described by the start and end points and the Z-axis
-    double angle = acos((pga3::k & normalize(line)).template element<0>());
+    double angle = acos((pga3::i & normalize(line)).template element<0>());
     if (isclose(angle, 0.)) {
         // Parallel to the Z-axis, just shift along that axis in the positive direction
         cylinder->setCenter(cylinder->getCenter() + osg::Vec3(0., 0., -length*0.5f));
@@ -43,7 +43,7 @@ new_drawable_line(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
     else {
         // Determine the plane that the Z-axis and the line forms and then compute the perpendicular
         // to that plane; the angle will correspond to the angle around that perpendicular
-        auto end_of_cylinder = normalize(pga3::sandwich(start_pt, pga3::translator(pga3::k, length)));
+        auto end_of_cylinder = normalize(pga3::sandwich(start_pt, pga3::translator(pga3::i, length)));
         auto perpendicular_to_plane = pga3::normal_to_plane(start_pt,  end_pt, end_of_cylinder);
 
         // Rotate the cylinder to be in the direction of the line
@@ -56,7 +56,7 @@ new_drawable_line(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
         cylinder->setCenter(Vec3(new_center));
     }
 
-    osg::ShapeDrawable* drawable = new osg::ShapeDrawable(cylinder);
+    auto drawable = new osg::ShapeDrawable(cylinder);
     drawable->setColor(colour);
     return drawable;
 }
@@ -76,20 +76,20 @@ new_arrow(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
     // default osg::Cone::getBaseOffsetFactor() value)
     const float arrow_head_base_to_length_ratio = 3.f/5.f;
     float shaft_thickness = fmin(line_thickness, length * 0.75f * arrow_head_base_to_length_ratio);
-    
+
     // OSG Cylinders and Cones always start out in the vertical direction (+Z-axis) 
-    // and origined on the starting point so rotate and translate as needed
+    // and with the origin on the starting point so rotate and translate as needed
     float arrow_head_length = fmin(length, 5.f*shaft_thickness);
     float arrow_base_radius = arrow_head_base_to_length_ratio * arrow_head_length;
-    osg::Cone* arrow_head = new osg::Cone(origin, arrow_base_radius, arrow_head_length);
+    auto arrow_head = new osg::Cone(origin, arrow_base_radius, arrow_head_length);
 
     // Determine the offset of the tip from the location of the cone origin
     float head_offset = (1.f - arrow_head->getBaseOffsetFactor()) * arrow_head_length;
     float shaft_length = length - head_offset;
-    osg::Cylinder* shaft = new osg::Cylinder(origin, shaft_thickness, shaft_length);
+    auto shaft = new osg::Cylinder(origin, shaft_thickness, shaft_length);
 
     // Determine the angle between the line described by the start and end points and the Z-axis
-    double angle = acos((pga3::k & normalize(line)).template element<0>());
+    double angle = acos((pga3::i & normalize(line)).template element<0>());
     if (isclose(angle, 0.)) {
         // Parallel to the Z-axis, just shift along that axis in the positive direction
         shaft->setCenter(shaft->getCenter() + osg::Vec3(0., 0., -shaft_length*0.5f));
@@ -106,7 +106,7 @@ new_arrow(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
     else {
         // Determine the plane that the Z-axis and the line forms and then compute the perpendicular
         // to that plane; the angle will correspond to the angle around that perpendicular
-        auto end_of_shaft = normalize(pga3::sandwich(start_pt, pga3::translator(pga3::k, shaft_length)));
+        auto end_of_shaft = normalize(pga3::sandwich(start_pt, pga3::translator(pga3::i, shaft_length)));
         auto perpendicular_to_plane = pga3::normal_to_plane(start_pt, end_pt, end_of_shaft);
 
         // Rotate the shaft to be in the direction of the line
@@ -120,13 +120,12 @@ new_arrow(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
         
         // Rotate and translate the arrow head
         arrow_head->setRotation(q);
-//        auto arrow_translator = pga3::translator(line, (double) fmax(length-head_offset, arrow_head_length));
         auto arrow_translator = pga3::translator(line, (double) fmax(length-head_offset, arrow_head_length-head_offset));
         auto arrow_center = pga3::sandwich(start_pt, arrow_translator);
         arrow_head->setCenter(Vec3(arrow_center));
     }
 
-    osg::CompositeShape* arrow = new osg::CompositeShape();
+    auto arrow = new osg::CompositeShape();
     arrow->addChild(shaft);
     arrow->addChild(arrow_head);
     
@@ -141,7 +140,7 @@ new_drawable_arrow(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
                   const float line_thickness)
 {
     osg::CompositeShape* arrow = new_arrow(start_pt, end_pt, line_thickness);
-    osg::ShapeDrawable* drawable = new osg::ShapeDrawable(arrow);
+    auto drawable = new osg::ShapeDrawable(arrow);
     drawable->setColor(colour);
     return drawable;
 }
@@ -155,10 +154,14 @@ new_drawable_arrow(const pga3::Point_t& start_pt, const pga3::Line_t& line,
 {
     // The meet of the line with the ideal plane yields an ideal point which is a direction
     osg::CompositeShape* arrow = new_arrow(start_pt, start_pt + (line ^ pga3::e0), line_thickness);
-    osg::ShapeDrawable* drawable = new osg::ShapeDrawable(arrow);
+    auto drawable = new osg::ShapeDrawable(arrow);
     drawable->setColor(colour);
     return drawable;
 }
+
+#ifndef DEBUGGING_DRAWING_A_PLANE
+#define DEBUGGING_DRAWING_A_PLANE false
+#endif
 
 osg::ShapeDrawable*
 new_drawable_plane(const pga3::Point_t& p1, const pga3::Point_t& p2, const pga3::Point_t& p3,
@@ -192,26 +195,28 @@ new_drawable_plane(const pga3::Point_t& p1, const pga3::Point_t& p2, const pga3:
 
     double angle = acos((pga3::j & perpendicular_to_plane).template element<0>());
 
-    osg::Box* box_as_plane = new osg::Box(Vec3(p1),float(x_length), plane_thickness, float(z_length));
+    auto box_as_plane = new osg::Box(Vec3(p1), float(x_length), plane_thickness, float(z_length));
     osg::Quat q = Quat(angle/2.0, perpendicular_to_plane_with_normal);
     box_as_plane->setRotation(q);
     box_as_plane->setCenter(Vec3(plane_center));
-    osg::ShapeDrawable* drawable = new osg::ShapeDrawable(box_as_plane);
 
+#if DEBUGGING_DRAWING_A_PLANE
     // For debugging, it is helpful to draw the normals together with the rotated box,
     // instead of just the box
-//    osg::CompositeShape* plane_and_normal= new osg::CompositeShape();
-//    plane_and_normal->addChild(box_as_plane);
-//    plane_and_normal->addChild(new osg::Sphere(Vec3(plane_center), DEFAULT_RADIUS_OF_DRAWN_POINT));
-//    plane_and_normal->addChild(new osg::Sphere(Vec3(normalize(p2 + p3)), DEFAULT_RADIUS_OF_DRAWN_POINT));
-//    plane_and_normal->addChild(new_arrow(p1, normalize(p2 + p3), DEFAULT_RADIUS_OF_DRAWN_POINT/3.));
-//
-//    plane_and_normal->addChild(new_arrow(p1, end_of_normal));
-//    plane_and_normal->addChild(new_arrow(p1, end_of_normal_to_rotation_plane));
-//
-//    osg::ShapeDrawable* drawable = new osg::ShapeDrawable(plane_and_normal);
-    
-    
+    auto plane_and_normal= new osg::CompositeShape();
+    plane_and_normal->addChild(box_as_plane);
+    plane_and_normal->addChild(new osg::Sphere(Vec3(plane_center), DEFAULT_RADIUS_OF_DRAWN_POINT));
+    plane_and_normal->addChild(new osg::Sphere(Vec3(normalize(p2 + p3)), DEFAULT_RADIUS_OF_DRAWN_POINT));
+    plane_and_normal->addChild(new_arrow(p1, normalize(p2 + p3), DEFAULT_RADIUS_OF_DRAWN_POINT/3.));
+
+    plane_and_normal->addChild(new_arrow(p1, end_of_normal));
+    plane_and_normal->addChild(new_arrow(p1, end_of_normal_to_rotation_plane));
+
+    auto drawable = new osg::ShapeDrawable(plane_and_normal);
+#else
+    auto drawable = new osg::ShapeDrawable(box_as_plane);
+#endif
+
     drawable->setColor(colour);
     return drawable;
 }
@@ -220,8 +225,8 @@ osg::ShapeDrawable*
 new_drawable_triangle(const pga3::Point_t& p1, const pga3::Point_t& p2, const pga3::Point_t& p3,
                       const osg::Vec4& colour, bool draw_normal)
 {
-    osg::TriangleMesh* triangle_as_plane = new osg::TriangleMesh();
-    osg::Vec3Array* vertices = new osg::Vec3Array();
+    auto triangle_as_plane = new osg::TriangleMesh();
+    auto vertices = new osg::Vec3Array();
     vertices->push_back(Vec3(p1));
     vertices->push_back(Vec3(p2));
     vertices->push_back(Vec3(p3));
@@ -230,7 +235,7 @@ new_drawable_triangle(const pga3::Point_t& p1, const pga3::Point_t& p2, const pg
     triangle_indices.push_back(0);
     triangle_indices.push_back(1);
     triangle_indices.push_back(2);
-    osg::IntArray* indices = new osg::IntArray(triangle_indices.begin(), triangle_indices.end());
+    auto indices = new osg::IntArray(triangle_indices.begin(), triangle_indices.end());
     triangle_as_plane->setIndices(indices);
 
     osg::ShapeDrawable* drawable;
@@ -240,7 +245,7 @@ new_drawable_triangle(const pga3::Point_t& p1, const pga3::Point_t& p2, const pg
         auto triangle_centroid = eval(::normalize(p1 + p2 + p3));
         auto end_of_normal = pga3::sandwich(triangle_centroid, translate_along_normal);
 
-        osg::CompositeShape* triangle_and_normal= new osg::CompositeShape();
+        auto triangle_and_normal= new osg::CompositeShape();
         triangle_and_normal->addChild(triangle_as_plane);
         triangle_and_normal->addChild(new_arrow(triangle_centroid, end_of_normal));
         drawable = new osg::ShapeDrawable(triangle_and_normal);

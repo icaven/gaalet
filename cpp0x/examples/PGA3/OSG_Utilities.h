@@ -3,13 +3,15 @@
 #pragma once
 
 #include <cmath>
-#include <float.h>
+#include <cfloat>
 #include <vector>
 
 #include "gaalet.h"
 #include "pga3.h"
 
 #include <osgViewer/Viewer>
+#include <osgViewer/config/SingleWindow>
+#include <osgViewer/CompositeViewer>
 #include <osgGA/StateSetManipulator>
 #include <osgGA/TrackballManipulator>
 #include <osg/PositionAttitudeTransform>
@@ -19,76 +21,52 @@ inline bool isclose(double a, double b, double rtol=1e-05, double atol=DBL_EPSIL
     return fabs(a - b) <= (atol + rtol * fabs(b));
 }
 
-
-// Debugging output functions
-inline void print_point_info(const pga3::Point_t& p, const std::string& name) {
-    std::cout << name << ": " << p 
-//              << " polar of " << name << ": " << pga3::polar(p) 
-              << " dual of " << name << ": " << pga3::dual(p) 
-              << std::endl;
-    std::cout << "normalized " << name << ": " << normalize(p) << std::endl;
-//    std::cout << name << "[0]: " << p[0] << " " << name << "[1]: " << p[1] << " " 
-//              << name << "[2]: " << p[2] << " " << name << "[3]: " << p[3] << std::endl;
-}
-
-inline void print_line_info(const pga3::Line_t& l, const std::string& name) {
-    std::cout << name << ": " << l 
-//              << " polar of " << name << ": " << pga3::polar(l) 
-//              << " dual of " << name << ": " << pga3::dual(l) 
-              << std::endl;
-    std::cout << "normalized " << name << ": " << normalize(l)
-////              << "normalized " << name << " squared: " << normalize(l*l) 
-              << std::endl;
-    std::cout << name << "[0]: " << l[0] << " " << name << "[1]: " << l[1] << " " << name << "[2]: " << l[2] << std::endl;
-    std::cout << name << "[3]: " << l[3] << " " << name << "[4]: " << l[4] << " " << name << "[5]: " << l[5] << std::endl;
-}
-
 // Visualization of elements and operations
 
 class FrameThrottle
 {
 public:
-    FrameThrottle() : startFrameTick(osg::Timer::instance()->tick()) {};
+    FrameThrottle() : m_startFrameTick(osg::Timer::instance()->tick()) {};
     
     float time() 
     {
-        return startFrameTick;
+        return m_startFrameTick;
     };
     
     void begin() 
     {
-        startFrameTick = osg::Timer::instance()->tick();
+        m_startFrameTick = osg::Timer::instance()->tick();
     };
     
     void end()
     {
         // work out if we need to force a sleep to hold back the frame rate
         osg::Timer_t endFrameTick = osg::Timer::instance()->tick();
-        frameTime = osg::Timer::instance()->delta_s(startFrameTick, endFrameTick);
+        m_frameTime = osg::Timer::instance()->delta_s(m_startFrameTick, endFrameTick);
 
-        sumFrameTime += frameTime;
-        if(counter == 1000) {
+        m_sumFrameTime += m_frameTime;
+        if(m_counter == 1000) {
 //            std::cout << "Average frame time: " << sumFrameTime / 1000.0 << std::endl;
-            sumFrameTime = 0.0;
-            counter = 0;
+            m_sumFrameTime = 0.0;
+            m_counter = 0;
         } else {
-            counter++;
+            m_counter++;
         }
 
-        timer += frameTime;
+        m_timer += m_frameTime;
 
-        if(frameTime < minFrameTime) {
-            OpenThreads::Thread::microSleep(static_cast<unsigned int>(1000000.0 * (minFrameTime - frameTime)));
+        if(m_frameTime < m_minFrameTime) {
+            OpenThreads::Thread::microSleep(static_cast<unsigned int>(1000000.0 * (m_minFrameTime - m_frameTime)));
         }
     };
 
 protected:
-    osg::Timer_t startFrameTick;
-    double frameTime = 0.0;
-    double sumFrameTime = 0.0;
-    double minFrameTime = 1.0/60.0; //1.0/120.0; // seconds
-    double timer = 0.0;
-    unsigned int counter = 0;
+    osg::Timer_t m_startFrameTick;
+    double m_frameTime = 0.0;
+    double m_sumFrameTime = 0.0;
+    double m_minFrameTime = 1.0 / 60.0; //1.0/120.0; // seconds
+    double m_timer = 0.0;
+    unsigned int m_counter = 0;
 };
 
 
@@ -96,63 +74,69 @@ protected:
 class AnimatedScene
 {
 public:
-    AnimatedScene() : sceneRoot(0) {};
+    AnimatedScene() : m_sceneRoot(nullptr) {};
 
     osg::Geode* setup()
     {
-        sceneRoot = new osg::Group;
-        rootGeode = new osg::Geode();
-        worldTransform = new osg::PositionAttitudeTransform();
-        worldTransform->addChild(rootGeode);
-        sceneRoot->addChild(worldTransform);
-        return rootGeode;
+        m_sceneRoot = new osg::Group();
+        m_rootGeode = new osg::Geode();
+        m_worldTransform = new osg::PositionAttitudeTransform();
+        m_worldTransform->addChild(m_rootGeode);
+        m_sceneRoot->addChild(m_worldTransform);
+        return m_rootGeode;
     };
 
     void set_attitude_position(osg::Quat& attitude, osg::Vec3& position) {
-        worldTransform->setAttitude(attitude);
-        worldTransform->setPosition(position);
-        rootGeode->dirtyBound();
+        m_worldTransform->setAttitude(attitude);
+        m_worldTransform->setPosition(position);
+        m_rootGeode->dirtyBound();
     }
     
-    osgViewer::Viewer& initialize_viewer() {
-        viewer.setSceneData(sceneRoot);
-        osg::StateSet* state_set = viewer.getCamera()->getOrCreateStateSet();
+    void initialize_viewer(int x=20, int y=30, int width=1800, int height=1000, unsigned int screen_number=0) {
 
-        viewer.addEventHandler(new osgGA::StateSetManipulator(state_set));
-        if(!viewer.getCameraManipulator() && viewer.getCamera()->getAllowEventFocus()) {
-            viewer.setCameraManipulator(new osgGA::TrackballManipulator());
-        }
-        viewer.setReleaseContextAtEndOfFrameHint(false);
+        // Ensure that the window is displayed on only one monitor (instead of being split across them)
+        osgViewer::ViewerBase::Views views;
+        m_viewer.getViews(views);
+        osg::ref_ptr<osgViewer::SingleWindow> win = new osgViewer::SingleWindow(x, y, width, height, screen_number);
+        views[0]->apply(win);
 
-        if(!viewer.isRealized()) {
-            viewer.realize();
+        m_viewer.setSceneData(m_sceneRoot);
+        osg::StateSet* state_set = m_viewer.getCamera()->getOrCreateStateSet();
+
+        m_viewer.addEventHandler(new osgGA::StateSetManipulator(state_set));
+        if(!m_viewer.getCameraManipulator() && m_viewer.getCamera()->getAllowEventFocus()) {
+            m_viewer.setCameraManipulator(new osgGA::TrackballManipulator());
         }
-        return viewer;
+        m_viewer.setReleaseContextAtEndOfFrameHint(false);
+
+        if(!m_viewer.isRealized()) {
+            m_viewer.realize();
+        }
     }
     
     void loop(void (*loop_update)(float frame_time, void* data), void* user_data)
     {
-        if (!viewer.isRealized()) {
+        if (!m_viewer.isRealized()) {
             initialize_viewer();
         }
 
         // Animation loop:
         FrameThrottle throttle;
-        while(!viewer.done()) {
+        while(!m_viewer.done()) {
             throttle.begin();
 
             // Update objects and camera here
             (*loop_update)(throttle.time(), user_data);
-            
-            viewer.frame();
+
+            m_viewer.frame();
             throttle.end();
         }
     };
 
-    osgViewer::Viewer viewer;
-    osg::Group* sceneRoot;
-    osg::Geode* rootGeode;
-    osg::PositionAttitudeTransform* worldTransform;
+    osgViewer::Viewer m_viewer;
+    osg::Group* m_sceneRoot = nullptr;
+    osg::Geode* m_rootGeode = nullptr;
+    osg::PositionAttitudeTransform* m_worldTransform = nullptr;
 };
 
 // Colours with selectable opacity
@@ -205,9 +189,9 @@ inline osg::Vec3 Vec3(const pga3::Point_t& p)
 inline osg::Quat Quat(double angle, const pga3::Line_t& line)
 {
     pga3::Line_t n_line = sin(angle) * normalize(line);
-    return osg::Quat(n_line.template element<pga3::I_CONF>(), 
-                     n_line.template element<pga3::J_CONF>(),
-                     n_line.template element<pga3::K_CONF>(), 
+    return osg::Quat(n_line.template element<pga3::K_CONF>(),  // x-axis
+                     -n_line.template element<pga3::J_CONF>(), // y-axis; need to negate because value is stored negated
+                     n_line.template element<pga3::I_CONF>(),  // z-axis
                      cos(angle));
 }
 
@@ -217,7 +201,7 @@ inline auto Quat2Rotor(const osg::Quat q)
     double angle;
     osg::Vec3d axis;
     q.getRotate(angle, axis);
-    auto pga_axis = axis[0] * pga3::i + axis[1] * pga3::j + axis[2] * pga3::k;
+    auto pga_axis = axis[0] * pga3::k + axis[1] * pga3::j + axis[2] * pga3::i;
     auto R = pga3::rotor(pga_axis, angle);
 //    std::cout << "Rotor: " << R << "R*~R: " << R*(~R) << std::endl;
     return R;
@@ -235,18 +219,18 @@ osg::ShapeDrawable* new_drawable_point(const pga3::Point_t& p, const osg::Vec4& 
 
 osg::ShapeDrawable* new_drawable_line(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt, 
                                       const osg::Vec4& colour = grey(0.5),
-                                      const float line_thickness=DEFAULT_LINE_THICKNESS);
+                                      float line_thickness=DEFAULT_LINE_THICKNESS);
 osg::CompositeShape* new_arrow(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt, 
-                               const float line_thickness=DEFAULT_LINE_THICKNESS);
+                               float line_thickness=DEFAULT_LINE_THICKNESS);
 osg::ShapeDrawable* new_drawable_arrow(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt, 
                                        const osg::Vec4& colour = grey(0.5),
-                                       const float line_thickness=DEFAULT_LINE_THICKNESS);
+                                       float line_thickness=DEFAULT_LINE_THICKNESS);
 osg::ShapeDrawable* new_drawable_arrow(const pga3::Point_t& start_pt, const pga3::Line_t& line, 
                                        const osg::Vec4& colour = grey(0.5),
-                                       const float line_thickness=DEFAULT_LINE_THICKNESS);
+                                       float line_thickness=DEFAULT_LINE_THICKNESS);
 
 osg::ShapeDrawable* new_drawable_plane(const pga3::Point_t& p1, const pga3::Point_t& p2, const pga3::Point_t& p3,
-                                       const osg::Vec4& colour = grey(0.5), const float plane_thickness=DEFAULT_THICKNESS_OF_PLANE);
+                                       const osg::Vec4& colour = grey(0.5), float plane_thickness=DEFAULT_THICKNESS_OF_PLANE);
 
 osg::ShapeDrawable* new_drawable_triangle(const pga3::Point_t& p1, const pga3::Point_t& p2, const pga3::Point_t& p3,
                                           const osg::Vec4& colour = grey(0.5), bool draw_normal=false);
