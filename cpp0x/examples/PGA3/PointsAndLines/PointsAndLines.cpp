@@ -18,7 +18,7 @@ int main()
     pga3::Point_t C = pga3::make_point(-1, 1, -1);
     pga3::Point_t D = pga3::make_point(1, 1, 1);
     pga3::Point_t E = pga3::make_point(-1, 1, 1);
-    
+
     // Need to normalize when computing the centroid
     auto centroid = normalize(A + B + C + D + E);  
     
@@ -47,6 +47,14 @@ int main()
     drawables.push_back(new_drawable_arrow(origin, pga3::Point_t(origin + pga3::E1), red()));
     drawables.push_back(new_drawable_arrow(origin, pga3::Point_t(origin + pga3::E2), green()));
     drawables.push_back(new_drawable_arrow(origin, pga3::Point_t(origin + pga3::E3), blue()));
+
+    drawables.push_back(new_drawable_point(pga3::Point_t(origin + pga3::E1), red(), point_size));
+    drawables.push_back(new_drawable_point(pga3::Point_t(origin + pga3::E2), green(), point_size));
+    drawables.push_back(new_drawable_point(pga3::Point_t(origin + pga3::E3), blue(), point_size));
+
+//    drawables.push_back(new_drawable_triangle(origin, origin+pga3::E2, origin+pga3::E1, red(0.5), true));
+//    drawables.push_back(new_drawable_triangle(origin, origin+pga3::E1, origin+pga3::E3, green(0.5), true));
+//    drawables.push_back(new_drawable_triangle(origin, origin+pga3::E3, origin+pga3::E2, blue(0.5), true));
 
     drawables.push_back(new_drawable_arrow(origin, A));
     drawables.push_back(new_drawable_arrow(A, B, cyan(0.25f)));

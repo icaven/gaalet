@@ -169,9 +169,8 @@ new_drawable_plane(const pga3::Point_t& p1, const pga3::Point_t& p2, const pga3:
 {
     // Determine the plane, its normal vector, and the point at the end of the normal
     auto perpendicular_to_plane = pga3::normal_to_plane(p1, p2, p3);
-    auto translate_along_normal = pga3::translator(perpendicular_to_plane, 1.0);
-    auto end_of_normal = pga3::sandwich(p1, translate_along_normal);
-    
+    auto end_of_normal = p1 - pga3::plane_from_points(p1, p2, p3)*pga3::I;
+
     // The box that will be used to represent the plane is initially oriented so that
     // its thickness is in the Y-axis.  There a rotation will need to be computed to
     // rotate the box into place.  The axis of this rotation is the perpendicular to the
@@ -241,9 +240,8 @@ new_drawable_triangle(const pga3::Point_t& p1, const pga3::Point_t& p2, const pg
     osg::ShapeDrawable* drawable;
     if (draw_normal) {
         // For debugging, it is helpful to draw the normal together with the triangle
-        auto translate_along_normal = pga3::translator(pga3::normal_to_plane(p1, p2, p3), 1.0);
         auto triangle_centroid = eval(::normalize(p1 + p2 + p3));
-        auto end_of_normal = pga3::sandwich(triangle_centroid, translate_along_normal);
+        auto end_of_normal = triangle_centroid - pga3::plane_from_points(p1, p2, p3)*pga3::I;
 
         auto triangle_and_normal= new osg::CompositeShape();
         triangle_and_normal->addChild(triangle_as_plane);

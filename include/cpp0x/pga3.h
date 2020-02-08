@@ -391,7 +391,7 @@ auto line_from_points(const gaalet::expression<L>& start, const gaalet::expressi
 template <class T1, class T2, class T3> inline
 auto plane_from_points(const T1& P1, const T2& P2, const T3& P3)
 {
-    return normalize(vee(vee(P1, P2), P3));
+    return normalize(pga3::dual(pga3::dual(P1) ^ pga3::dual(P2) ^ pga3::dual(P3)));
 }
 
 template <class TP, class TL> inline
@@ -515,7 +515,7 @@ static std::string basis_vector_names[16] = {"    ", "e0  ", "e1  ", "e01 ", "e2
                 if (clist::head == 0) {
                     os << std::right << std::setw(8) << e.template element<0>();
                 }
-                else if (clist::head == 7 || clist::head == 10 || clist::head == 13) {
+                else if (clist::head == J_CONF || clist::head == E1_CONF || clist::head == E3_CONF) {
                     // The odd permutation blades are stored with negated values, so change the sign
                     os << std::right << std::setw(8) << -1 * e.template element<clist::head>() << basis_vector_names[clist::head];
                 }
