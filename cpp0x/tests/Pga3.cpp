@@ -263,6 +263,11 @@ void test_planes()
     std::cout << "Plane object ideal_pl normalized: " << pga3::Plane(pga3::Plane(ideal_pl).normalized()) << std::endl;
     std::cout << "ideal_pl normalized**2 " << eval(pga3::normalize(pga3::normalize(ideal_pl)) * pga3::normalize(pga3::normalize(ideal_pl))) << std::endl;
 
+    auto ideal_pl2 = make_unnormalized_plane(0, 0, 0, -5);
+    std::cout << "unnormalized ideal_pl2 " << eval(ideal_pl2) << std::endl;
+    std::cout << "normalized ideal_pl2 " << eval(pga3::normalize(ideal_pl2)) << std::endl;
+    std::cout << "normalized ideal_pl2**2 " << eval(pga3::normalize(ideal_pl2) * pga3::normalize(ideal_pl2)) << std::endl;
+
     auto pl2 = make_unnormalized_plane(3, 4, 5, 1);
     std::cout << "unnormalized pl2 " << eval(pl2) << std::endl;
     std::cout << "normalized pl2 " << eval(pga3::normalize(pl2)) << std::endl;

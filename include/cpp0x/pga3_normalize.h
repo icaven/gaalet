@@ -3,7 +3,8 @@
 
 #pragma once
 
-// Normalize a PGA3 multivector consisting of a single grade
+// Normalize a PGA3 k-vector consisting of a single grade
+// A normalized k-vector squares to +/-1, except for some ideal vectors that square to 0
 
 #include "grade_check.h"
 #include "magnitude.h"
@@ -83,7 +84,8 @@ namespace pga3 {
                     the_norm = ::magnitude<A>(x).template element<0>();
                     if (the_norm == 0) {
                         // The vector is ideal, so the norm is just the multiple of e0
-                        the_norm = x.template element<vector_conf(0)>();
+                        // Note that this squares to 0
+                        the_norm = fabs(x.template element<vector_conf(0)>());
                     }
                     first_eval = false;
                 }
