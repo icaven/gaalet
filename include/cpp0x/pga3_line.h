@@ -13,11 +13,11 @@
 
 namespace pga3 {
 
-    /// @brief Lines can be defined by Plücker coordinates.  Ensure it is normalized.
+    /// @brief Lines can be defined by Plücker coordinates.
     template<typename TX, typename TY, typename TZ, typename DX, typename DY, typename DZ>
     inline
     auto make_line(TX px, TY py, TZ pz, DX dx, DY dy, DZ dz) {
-        return pga3::normalize(dx * dual_k + dy * dual_j + dz * dual_i + px * k + py * j + pz * i);
+        return dx * dual_k + dy * dual_j + dz * dual_i + px * k + py * j + pz * i;
     }
 
     namespace detail {
@@ -70,10 +70,12 @@ namespace pga3 {
                 return a.template element<DUAL_K_CONF>();
             }
 
-            Line_t eval() const {
+            /// @brief Return the multivector representation
+            Line_t mv() const {
                 return make_line(k(), j(), i(), dual_k(), dual_j(), dual_i());
             }
 
+            /// @brief Return the normalized multivector representation
             Line_t normalized() const {
                 return pga3::normalize(a);
             }

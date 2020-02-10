@@ -54,7 +54,7 @@ namespace pga3 {
     template<typename L, typename R>
     inline
     auto line_from_points(const gaalet::expression<L> &start, const gaalet::expression<R> &end) {
-        return vee(start, end);
+        return pga3::normalize(vee(start, end));
     }
 
     template<class T1, class T2, class T3>

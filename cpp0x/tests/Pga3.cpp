@@ -166,6 +166,22 @@ void test_with_points()
     std::cout << "Point(1,1,1) rotated around rotations around x, then y, then z axes "
               << pga3::Point(r_xyz * test_point * (~r_xyz)) << std::endl;
 
+    double x_distance = 2.0;
+    auto t_x = pga3::translator(pga3::e23, x_distance);
+    auto translated_plane = pga3::sandwich(pga3::e1, t_x);
+    std::cout << "Plane(x=0) " << eval(pga3::e1) << " translated on the x-axis "
+              << eval(translated_plane) << "then meet with point on that plane"
+              << eval(translated_plane ^ pga3::make_point(x_distance, 3, 4)) << std::endl;
+    std::cout << "Plane(x=0) " << eval(pga3::e1) << " translated on the x-axis then meet with point on the x=0 plane"
+              << eval(translated_plane ^ pga3::make_point(0, 3, 4)) << std::endl;
+
+    auto t_z = pga3::translator(pga3::i, 2.0);
+    auto r_45_x = pga3::rotor(pga3::e1, degrees2radians(45.)); // Rotate 45 around x axis
+    auto r_90_x = pga3::rotor(pga3::e1, degrees2radians(90.)); // Rotate 90 around x axis
+    auto rotated_plane = pga3::sandwich(pga3::e2, r_90_x);
+    std::cout << "Plane (y=0) rotated around x-axis "<< eval(rotated_plane) << " then translated along z "
+              << eval(pga3::sandwich(rotated_plane, t_z)) << std::endl;
+
 }
 
 void tests_with_lines()
@@ -229,6 +245,41 @@ auto make_unnormalized_plane(T1 a, T2 b, T3 c, T4 d) {
     return d * pga3::e0 + a * pga3::e1 + b * pga3::e2 + c * pga3::e3;
 }
 
+void test_planes()
+{
+
+    auto pl = make_unnormalized_plane(7, 8, 9, 3);
+    std::cout << "pl: " << pl << std::endl;
+    std::cout << "pl: " << eval(pl) << std::endl;
+    std::cout << "pl normalized: " << eval(pga3::normalize(pl)) << std::endl;
+    std::cout << "Plane object pl: " << pga3::Plane(pl) << std::endl;
+    std::cout << "Plane object pl normalized: " << pga3::Plane(pga3::Plane(pl).normalized()) << std::endl;
+
+    auto ideal_pl = make_unnormalized_plane(0, 0, 0, 5);
+    std::cout << "ideal_pl: " << ideal_pl << std::endl;
+    std::cout << "ideal_pl: " << eval(ideal_pl) << std::endl;
+    std::cout << "ideal_pl normalized: " << eval(pga3::normalize(ideal_pl)) << std::endl;
+    std::cout << "Plane object ideal_pl: " << pga3::Plane(ideal_pl) << std::endl;
+    std::cout << "Plane object ideal_pl normalized: " << pga3::Plane(pga3::Plane(ideal_pl).normalized()) << std::endl;
+    std::cout << "ideal_pl normalized**2 " << eval(pga3::normalize(pga3::normalize(ideal_pl)) * pga3::normalize(pga3::normalize(ideal_pl))) << std::endl;
+
+    auto pl2 = make_unnormalized_plane(3, 4, 5, 1);
+    std::cout << "unnormalized pl2 " << eval(pl2) << std::endl;
+    std::cout << "normalized pl2 " << eval(pga3::normalize(pl2)) << std::endl;
+    std::cout << "normalized pl2**2 " << eval(pga3::normalize(pl2) * pga3::normalize(pl2)) << std::endl;
+
+    auto pl3 = make_unnormalized_plane(3, 4, 5, 1);
+    std::cout << "unnormalized pl3 " << eval(pl3) << std::endl;
+    std::cout << "normalized pl3 " << eval(pga3::normalize(pl3)) << std::endl;
+    std::cout << "normalized pl3**2 " << eval(pga3::normalize(pl3) * pga3::normalize(pl3)) << std::endl;
+    std::cout << "unnormalized pl3**2 " << eval(pl3 * pl3) << std::endl;
+
+    auto p = pga3::dual(pl3);
+    std::cout << "unnormalized p " << eval(p) << std::endl;
+    std::cout << "normalized p " << eval(pga3::normalize(p)) << std::endl;
+    std::cout << "normalized p**2 " << eval(pga3::normalize(p) * pga3::normalize(p)) << std::endl;
+
+}
 void test_norms()
 {
     auto P = pga3::make_point(2, 3, 4);
@@ -256,20 +307,6 @@ void test_norms()
     std::cout << "Line object  li: " << pga3::Line(pga3::Line(li).normalized()) << std::endl;
     std::cout << "Line object  l: " << pga3::Line(pga3::Line(l).normalized()) << std::endl;
 
-    auto pl = make_unnormalized_plane(7, 8, 9, 1);
-    std::cout << "pl: " << pl << std::endl;
-    std::cout << "pl: " << eval(pl) << std::endl;
-    std::cout << "pl normalized: " << eval(pga3::normalize(pl)) << std::endl;
-    std::cout << "Plane object pl: " << pga3::Plane(pl) << std::endl;
-    std::cout << "Plane object pl normalized: " << pga3::Plane(pga3::Plane(pl).normalized()) << std::endl;
-
-    auto ideal_pl = make_unnormalized_plane(0, 0, 0, 5);
-    std::cout << "ideal_pl: " << ideal_pl << std::endl;
-    std::cout << "ideal_pl: " << eval(ideal_pl) << std::endl;
-    std::cout << "ideal_pl normalized: " << eval(pga3::normalize(ideal_pl)) << std::endl;
-    std::cout << "Plane object ideal_pl: " << pga3::Plane(ideal_pl) << std::endl;
-    std::cout << "Plane object ideal_pl normalized: " << pga3::Plane(pga3::Plane(ideal_pl).normalized()) << std::endl;
-
 }
 
 int main()
@@ -280,6 +317,7 @@ int main()
     print_plane_info();
     test_with_points();
     tests_with_lines();
+    test_planes();
     test_trivectors();
     test_norms();
 

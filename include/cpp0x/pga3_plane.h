@@ -17,7 +17,7 @@ namespace pga3 {
     template<typename T1, typename T2, typename T3, typename T4>
     inline
     auto make_plane(T1 a, T2 b, T3 c, T4 d) {
-        return pga3::normalize(element_t(d) * e0 + element_t(a) * e1 + element_t(b) * e2 + element_t(c) * e3);
+        return element_t(d) * e0 + element_t(a) * e1 + element_t(b) * e2 + element_t(c) * e3;
     }
 
     namespace detail {
@@ -57,10 +57,12 @@ namespace pga3 {
                 return x.template element<vector_conf(0)>();
             }
 
-            Plane_t eval() const {
+            /// @brief Return the multivector representation
+            Plane_t mv() const {
                 return make_plane(a(), b(), c(), d());
             }
 
+            /// @brief Return the normalized multivector representation
             Plane_t normalized() const {
                 return pga3::normalize(x);
             }
