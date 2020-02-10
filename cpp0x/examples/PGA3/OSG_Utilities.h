@@ -8,6 +8,12 @@
 
 #include "gaalet.h"
 #include "pga3.h"
+#include "pga3_streaming.h"
+#include "pga3_normalize.h"
+#include "pga3_dual.h"
+#include "pga3_point.h"
+#include "pga3_line.h"
+#include "pga3_ops.h"
 
 #include <osgViewer/Viewer>
 #include <osgViewer/config/SingleWindow>
@@ -188,7 +194,7 @@ inline osg::Vec3 Vec3(const pga3::Point_t& p)
 // Function to convert n angle and pga3 line to OSG Quat for the attitude
 inline osg::Quat Quat(double angle, const pga3::Line_t& line)
 {
-    pga3::Line_t n_line = sin(angle) * normalize(line);
+    pga3::Line_t n_line = sin(angle) * pga3::normalize(line);
     return osg::Quat(n_line.template element<pga3::K_CONF>(),  // x-axis
                      -n_line.template element<pga3::J_CONF>(), // y-axis; need to negate because value is stored negated
                      n_line.template element<pga3::I_CONF>(),  // z-axis

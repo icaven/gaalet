@@ -8,25 +8,6 @@
 
 namespace gaalet {
 
-//check for bivector
-template<typename CL>
-struct check_bivector
-{
-   static const bool value = (BitCount<CL::head>::value==2) ? check_bivector<typename CL::tail>::value : false;
-};
-template<>
-struct check_bivector<cl_null>
-{
-   static const bool value = true;
-};
-
-//check for scalar
-template<typename CL>
-struct check_scalar
-{
-   static const bool value = CL::size == 1 && BitCount<CL::head>::value == 0;
-};
-
 //go through exponent evaluation type checks
 //value=1 - bivector exponential
 //value=0 - scalar exponential

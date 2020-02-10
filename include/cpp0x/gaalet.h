@@ -23,6 +23,7 @@
 #include "multiplication.h"
 #include "reverse.h"
 #include "grade.h"
+#include "grade_check.h"
 #include "part.h"
 #include "inverse.h"
 #include "normalize.h"
@@ -32,6 +33,5 @@
 #include "scalar.h"
 #include "magnitude.h"
 #include "dual.h"
-//#include "polar.h"
 
 #endif

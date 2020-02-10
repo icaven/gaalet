@@ -1,7 +1,3 @@
-#include "gaalet.h"
-#include "pga3.h"
-
-//#include <memory>
 
 #include "OSG_Utilities.h"
 
@@ -20,7 +16,7 @@ int main()
     pga3::Point_t E = pga3::make_point(-1, 1, 1);
 
     // Need to normalize when computing the centroid
-    auto centroid = normalize(A + B + C + D + E);  
+    auto centroid = pga3::normalize(A + B + C + D + E);
     
 //    auto camera = 0.0 * pga3::e0;
 
@@ -46,15 +42,19 @@ int main()
     // Draw in the x, y, and z axes
     drawables.push_back(new_drawable_arrow(origin, pga3::Point_t(origin + pga3::E1), red()));
     drawables.push_back(new_drawable_arrow(origin, pga3::Point_t(origin + pga3::E2), green()));
-    drawables.push_back(new_drawable_arrow(origin, pga3::Point_t(origin + pga3::E3), blue()));
+//    drawables.push_back(new_drawable_arrow(origin, pga3::Point_t(origin + pga3::E3), blue()));
 
     drawables.push_back(new_drawable_point(pga3::Point_t(origin + pga3::E1), red(), point_size));
     drawables.push_back(new_drawable_point(pga3::Point_t(origin + pga3::E2), green(), point_size));
     drawables.push_back(new_drawable_point(pga3::Point_t(origin + pga3::E3), blue(), point_size));
 
-//    drawables.push_back(new_drawable_triangle(origin, origin+pga3::E2, origin+pga3::E1, red(0.5), true));
-//    drawables.push_back(new_drawable_triangle(origin, origin+pga3::E1, origin+pga3::E3, green(0.5), true));
-//    drawables.push_back(new_drawable_triangle(origin, origin+pga3::E3, origin+pga3::E2, blue(0.5), true));
+    drawables.push_back(new_drawable_arrow(origin, pga3::Point_t(origin + pga3::e1 * pga3::I), red()));
+    drawables.push_back(new_drawable_arrow(origin, pga3::Point_t(origin + pga3::e2 * pga3::I), green()));
+    drawables.push_back(new_drawable_arrow(origin, pga3::Point_t(origin + pga3::e3 * pga3::I), blue()));
+
+    drawables.push_back(new_drawable_triangle(origin, origin+pga3::E2, origin+pga3::E1, red(0.5), true));
+    drawables.push_back(new_drawable_triangle(origin, origin+pga3::E1, origin+pga3::E3, green(0.5), true));
+    drawables.push_back(new_drawable_triangle(origin, origin+pga3::E3, origin+pga3::E2, blue(0.5), true));
 
     drawables.push_back(new_drawable_arrow(origin, A));
     drawables.push_back(new_drawable_arrow(A, B, cyan(0.25f)));
@@ -66,14 +66,8 @@ int main()
     drawables.push_back(new_drawable_arrow(A, E));
     drawables.push_back(new_drawable_arrow(E, D));
 
-    drawables.push_back(new_drawable_plane(A, B, D));
+//    drawables.push_back(new_drawable_plane(A, B, D));
     drawables.push_back(new_drawable_triangle(A, B, D, grey(0.5), true));
-
-    auto sum_of_lines = pga3::line_from_points(B, C) + pga3::line_from_points(C, E);
-    std::cout << "line_from_points(B, C): " << pga3::line_from_points(B, C) << std::endl;
-    std::cout << "line_from_points(C, E): " << pga3::line_from_points(C, E) << std::endl;
-    std::cout << "sum of lines: " << sum_of_lines << std::endl;
-    std::cout << "sum of lines normalized: " << ::normalize(sum_of_lines) << std::endl;
 
     for(auto d : drawables) {
         cubeGeode->addDrawable(d);

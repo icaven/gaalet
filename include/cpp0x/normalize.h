@@ -3,78 +3,60 @@
 
 // Normalize a blade
 
+#include "grade_check.h"
 #include "magnitude.h"
 #include "utility.h"
 
 namespace gaalet {
 
-// A blade is a outer product of vectors, so if the configuration list is of length 1 
-// and if the bitcount of entry isn't 0 (which would indicate a scalar), then the entity is a blade.
-template<typename CL>
-struct check_blade
-{
-   static const bool value = CL::size == 1 && BitCount<CL::head>::value > 0;
-};
+namespace detail {
 
-//go through blade evaluation type checks
-// value=1:  blade
-// value=-1: a general multivector or scalar
-template<class A>
-struct blade_evaluation_type
-{
-   static const int value = (check_blade<typename A::clist>::value) ? 1 : -1;
-};
 
-//template<class A, int ET=blade_evaluation_type<A>::value>
-//struct unit : public expression<unit<A>>
-//{
-//   static_assert(ET!=-1, "no method for normalizing this type of multivector implemented");
-//};
+    //go through blade evaluation type checks
+    // value=1:  blade
+    // value=-1: a general multivector or scalar
+    template<class A>
+    struct blade_evaluation_type {
+        static const int value = (check_blade<typename A::clist>::value) ? 1 : -1;
+    };
 
-//template<class A>
-//struct unit<A, 1> : public expression<unit<A>>
-template<class A>
-struct unit : public expression<unit<A>>
-{    
-    typedef typename A::clist clist;
+    template<class A, int ET = blade_evaluation_type<A>::value>
+    struct unit : public expression<unit<A>> {
+        static_assert(ET != -1, "no method for normalizing this type of multivector implemented");
+    };
 
-    typedef typename A::metric metric;
+    template<class A>
+    struct unit<A, 1> : public expression<unit<A>> {
+        typedef typename A::clist clist;
 
-    typedef typename A::element_t element_t;
+        typedef typename A::metric metric;
 
-   unit(const A& x_)
-      :  x(x_), 
-        first_eval(true)
-   { }
+        typedef typename A::element_t element_t;
 
-   template<conf_t conf>
-   element_t element() const {
-      //review: don't evaluate on definition workaround: will only work if arguments stay the same (thus attention with variables)
-        if (conf == (Power<2, A::metric::dimension>::value - 1)) {
-            // The normalized pseudoscalar is always +/- 1
-            element_t pseudoscalar_multiple = x.template element<conf>();
-            int sign = A::metric::q % 2 == 1 ? -1 : 1;
-            return pseudoscalar_multiple > 0 ? sign : (pseudoscalar_multiple < 0 ? -sign : 0);
+        unit(const A &x_)
+                : x(x_),
+                  first_eval(true) {}
+
+        template<conf_t conf>
+        element_t element() const {
+            //review: don't evaluate on definition workaround: will only work if arguments stay the same (thus attention with variables)
+
+            if (first_eval) {
+                the_norm = magnitude<A>(x).template element<0x00>();
+                first_eval = false;
+            }
+
+            return x.template element<conf>() * (1. / the_norm);
+
         }
 
-        if (first_eval) {
-            the_norm = magnitude<A>(x). template element<0x00>();
-            first_eval=false;
-        }
-        
-        if (the_norm != 0) {
-            return x.template element<conf>() * (1./ the_norm);
-        }
-        else {
-            return element_t(0.0);                
-        }
-   }
+    protected:
+        const A x;
+        mutable element_t the_norm;
+        mutable bool first_eval;
+    };
 
-protected:
-   const A x;
-   mutable element_t the_norm;
-   mutable bool first_eval;
-};
+} // end of namespace detail
 
 }  //end namespace gaalet
 
@@ -84,9 +66,9 @@ protected:
  */
 /// \ingroup ga_ops
 template <class A> inline
-gaalet::unit<A>
+gaalet::detail::unit<A>
 normalize(const gaalet::expression<A>& a) {
-   return gaalet::unit<A>(a);
+   return gaalet::detail::unit<A>(a);
 }
 
 #endif // __GAALET_UNIT_H

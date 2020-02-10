@@ -31,7 +31,7 @@ new_drawable_line(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
     auto cylinder = new osg::Cylinder(Vec3(start_pt), line_thickness, length);
 
     // Determine the angle between the line described by the start and end points and the Z-axis
-    double angle = acos((pga3::i & normalize(line)).template element<0>());
+    double angle = acos((pga3::i & pga3::normalize(line)).template element<0>());
     if (isclose(angle, 0.)) {
         // Parallel to the Z-axis, just shift along that axis in the positive direction
         cylinder->setCenter(cylinder->getCenter() + osg::Vec3(0., 0., -length*0.5f));
@@ -43,7 +43,7 @@ new_drawable_line(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
     else {
         // Determine the plane that the Z-axis and the line forms and then compute the perpendicular
         // to that plane; the angle will correspond to the angle around that perpendicular
-        auto end_of_cylinder = normalize(pga3::sandwich(start_pt, pga3::translator(pga3::i, length)));
+        auto end_of_cylinder = pga3::normalize(pga3::sandwich(start_pt, pga3::translator(pga3::i, length)));
         auto perpendicular_to_plane = pga3::normal_to_plane(start_pt,  end_pt, end_of_cylinder);
 
         // Rotate the cylinder to be in the direction of the line
@@ -89,7 +89,7 @@ new_arrow(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
     auto shaft = new osg::Cylinder(origin, shaft_thickness, shaft_length);
 
     // Determine the angle between the line described by the start and end points and the Z-axis
-    double angle = acos((pga3::i & normalize(line)).template element<0>());
+    double angle = acos((pga3::i & pga3::normalize(line)).template element<0>());
     if (isclose(angle, 0.)) {
         // Parallel to the Z-axis, just shift along that axis in the positive direction
         shaft->setCenter(shaft->getCenter() + osg::Vec3(0., 0., -shaft_length*0.5f));
@@ -106,7 +106,7 @@ new_arrow(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
     else {
         // Determine the plane that the Z-axis and the line forms and then compute the perpendicular
         // to that plane; the angle will correspond to the angle around that perpendicular
-        auto end_of_shaft = normalize(pga3::sandwich(start_pt, pga3::translator(pga3::i, shaft_length)));
+        auto end_of_shaft = pga3::normalize(pga3::sandwich(start_pt, pga3::translator(pga3::i, shaft_length)));
         auto perpendicular_to_plane = pga3::normal_to_plane(start_pt, end_pt, end_of_shaft);
 
         // Rotate the shaft to be in the direction of the line
@@ -185,7 +185,7 @@ new_drawable_plane(const pga3::Point_t& p1, const pga3::Point_t& p2, const pga3:
     auto translate_along_normal_rotation = pga3::translator(perpendicular_to_plane_with_normal, 1.0);
     auto end_of_normal_to_rotation_plane = pga3::sandwich(p1, translate_along_normal_rotation);
 
-    auto bisecting_line = pga3::line_from_points(p1, normalize(p2 + p3));
+    auto bisecting_line = pga3::line_from_points(p1, pga3::normalize(p2 + p3));
     double x_length = eval(::magnitude(bisecting_line));
     pga3::Line_t other_line = pga3::line_from_points(p2, p3);
     double z_length = eval(::magnitude(other_line));
@@ -205,8 +205,8 @@ new_drawable_plane(const pga3::Point_t& p1, const pga3::Point_t& p2, const pga3:
     auto plane_and_normal= new osg::CompositeShape();
     plane_and_normal->addChild(box_as_plane);
     plane_and_normal->addChild(new osg::Sphere(Vec3(plane_center), DEFAULT_RADIUS_OF_DRAWN_POINT));
-    plane_and_normal->addChild(new osg::Sphere(Vec3(normalize(p2 + p3)), DEFAULT_RADIUS_OF_DRAWN_POINT));
-    plane_and_normal->addChild(new_arrow(p1, normalize(p2 + p3), DEFAULT_RADIUS_OF_DRAWN_POINT/3.));
+    plane_and_normal->addChild(new osg::Sphere(Vec3(pga3::normalize(p2 + p3)), DEFAULT_RADIUS_OF_DRAWN_POINT));
+    plane_and_normal->addChild(new_arrow(p1, pga3::normalize(p2 + p3), DEFAULT_RADIUS_OF_DRAWN_POINT/3.));
 
     plane_and_normal->addChild(new_arrow(p1, end_of_normal));
     plane_and_normal->addChild(new_arrow(p1, end_of_normal_to_rotation_plane));
@@ -240,7 +240,7 @@ new_drawable_triangle(const pga3::Point_t& p1, const pga3::Point_t& p2, const pg
     osg::ShapeDrawable* drawable;
     if (draw_normal) {
         // For debugging, it is helpful to draw the normal together with the triangle
-        auto triangle_centroid = eval(::normalize(p1 + p2 + p3));
+        auto triangle_centroid = eval(pga3::normalize(p1 + p2 + p3));
         auto end_of_normal = triangle_centroid - pga3::plane_from_points(p1, p2, p3)*pga3::I;
 
         auto triangle_and_normal= new osg::CompositeShape();

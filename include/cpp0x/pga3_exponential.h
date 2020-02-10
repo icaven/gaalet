@@ -1,41 +1,34 @@
+#ifndef __GAALET_PGA3_EXPONENTIAL_H
+#define __GAALET_PGA3_EXPONENTIAL_H
+
 #pragma once
 
 #include <cmath>
 #include <utility>
 
 #include "geometric_product.h"
+#include "grade_check.h"
 #include "grade.h"
 
 #include "pga3.h"
+#include "pga3_utility.h"
 
 //
 // Specialized version of the exponential function for the PGA algebra; see Section 7.8 in [Gunn2011]
-// TODO: modify the library exponential function to support this algebra, since this version
-// is only a slight modification of the library function
+//
 
 namespace pga3
 {
 namespace detail
 {
-
-    // check for bivector
-    template <typename CL>
-    struct check_bivector {
-        static const bool value = (BitCount<CL::head>::value == 2) ? check_bivector<typename CL::tail>::value : false;
-    };
-    template <>
-    struct check_bivector<cl_null> {
-        static const bool value = true;
-    };
-
     // go through exponent evaluation type checks
     // value=0 - scalar exponential
-    // value=1 - bivector exponential
+    // value=2 - bivector exponential
     template <class A>
     struct exponential_evaluation_type {
         static const int value =
                 (check_scalar<typename A::clist>::value) ? 0 :
-                (check_bivector<typename A::clist>::value) ? 1  : -1;
+                (check_bivector<typename A::clist>::value) ? 2  : -1;
     };
 
     template <class A, int ET = exponential_evaluation_type<A>::value>
@@ -45,7 +38,7 @@ namespace detail
 
     // PGA3 exponential:bivectors
     template <class A>
-    struct exponential<A, 1> : public expression<exponential<A>> {
+    struct exponential<A, 2> : public expression<exponential<A>> {
         static const conf_t pseudoscalar_conf = Power<2, A::metric::dimension>::value - 1;
 
         // The output configuration list is composed of all of the bivector elements and the scalar and pseudoscalar
@@ -66,8 +59,8 @@ namespace detail
         // dangerous implementation: constructor only called when expression is defined, not when evaluated
         exponential(const A& a_)
                 : a(a_)
-                , B(pga3::Line_t())
-                , B_polar(pga3::Line_t())
+                , B(Line_t())
+                , B_polar(Line_t())
                 , B2(0.0)
                 , f1(1.0)
                 , f2(0.0)
@@ -108,8 +101,8 @@ namespace detail
                 first_eval = false;
             }
 
-			return ((f1 * f3) * pga3::one + 
-					(B2 * f2 * f4) * pga3::I + 
+			return ((f1 * f3) * one +
+					(B2 * f2 * f4) * I +
 					(f2 * f3) * B + 
 					(f1 * f4) * B_polar).template element<conf>();
         }
@@ -153,7 +146,7 @@ namespace detail
 } // end namespace detail
 
 // XXX Fix exp() in gaalet, so that this next line isn't needed
-#undef exp
+//#undef exp
 
 /// Exponential of a multivector.
 /**
@@ -171,3 +164,5 @@ inline detail::exponential<A> exp(const gaalet::expression<A>& a)
 }
 
 } // end namespace pga3
+
+#endif // __GAALET_PGA3_EXPONENTIAL_H
