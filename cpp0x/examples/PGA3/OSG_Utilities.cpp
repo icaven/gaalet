@@ -182,8 +182,6 @@ new_drawable_plane(const pga3::Point_t& p1, const pga3::Point_t& p2, const pga3:
     auto p1_upwards = pga3::sandwich(p1, up);
 
     auto perpendicular_to_plane_with_normal = pga3::normal_to_plane(p1,  end_of_normal, p1_upwards);
-    auto translate_along_normal_rotation = pga3::translator(perpendicular_to_plane_with_normal, 1.0);
-    auto end_of_normal_to_rotation_plane = pga3::sandwich(p1, translate_along_normal_rotation);
 
     auto bisecting_line = pga3::line_from_points(p1, pga3::normalize(p2 + p3));
     double x_length = eval(::magnitude(bisecting_line));
@@ -202,6 +200,8 @@ new_drawable_plane(const pga3::Point_t& p1, const pga3::Point_t& p2, const pga3:
 #if DEBUGGING_DRAWING_A_PLANE
     // For debugging, it is helpful to draw the normals together with the rotated box,
     // instead of just the box
+    auto translate_along_normal_rotation = pga3::translator(perpendicular_to_plane_with_normal, 1.0);
+    auto end_of_normal_to_rotation_plane = pga3::sandwich(p1, translate_along_normal_rotation);
     auto plane_and_normal= new osg::CompositeShape();
     plane_and_normal->addChild(box_as_plane);
     plane_and_normal->addChild(new osg::Sphere(Vec3(plane_center), DEFAULT_RADIUS_OF_DRAWN_POINT));

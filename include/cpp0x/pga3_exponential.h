@@ -93,9 +93,9 @@ namespace detail
 				else { 
 					// B*B == 0
 					f1 = 1.0;
-					f2 = z.first;
+					f2 = isclose(z.first, 0.) && isclose(z.second, 0.) ? 1.0 : z.first;
 					f3 = 1.0;
-					f4 = z.second;
+					f4 = isclose(z.first, 0.) && isclose(z.second, 0.) ? 0.0 : z.second;
 				}
 			
                 first_eval = false;
