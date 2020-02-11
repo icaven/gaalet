@@ -1,3 +1,6 @@
 cmake/*
 */CMakeFiles/*
 
+/cpp0x/.idea/
+**/cmake-build_Debug/
+/cmake-build-debug/
