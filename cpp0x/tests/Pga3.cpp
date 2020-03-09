@@ -7,6 +7,7 @@
 #include "gaalet.h"
 #include "pga3.h"
 #include "pga3_ops.h"
+#include "pga3_norm.h"
 #include "pga3_normalize.h"
 #include "pga3_dual.h"
 #include "pga3_point.h"
@@ -291,8 +292,8 @@ void test_norms()
     auto Q = pga3::make_ideal_point(2, 3, 4);
 
     auto P_as_object = pga3::Point(P);
-    std::cout << "P as object: " << P_as_object << std::endl;
-    std::cout << "Q as object: " << pga3::Point(Q) << std::endl;
+    std::cout << "P as object: " << P_as_object << " norm of P: " << pga3::norm(P) << std::endl;
+    std::cout << "Q as object: " << pga3::Point(Q) << " norm of Q: " << pga3::norm(Q) << std::endl;
     std::cout << "normalized P: " << pga3::Point(pga3::Point(P).normalized()) << std::endl;
     std::cout << "normalized Q: " << pga3::Point(pga3::Point(Q).normalized()) << std::endl;
     std::cout << "normalized P as mv: " << eval(pga3::Point(P)) << std::endl;
@@ -301,9 +302,9 @@ void test_norms()
     auto li = make_unnormalized_line(0, 0, 0, 2, 3, 4);
     auto l = make_unnormalized_line(7, 8, 9, 2, 3, 4);
 
-    std::cout << "line le: " << eval(le) << std::endl;
-    std::cout << "line li: " << eval(li) << std::endl;
-    std::cout << "line l: " << eval(l) << std::endl;
+    std::cout << "line le: " << eval(le) << " norm of le: " << pga3::norm(le) << std::endl;
+    std::cout << "line li: " << eval(li) << " norm of li: " << pga3::norm(li) << std::endl;
+    std::cout << "line l: " << eval(l) << " norm of l: " << pga3::norm(l) << std::endl;
 
     std::cout << "Line object le: " << pga3::Line(le) << std::endl;
     std::cout << "Line object  li: " << pga3::Line(li) << std::endl;
@@ -312,18 +313,78 @@ void test_norms()
     std::cout << "Line object  li: " << pga3::Line(pga3::Line(li).normalized()) << std::endl;
     std::cout << "Line object  l: " << pga3::Line(pga3::Line(l).normalized()) << std::endl;
 
+    std::cout << "Point P + line l norm: " << pga3::norm(P + l) << std::endl;
+    std::cout << "Point Q + line l norm: " << pga3::norm(Q + l) << std::endl;
+    std::cout << "Point P + line le norm: " << pga3::norm(P + le) << std::endl;
+    std::cout << "Point Q + line le norm: " << pga3::norm(Q + le) << std::endl;
+    std::cout << "Point P + line li norm: " << pga3::norm(P + li) << std::endl;
+    std::cout << "Point Q + line li norm: " << pga3::norm(Q + li) << std::endl;
+    std::cout << "line le ^ line li: " << (le ^ li) << std::endl;
+    std::cout << "line le ^ line li norm: " << pga3::norm(le ^ li) << std::endl;
+    std::cout << "line le V line li: " << pga3::vee(le, li) << std::endl;
+    std::cout << "line le V line li norm: " << pga3::norm(pga3::vee(le, li)) << std::endl;
+
+    auto a = pga3::normalize(make_unnormalized_plane(0, 3, 0, 0));
+    std::cout << "plane a: " << a << std::endl;
+    std::cout << "a norm: " << pga3::norm(a) << std::endl;
+    std::cout << "a*a: " << (a*a) << std::endl;
+
+    auto A = pga3::make_point(0, 0, 3);
+    std::cout << "Point A: " << A << std::endl;
+    std::cout << "Polar Point A: " << (A*pga3::I) << std::endl;
+    std::cout << "A norm: " << pga3::norm(A) << std::endl;
+    std::cout << "A normalized: " << pga3::normalize(A) << std::endl;
+    std::cout << "pga3::normalize(A)**2: " << (pga3::normalize(A)*pga3::normalize(A)) << std::endl;
+    auto B = pga3::make_point(3, 0, 3);
+    std::cout << "Point B: " << B << std::endl;
+    std::cout << "Polar Point B: " << (B*pga3::I) << std::endl;
+    auto C = pga3::make_point(3, 4, 3);
+    auto AB = pga3::line_from_points(A, B);
+    auto BC = pga3::line_from_points(B, C);
+    auto CA = pga3::line_from_points(C, A);
+
+    std::cout << "Length of line AB: " << pga3::norm(AB) << std::endl;
+    std::cout << "Length of line BC: " << pga3::norm(BC) << std::endl;
+    std::cout << "Length of line CA: " << pga3::norm(CA) << std::endl;
+    std::cout << "Area of triangle ABC: " << 0.5 * pga3::norm(AB + BC + CA) << std::endl;
+
+    auto surface_element = (a + A);
+    auto polar_surface_element = surface_element * pga3::I;
+    std::cout << "a ^ A: " << (a ^ A) << std::endl;
+    std::cout << "Surface element a + A: " << surface_element << std::endl;
+    std::cout << "Polar surface element aI + AI: " << polar_surface_element << std::endl;
+    std::cout << "Norm of surface element a + A: " << pga3::norm(surface_element) << std::endl;
+    std::cout << "Norm of polar surface element aI + AI: " << pga3::norm(polar_surface_element) << std::endl;
+    std::cout << "(a + A)**2: " << (surface_element*surface_element) << std::endl;
+    std::cout << "(aI + AI)**2: " << (polar_surface_element*polar_surface_element) << std::endl;
+    auto axis = (a ^ A*pga3::I);
+    std::cout << "axis: a ^ A*I: " << axis << std::endl;
+    auto spear = pga3::vee(A, a*pga3::I);
+    std::cout << "spear: A V a*I: " << spear << std::endl;
+    std::cout << "a ^ axis: " << (a ^ axis) << std::endl;
+    std::cout << "A V spear: " << pga3::vee(A, spear) << std::endl;
+
+    std::cout << "dual of (1e0+x*1e1+y*1e2+z*1e3)(3,4,5)" <<
+                 pga3::dual((pga3::e0+3*pga3::e1+4*pga3::e2 + 5*pga3::e3)) << " make_point: " <<
+                 pga3::make_point(3,4,5) << std::endl;
+
+//    std::cout << "Norm of -3 : " << pga3::norm(-3.0 * pga3::one ) << std::endl;
+//    std::cout << "Scalar - 3 * pseudoscalar: " << pga3::norm(pga3::one - 3.0 * pga3::I) << std::endl;
+//    std::cout << "3 * pseudoscalar: " << pga3::norm(3.0 * pga3::I) << std::endl;
+
+
 }
 
 int main()
 {
-    print_cayley_table();
-    print_info_all_basis();
-    print_bivector_info();
-    print_plane_info();
-    test_with_points();
-    tests_with_lines();
-    test_planes();
-    test_trivectors();
+//    print_cayley_table();
+//    print_info_all_basis();
+//    print_bivector_info();
+//    print_plane_info();
+//    test_with_points();
+//    tests_with_lines();
+//    test_planes();
+//    test_trivectors();
     test_norms();
 
 }

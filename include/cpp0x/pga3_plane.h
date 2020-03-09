@@ -8,7 +8,7 @@
 #include "pga3_normalize.h"
 
 //
-// PGA3 Line support
+// PGA3 Plane support
 //
 
 namespace pga3 {
