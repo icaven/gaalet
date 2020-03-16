@@ -52,13 +52,50 @@ void print_cayley_table()
             pga3::pseudoscalar_conf>::type all_conf_list;
 
     std::vector<all_conf_list> basis_elements = {pga3::one, pga3::e0, pga3::e1, pga3::e2, pga3::e3,
-                                                 pga3::e01, pga3::e02, pga3::e03, pga3::e12, pga3::e31,
-                                                 pga3::e23, pga3::e021, pga3::e013, pga3::e032, pga3::e123, pga3::I};
+                                                 pga3::e01, pga3::e02, pga3::e03, pga3::e12, pga3::e31, pga3::e23,
+                                                 pga3::e021, pga3::e013, pga3::e032, pga3::e123,
+                                                 pga3::I};
 
     std::cout << "The basis elements and their duals:" << std::endl;
     for (auto element1: basis_elements) {
         std::cout << "\"" << std::setw(8) << std::left << element1 << "\" "
                   << "dual: \"" << std::setw(8) << std::left << eval(pga3::dual(element1)) << "\" " << std::endl;
+    }
+    std::cout << std::endl;
+
+    // Define the canonical dual basis for the reciprocal frames
+    std::vector<all_conf_list> basis_elements_1_vectors = {pga3::e0, pga3::e1, pga3::e2, pga3::e3};
+    std::vector<all_conf_list> basis_elements_2_vectors = {pga3::e01, pga3::e02, pga3::e03,
+                                                           pga3::e12, pga3::e31, pga3::e23};
+    std::vector<all_conf_list> basis_elements_3_vectors = { pga3::e021, pga3::e013, pga3::e032, pga3::e123};
+
+    std::vector<all_conf_list> reciprocal_elements_1_vectors = {pga3::e123, pga3::e032, pga3::e013, pga3::e021};
+    std::vector<all_conf_list> reciprocal_elements_2_vectors = {pga3::e23, pga3::e31, pga3::e12,
+                                                                pga3::e03, pga3::e02, pga3::e01};
+    std::vector<all_conf_list> reciprocal_elements_3_vectors = { -1.* pga3::e3, -1.* pga3::e2, -1.* pga3::e1, -1.* pga3::e0};
+
+    std::vector<std::pair<std::vector<all_conf_list>&, std::vector<all_conf_list>&>> basis_and_reciprocal;
+    basis_and_reciprocal.emplace_back(basis_elements_1_vectors, reciprocal_elements_1_vectors);
+    basis_and_reciprocal.emplace_back(basis_elements_2_vectors, reciprocal_elements_2_vectors);
+    basis_and_reciprocal.emplace_back(basis_elements_3_vectors, reciprocal_elements_3_vectors);
+
+    std::cout << "The basis elements and the reciprocal elements:" << std::endl;
+    for (auto& b_r : basis_and_reciprocal) {
+        std::vector<all_conf_list>& basis = b_r.first;
+        std::vector<all_conf_list>& reciprocal = b_r.second;
+        for (int i = 0; i < basis.size(); i++) {
+            for (int j = 0; j < reciprocal.size(); j++) {
+                // A norm of the pseudoscalar that is the result of the outer product between a basis element
+                // and its reciprocal is the coordinate of the reciprocal vector
+                if (pga3::norm(::grade<4>(basis[i] ^ reciprocal[j])) != 0) {
+                    std::cout << "\"i: " << i << ", j: " << j << " basis: \""
+                          << std::setw(8) << std::left << basis[i] << "\" "
+                          << "reciprocal: \"" << std::setw(8) << std::left << reciprocal[j] << "\" "
+                          << " ^ product: " << ::grade<4>(basis[i] ^ reciprocal[j]) << std::endl;
+                }
+            }
+        }
+
     }
     std::cout << std::endl;
 
@@ -331,6 +368,9 @@ void test_norms()
 
     auto A = pga3::make_point(0, 0, 3);
     std::cout << "Point A: " << A << std::endl;
+    std::cout << "Dual point A: " << pga3::normalize(pga3::dual(A)) << std::endl;
+    std::cout << "A ^ Dual point A: " << (A ^ pga3::normalize(pga3::dual(A))) << std::endl;
+    std::cout << "A + Dual point A: " << (A + pga3::normalize(pga3::dual(A))) << std::endl;
     std::cout << "Polar Point A: " << (A*pga3::I) << std::endl;
     std::cout << "A norm: " << pga3::norm(A) << std::endl;
     std::cout << "A normalized: " << pga3::normalize(A) << std::endl;
@@ -377,7 +417,7 @@ void test_norms()
 
 int main()
 {
-//    print_cayley_table();
+    print_cayley_table();
 //    print_info_all_basis();
 //    print_bivector_info();
 //    print_plane_info();
@@ -385,6 +425,6 @@ int main()
 //    tests_with_lines();
 //    test_planes();
 //    test_trivectors();
-    test_norms();
+//    test_norms();
 
 }
