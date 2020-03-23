@@ -16,7 +16,7 @@ namespace pga3 {
     /// @brief Functional interface to making a Euclidean point as a normalized homogeneous point
     template<typename X, typename Y, typename Z>
     inline
-    auto make_point(X x, Y y, Z z) {
+    auto make_point(const X x, const Y y, const Z z) {
         return E0 + static_cast<space::algebra::element_t>(x) * E1 +
                static_cast<space::algebra::element_t>(y) * E2 +
                static_cast<space::algebra::element_t>(z) * E3;
@@ -25,7 +25,7 @@ namespace pga3 {
     /// @brief Functional interface to making an ideal point (non-Euclidean) - not normalized
     template<typename X, typename Y, typename Z>
     inline
-    auto make_ideal_point(X x, Y y, Z z) {
+    auto make_ideal_point(const X x, const Y y, const Z z) {
         return static_cast<space::algebra::element_t>(x) * E1 +
                static_cast<space::algebra::element_t>(y) * E2 +
                static_cast<space::algebra::element_t>(z) * E3;

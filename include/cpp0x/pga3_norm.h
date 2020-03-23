@@ -9,6 +9,7 @@
 #include "utility.h"
 #include "pga3.h"
 #include "pga3_dual.h"
+#include "pga3_utility.h"
 
 namespace pga3 {
     namespace detail {
@@ -42,7 +43,7 @@ namespace pga3 {
             element_t element() {
                 if (m_first_eval) {
                     m_norm2 = ::grade<0>(m_x*(~m_x)).template element<0>();
-                    if (m_norm2 == 0) {
+                    if (pga3::isclose(m_norm2, 0)) {
                         // The element is ideal, so find the magnitude when joined with the origin, E0
                         // (which is a representative Euclidean point) to compute the ideal norm
                         // Note that e0 is the dual of E0
