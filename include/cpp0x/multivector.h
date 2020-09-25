@@ -74,7 +74,7 @@ struct multivector : public expression<multivector<CL, M, T>>
    struct ElementEvaluation
    {                          //v no reference to pointer *& with gcc4.5 possible... What's going on?
       /*static void eval(element_t* const data, const E& e) {
-         data[index] = e.element<get_element<index, clist>::value>();
+         data[index] = e.template element<get_element<index, clist>::value>();
          ElementEvaluation<E, index+1>::eval(data, e);
       }*/
       static void eval(std::array<element_t, size>& data, const E& e) {
@@ -86,7 +86,7 @@ struct multivector : public expression<multivector<CL, M, T>>
    struct ElementEvaluation<E, 1>
    {
       /*static void eval(element_t* const data, const E& e) {
-         data[size-1] = e.element<get_element<size-1, clist>::value>();
+         data[size-1] = e.template element<get_element<size-1, clist>::value>();
       }*/
       static void eval(std::array<element_t, size>& data, const E& e) {
          std::get<size-1>(data) = e.template element<get_element<size-1, clist>::value>();
