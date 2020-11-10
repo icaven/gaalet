@@ -17,7 +17,7 @@ namespace pga3 {
     template<typename T1, typename T2, typename T3, typename T4>
     inline
     auto make_plane(T1 a, T2 b, T3 c, T4 d) {
-        return element_t(d) * e0 + element_t(a) * e1 + element_t(b) * e2 + element_t(c) * e3;
+        return space::algebra::element_t(d) * e0 + space::algebra::element_t(a) * e1 + space::algebra::element_t(b) * e2 + space::algebra::element_t(c) * e3;
     }
 
     namespace detail {
