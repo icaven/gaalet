@@ -117,6 +117,12 @@ namespace pga3 {
                 return pga3::normalize(a);
             }
 
+	        /// @brief Return the proper point (where e123 == 1) multivector representation
+	        Point_t proper() const {
+		        Point_t p = pga3::normalize(a);
+		        return (1. / p.template element<E0_CONF>()) * p;
+	        }
+
         protected:
             const A a;
         };
