@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.6.3)
+cmake_minimum_required (VERSION 2.8.12)
 project (PointsAndLines)
 
 include_directories ("../../../../include/cpp0x")

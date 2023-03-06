@@ -1,8 +1,6 @@
 #include "gaalet.h"
 #include <sys/time.h>
-#include <cmath>
 #include <tbb/task.h>
-#include <gperftools/profiler.h>
 
 typedef gaalet::mv<1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12>::type Multivector;
 
@@ -35,9 +33,10 @@ public:
          idx_(idx)
    {  }
 
-   task* execute() {
+   task* execute() override
+	 {
       c_[idx_] = c_[idx_] + a_[idx_] + b_[idx_] - a_[idx_] - b_[idx_] + a_[idx_] + b_[idx_] - a_[idx_] - b_[idx_] - c_[idx_];
-      return NULL;
+      return nullptr;
    }
 
 protected:
@@ -49,19 +48,20 @@ protected:
 
 int main()
 {
-   timeval start, end;
-   double solveTime;
+	timeval start {};
+	timeval end {};
+	double solveTime;
 
    Multivector a = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0};
    Multivector b = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0};
 
    Multivector c;
 
-   gettimeofday(&start, 0);
+   gettimeofday(&start, nullptr);
    for(int i = 0; i<1e7; ++i) {
       c = c + a + b - a - b + a + b - a - b - c;
    }
-   gettimeofday(&end, 0);
+   gettimeofday(&end, nullptr);
    solveTime = (double)(end.tv_sec - start.tv_sec) + (double)(end.tv_usec - start.tv_usec)*1e-6;
 
    std::cout << "a: " << a << std::endl;
@@ -71,11 +71,11 @@ int main()
    std::cout << "operator=(): add solve time: " << solveTime << std::endl;
 
 
-   gettimeofday(&start, 0);
+   gettimeofday(&start, nullptr);
    for(int i = 0; i<1e7; ++i) {
       c = eval(c + a + b - a - b + a + b - a - b - c);
    }
-   gettimeofday(&end, 0);
+   gettimeofday(&end, nullptr);
    solveTime = (double)(end.tv_sec - start.tv_sec) + (double)(end.tv_usec - start.tv_usec)*1e-6;
 
    std::cout << "a: " << a << std::endl;
@@ -85,11 +85,11 @@ int main()
    std::cout << "eval(): add solve time: " << solveTime << std::endl;
 
 
-   gettimeofday(&start, 0);
+   gettimeofday(&start, nullptr);
    for(int i = 0; i<1e7; ++i) {
       c.assign(c + a + b - a - b + a + b - a - b - c);
    }
-   gettimeofday(&end, 0);
+   gettimeofday(&end, nullptr);
    solveTime = (double)(end.tv_sec - start.tv_sec) + (double)(end.tv_usec - start.tv_usec)*1e-6;
 
    std::cout << "a: " << a << std::endl;
@@ -99,7 +99,7 @@ int main()
    std::cout << "assign(): add solve time: " << solveTime << std::endl;
 
 
-   gettimeofday(&start, 0);
+   gettimeofday(&start, nullptr);
    for(int i = 0; i<1e7; ++i) {
       c[0] = c[0] + a[0] + b[0] - a[0] - b[0] + a[0] + b[0] - a[0] - b[0] - c[0];
       c[1] = c[1] + a[1] + b[1] - a[1] - b[1] + a[1] + b[1] - a[1] - b[1] - c[1];
@@ -115,7 +115,7 @@ int main()
       c[10] = c[10] + a[10] + b[10] - a[10] - b[10] + a[10] + b[10] - a[10] - b[10] - c[10];
       c[11] = c[11] + a[11] + b[11] - a[11] - b[11] + a[11] + b[11] - a[11] - b[11] - c[11];
    }
-   gettimeofday(&end, 0);
+   gettimeofday(&end, nullptr);
    solveTime = (double)(end.tv_sec - start.tv_sec) + (double)(end.tv_usec - start.tv_usec)*1e-6;
 
    std::cout << "a: " << a << std::endl;
@@ -125,13 +125,13 @@ int main()
    std::cout << "handcoded: add solve time: " << solveTime << std::endl;
 
    //ProfilerStart("VectorAddTbb.prof");
-   gettimeofday(&start, 0);
+   gettimeofday(&start, nullptr);
    for(int i = 0; i<1e7; ++i) {
       tbb::task_list tl;
       for(int j=0; j<12; ++j) tl.push_back(*new(tbb::task::allocate_root()) SumTask(c,a,b,j));
       tbb::task::spawn_root_and_wait(tl);
    }
-   gettimeofday(&end, 0);
+   gettimeofday(&end, nullptr);
    //ProfilerStop();
    solveTime = (double)(end.tv_sec - start.tv_sec) + (double)(end.tv_usec - start.tv_usec)*1e-6;
 
@@ -142,12 +142,12 @@ int main()
    std::cout << "tbb handcoded: add solve time: " << solveTime << std::endl;
 
 
-   gettimeofday(&start, 0);
+   gettimeofday(&start, nullptr);
    for(int i = 0; i<1e7; ++i) {
       //c = na(c, na(a, ns(b, ns(a, na(b, na(a, ns(b, ns(a, ns(b, c)))))))));
       c = ns(ns(ns(na(na(ns(ns(na(na(c, a), b), a), b), a), b), a), b), c);
    }
-   gettimeofday(&end, 0);
+   gettimeofday(&end, nullptr);
    solveTime = (double)(end.tv_sec - start.tv_sec) + (double)(end.tv_usec - start.tv_usec)*1e-6;
 
    std::cout << "a: " << a << std::endl;

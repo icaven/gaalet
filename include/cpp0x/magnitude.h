@@ -23,7 +23,7 @@ struct magnitude : public expression<magnitude<A>>
 
    template<conf_t conf>
    element_t element() const {
-      return (conf==0x00) ? ::sqrt(::grade<0>(eval(a*(~a))).template element<0>()) : element_t(0.0);
+      return (conf==0x00) ? sqrt(::grade<0>(eval(a*(~a))).template element<0>()) : element_t(0.0);
    }
 
 protected:
@@ -39,6 +39,7 @@ struct magnitude2 : public expression<magnitude2<A>>
    typedef typename A::metric metric;
    
    typedef typename A::element_t element_t;
+	static constexpr gaalet::conf_t pseudoscalar_conf = {(1 << metric::dimension) - 1};
 
    magnitude2(const A& a_)
       :  a(a_)
@@ -46,7 +47,16 @@ struct magnitude2 : public expression<magnitude2<A>>
 
    template<conf_t conf>
    element_t element() const {
-      return (conf==0x00) ? ::grade<0>(eval(a*(~a))).template element<0>() : element_t(0.0);
+		 // The following is only true when the dimension of the algebra is < 6
+		 // See: De Kennick, S and Roelfs, M.
+		 // "Normalization, Square Roots, and the Exponential and Logarithmic Maps in Geometric Algebras of Less than 6D"
+		 // pages 9-10
+		 // https://www.researchgate.net/publication/360528787
+			auto a2 = a*~a;
+			auto scalar_part = ::part<0>(a2);
+			auto pseudoscalar_part = ::part<pseudoscalar_conf>(a2);
+			auto squared_norm = scalar_part * scalar_part - pseudoscalar_part * pseudoscalar_part;
+      return (conf==0x00) ? squared_norm : element_t(0.0);
    }
 
 protected:

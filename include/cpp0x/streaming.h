@@ -58,7 +58,7 @@ std::basic_ostream<E, T>& operator<<(std::basic_ostream<E, T>& os, const gaalet:
    //const G& e(e_);
    //auto mv = eval(e_);
 
-   os << "[ " << std::dec;
+   os << "[ " << std::dec << std::setprecision(10);
       gaalet::UnpackElementsToStream<G, typename G::clist>::unpack(os, e);
    os << "] { " << std::hex;
       gaalet::UnpackConfigurationListToStream<typename G::clist>::unpack(os);
