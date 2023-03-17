@@ -56,7 +56,7 @@ struct magnitude2 : public expression<magnitude2<A>>
 			auto scalar_part = ::part<0>(a2);
 			auto pseudoscalar_part = ::part<pseudoscalar_conf>(a2);
 			auto squared_norm = scalar_part * scalar_part - pseudoscalar_part * pseudoscalar_part;
-      return (conf==0x00) ? squared_norm : element_t(0.0);
+      return (conf==0x00) ? squared_norm.template element<0>() : element_t(0.0);
    }
 
 protected:

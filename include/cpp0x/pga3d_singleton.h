@@ -33,14 +33,6 @@ inline bool isclose(ELEMENT a, ELEMENT b, ELEMENT rtol = ELEMENT(1e-5), ELEMENT 
 	return abs(a - b) <= (atol + rtol * abs(b));
 }
 
-// Implementation for exp(), log(), sqrt(), based on reference implementations in:
-// de Keninck, Steven and Roelfs, Martin "Normalization, Square Roots, and the Exponential and Logarithmic
-//                                        Maps in Geometric Algebras of Less than 6D"
-
-// Convenience function and macros to generate the configuration list values
-// Note that the order of the vectors in the blade_conf is not retained (because the result is just a bit string),
-// but for consistency they will be shown in the order of the basis vectors in the blades
-//inline constexpr conf_t vector_conf(const int v = -1) { return v < 0 ? 0 : 1 << v; };
 
 /// Define some configuration lists for common multivector types
 #define DIRECTION_CONF \
@@ -52,10 +44,10 @@ inline bool isclose(ELEMENT a, ELEMENT b, ELEMENT rtol = ELEMENT(1e-5), ELEMENT 
 #define VECTOR_CONF \
   pga3::vector_conf(1), pga3::vector_conf(2), pga3::vector_conf(3), pga3::vector_conf(0)
 #define BIVECTOR_CONF \
-	blade_conf(0, 3), blade_conf(0, 2), blade_conf(0, 1), \
-	blade_conf(1, 2), blade_conf(1, 3), blade_conf(2, 3)
+	blade_conf(0, 1),  blade_conf(0, 2), blade_conf(0, 3), \
+	blade_conf(2, 3), blade_conf(1, 3), blade_conf(1, 2)
 #define ROTOR_CONF \
-	0, blade_conf(1, 2), blade_conf(1, 3), blade_conf(2, 3)
+	0, blade_conf(2, 3), blade_conf(1, 3), blade_conf(1, 2)
 #define TRANSLATOR_CONF \
 	0, blade_conf(0, 1),  blade_conf(0, 2), blade_conf(0, 3)
 #define MOTOR_CONF \
@@ -272,6 +264,11 @@ public:
 	{
 		return pga3::dual(x);
 	}
+
+	// Implementation for exp(), log(), sqrt(), based on reference implementations in:
+	// de Keninck, Steven and Roelfs, Martin "Normalization, Square Roots, and the Exponential and Logarithmic
+	//                                        Maps in Geometric Algebras of Less than 6D"
+
 
 	template <class E>
 	pga3d<ELEMENT>::Motor bivector_exp(const gaalet::expression<E>& x) const
@@ -895,19 +892,25 @@ public:
 /// @param angle 		The angle of rotation
 /// @return 	The rotation rotor
 	template <class E>
-	Rotor generate_rotation_rotor(const gaalet::expression<E>& axis, const ELEMENT angle) const
+	auto generate_rotation_rotor(const gaalet::expression<E>& axis, const ELEMENT angle) const
 	{
 		return one * cos(-angle * 0.5) + sin(-angle * 0.5) * normalize(axis);
 	}
 
 	template <class E>
-	Translator translator_from_direction_components(const std::vector<E>& direction) const
+	auto translator_from_direction_components(const std::vector<E>& direction) const
 	{
 		auto translator = one - ELEMENT(0.5) * (direction[0] * e01 + direction[1] * e02 + direction[2] * e03);
 		return translator;
 	}
 
-/// @brief Compute the translation rotor given a Euclidean vector
+	auto translator_from_direction(const Direction & direction) const
+	{
+		auto translator = one - ELEMENT(0.5) * (direction * I3);
+		return translator;
+	}
+
+	/// @brief Compute the translation rotor given a Euclidean vector
 /// @tparam ELEMENT 	The type of the element
 /// @param t 		Direction (aka ideal point)
 /// @return 	The translation rotor
