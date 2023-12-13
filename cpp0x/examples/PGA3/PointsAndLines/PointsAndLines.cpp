@@ -44,9 +44,9 @@ int main()
     drawables.push_back(new_drawable_arrow(origin, pga3::Point_t(origin + pga3::E2), green()));
 //    drawables.push_back(new_drawable_arrow(origin, pga3::Point_t(origin + pga3::E3), blue()));
 
-    drawables.push_back(new_drawable_point(pga3::Point_t(origin + pga3::E1), red(), point_size));
-    drawables.push_back(new_drawable_point(pga3::Point_t(origin + pga3::E2), green(), point_size));
-    drawables.push_back(new_drawable_point(pga3::Point_t(origin + pga3::E3), blue(), point_size));
+//    drawables.push_back(new_drawable_point(pga3::Point_t(origin + pga3::E1), red(), point_size));
+//    drawables.push_back(new_drawable_point(pga3::Point_t(origin + pga3::E2), green(), point_size));
+//    drawables.push_back(new_drawable_point(pga3::Point_t(origin + pga3::E3), blue(), point_size));
 
     drawables.push_back(new_drawable_arrow(origin, pga3::Point_t(origin + pga3::e1 * pga3::I), red()));
     drawables.push_back(new_drawable_arrow(origin, pga3::Point_t(origin + pga3::e2 * pga3::I), green()));

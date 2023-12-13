@@ -96,10 +96,10 @@ namespace std
     /// @brief Plane object to ostream
     template<class A>
     std::ostream &operator<<(std::ostream &out, const pga3::detail::Plane<A> &p) {
-        return out << "(a: " << p.a()
-                   << ", b: " << p.b()
-                   << ", c: " << p.c()
-                   << ", d: " << p.d()
+        return out << "(a: " << std::fixed << std::setprecision(5) << p.a()
+                   << ", b: " << std::fixed << std::setprecision(5) << p.b()
+                   << ", c: " << std::fixed << std::setprecision(5) << p.c()
+                   << ", d: " << std::fixed << std::setprecision(5) << p.d()
                    << ")";
     }
 

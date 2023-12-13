@@ -1,6 +1,8 @@
 Copyright 2010 Florian Seybold. All rights reserved.
 Contact: florian@seybold.name
 
+Copyright 2019-2023 Felix & Paul Studios Inc.  All rights reserved.
+
 Redistribution and use in source and binary forms, with or without modification, are
 permitted provided that the following conditions are met:
 
@@ -23,5 +25,5 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 The views and conclusions contained in the software and documentation are those of the
 authors and should not be interpreted as representing official policies, either expressed
-or implied, of Florian Seybold.
+or implied, of Florian Seybold or other contributors.
 

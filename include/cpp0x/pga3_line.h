@@ -109,12 +109,12 @@ namespace std
     /// @brief Line object to ostream
     template<class A>
     std::ostream &operator<<(std::ostream &out, const pga3::detail::Line<A> &l) {
-        return out << "(i: " << l.i()
-                   << ", j: " << l.j()
-                   << ", k: " << l.k()
-                   << ", di: " << l.dual_i()
-                   << ", dj: " << l.dual_j()
-                   << ", dk: " << l.dual_k()
+        return out << "(i: " << std::fixed << std::setprecision(5) << l.i()
+                   << ", j: " << std::fixed << std::setprecision(5) << l.j()
+                   << ", k: " << std::fixed << std::setprecision(5) << l.k()
+                   << ", di: " << std::fixed << std::setprecision(5) << l.dual_i()
+                   << ", dj: " << std::fixed << std::setprecision(5) << l.dual_j()
+                   << ", dk: " << std::fixed << std::setprecision(5) << l.dual_k()
                    << ")";
     }
 

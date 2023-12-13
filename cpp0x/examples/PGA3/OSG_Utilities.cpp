@@ -47,7 +47,7 @@ new_drawable_line(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
         auto perpendicular_to_plane = pga3::normal_to_plane(start_pt,  end_pt, end_of_cylinder);
 
         // Rotate the cylinder to be in the direction of the line
-        osg::Quat q = Quat(M_PI/2.0+angle/2.0, perpendicular_to_plane);
+        osg::Quat q = Quat(-(M_PI/2.0+angle/2.0), perpendicular_to_plane);
         cylinder->setRotation(q);
     
         // Translate the center point
@@ -91,17 +91,21 @@ new_arrow(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
     // Determine the angle between the line described by the start and end points and the Z-axis
     double angle = acos((pga3::i & pga3::normalize(line)).template element<0>());
     if (isclose(angle, 0.)) {
-        // Parallel to the Z-axis, just shift along that axis in the positive direction
+        // Parallel to the Z-axis, just shift along that axis in the negative direction
         shaft->setCenter(shaft->getCenter() + osg::Vec3(0., 0., -shaft_length*0.5f));
         arrow_head->setRotation(osg::Quat(M_PI, osg::Vec3d(1., 0., 0.))); // Reflect the arrow head
-        arrow_head->setCenter(shaft->getCenter() + 
-            osg::Vec3(0., 0., fmin(-(length-head_offset)*0.5f, -arrow_head_length)));
+        // The arrow_head_offset is the offset after the shaft has been re-centered -
+        // may need to limit the offset of the arrow head for short arrows
+        arrow_head->setCenter(shaft->getCenter() +
+                  osg::Vec3(0., 0., -fmax(shaft_length*0.5f, arrow_head_length-head_offset)));
     }
     else if (isclose(angle, M_PI)) {
-        // Parallel to the Z-axis, just shift along that axis in the negative direction
+        // Parallel to the Z-axis, just shift along that axis in the positive direction
         shaft->setCenter(shaft->getCenter() + osg::Vec3(0., 0., shaft_length*0.5f));
-        arrow_head->setCenter(shaft->getCenter() + 
-            osg::Vec3(0., 0., fmax((length-head_offset)*0.5f, arrow_head_length)));
+        // The arrow_head_offset is the offset after the shaft has been re-centered -
+        // may need to limit the offset of the arrow head for short arrows
+        arrow_head->setCenter(shaft->getCenter() +
+                  osg::Vec3(0., 0., fmax(shaft_length*0.5f, arrow_head_length-head_offset)));
    }
     else {
         // Determine the plane that the Z-axis and the line forms and then compute the perpendicular
@@ -110,7 +114,7 @@ new_arrow(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
         auto perpendicular_to_plane = pga3::normal_to_plane(start_pt, end_pt, end_of_shaft);
 
         // Rotate the shaft to be in the direction of the line
-        osg::Quat q = Quat(M_PI/2.+angle/2.0, perpendicular_to_plane);
+        osg::Quat q = Quat(-(M_PI/2.+angle/2.0), perpendicular_to_plane);
         shaft->setRotation(q);
 
         // Translate the center point of the arrow shaft
@@ -120,7 +124,7 @@ new_arrow(const pga3::Point_t& start_pt, const pga3::Point_t& end_pt,
         
         // Rotate and translate the arrow head
         arrow_head->setRotation(q);
-        auto arrow_translator = pga3::translator(line, (double) fmax(length-head_offset, arrow_head_length-head_offset));
+        auto arrow_translator = pga3::translator(line, (double) fmax(shaft_length, arrow_head_length-head_offset));
         auto arrow_center = pga3::sandwich(start_pt, arrow_translator);
         arrow_head->setCenter(Vec3(arrow_center));
     }
@@ -241,7 +245,7 @@ new_drawable_triangle(const pga3::Point_t& p1, const pga3::Point_t& p2, const pg
     if (draw_normal) {
         // For debugging, it is helpful to draw the normal together with the triangle
         auto triangle_centroid = eval(pga3::normalize(p1 + p2 + p3));
-        auto end_of_normal = triangle_centroid - pga3::plane_from_points(p1, p2, p3)*pga3::I;
+        auto end_of_normal = pga3::normalize(triangle_centroid - pga3::normalize(pga3::plane_from_points(p1, p2, p3))*pga3::I);
 
         auto triangle_and_normal= new osg::CompositeShape();
         triangle_and_normal->addChild(triangle_as_plane);

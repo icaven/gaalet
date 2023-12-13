@@ -152,7 +152,11 @@ namespace std
     template<class E, class T, class A>
     std::basic_ostream<E, T>& operator<<(std::basic_ostream<E, T>& out, const pga3::detail::Point<A> &p)
     {
-        return out << "(x: " << p.x() << ", y: " << p.y() << ", z: " << p.z() << ", O: " << p.origin() << ")";
+        return out << "(x: " << std::fixed << std::setprecision(5) << p.x()
+                   << ", y: " << std::fixed << std::setprecision(5) << p.y()
+                   << ", z: " << std::fixed << std::setprecision(5) << p.z()
+                   << ", O: " << std::fixed << std::setprecision(5) << p.origin()
+                   << ")";
     }
 
 } // end of std namespace

@@ -7,6 +7,9 @@
 #include "pga3.h"
 #include "pga3_dual.h"
 #include "pga3_normalize.h"
+#include "pga3_point.h"
+#include "pga3_line.h"
+#include "pga3_plane.h"
 
 //
 // PGA3 geometric operations
@@ -54,26 +57,26 @@ namespace pga3 {
     template<typename L, typename R>
     inline
     auto line_from_points(const gaalet::expression<L> &start, const gaalet::expression<R> &end) {
-        return pga3::normalize(vee(start, end));
+        return vee(start, end);
     }
 
     template<class T1, class T2, class T3>
     inline
     auto plane_from_points(const T1 &P1, const T2 &P2, const T3 &P3) {
-        return pga3::normalize(pga3::dual(pga3::dual(P1) ^ pga3::dual(P2) ^ pga3::dual(P3)));
+        return pga3::normalize(pga3::vee(pga3::vee(P1, P2), P3));
     }
 
     template<class TP, class TL>
     inline
     auto plane_from_point_and_line(const TP &P, const TL &L) {
-        return pga3::normalize(vee(P, L));
+        return vee(P, L);
     }
 
     // Meets
     template<class T1, class T2>
     inline
     auto line_from_planes(const T1 &p1, const T2 &p2) {
-        return pga3::normalize(p1) ^ pga3::normalize(p2);
+        return p1 ^ p2;
     }
 
     template<class T1, class T2, class T3>
@@ -92,7 +95,7 @@ namespace pga3 {
     template<class T1, class T2, class T3>
     inline
     auto normal_to_plane(const T1 &P1, const T2 &P2, const T3 &P3) {
-        return -1. * pga3::normalize(P1 & plane_from_points(P1, P2, P3));
+        return pga3::normalize(P1 & plane_from_points(P1, P2, P3));
     }
 
     //

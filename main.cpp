@@ -1,11 +1,15 @@
 #include <iostream>
+#include <cmath>
+#include <ostream>
 
 #include "gaalet.h"
 #include "pga3.h"
-#include <cmath>
-#include <ostream>
-#include <pga3_logarithm.h>
-#include <pga3_exponential.h>
+#include "pga3_point.h"
+#include "pga3_line.h"
+#include "pga3_ops.h"
+#include "pga3_normalize.h"
+#include "pga3_logarithm.h"
+#include "pga3_exponential.h"
 #include "opencv2/opencv.hpp"
 
 using namespace gaalet;
@@ -120,7 +124,7 @@ int main() {
             test_point.at<double>(1,0), test_point.at<double>(2,0));
 
     pga3::Point_t pga_test_pt2 = pga3::make_point(3., 4.5, -16);
-    std::cout << "pga_test_pt2: " << pga3::as_point(pga_test_pt2) << std::endl;
+    std::cout << "pga_test_pt2: " << pga3::Point(pga_test_pt2) << std::endl;
 
     cv::Mat rm_x;
     rotation_around_x_axis(degrees2radians(x_rotation_angle), rm_x);
@@ -145,13 +149,13 @@ int main() {
     auto r_x = pga3::rotor(pga3::k, degrees2radians(x_rotation_angle));
     std::cout << "r_x: " << eval(r_x) << std::endl;
     std::cout << "Point(1,1,1) rotated around x-axis by " << x_rotation_angle << " degrees: "
-              << pga3::as_point(r_x * pga_test_pt * (~r_x)) << std::endl;
+              << pga3::Point(r_x * pga_test_pt * (~r_x)) << std::endl;
     auto r_y = pga3::rotor(pga3::j, degrees2radians(y_rotation_angle));
     std::cout << "Point(1,1,1) rotated around y-axis by " << y_rotation_angle << " degrees: "
-              << pga3::as_point(r_y * pga_test_pt * (~r_y)) << std::endl;
+              << pga3::Point(r_y * pga_test_pt * (~r_y)) << std::endl;
     auto r_z = pga3::rotor(pga3::i, degrees2radians(z_rotation_angle));
     std::cout << "Point(1,1,1) rotated around z-axis by " << z_rotation_angle << " degrees: "
-              << pga3::as_point(r_z * pga_test_pt * (~r_z)) << std::endl;
+              << pga3::Point(r_z * pga_test_pt * (~r_z)) << std::endl;
 
     auto t_r = pga3::translator(pga3::line_from_points(pga3::E0, pga3::make_point(3., 7., 9.)),
             sqrt(3.*3.+7.*7.+9.*9.));
@@ -159,8 +163,8 @@ int main() {
 
     auto r_xyz = r_x * r_y * r_z;
     auto t_r_xyz = t_r * r_x * r_y * r_z;
-    auto rp = pga3::as_point(pga3::sandwich(pga_test_pt, r_xyz));
-    auto tr_rp = pga3::as_point(pga3::sandwich(pga_test_pt, t_r_xyz));
+    auto rp = pga3::Point(pga3::sandwich(pga_test_pt, r_xyz));
+    auto tr_rp = pga3::Point(pga3::sandwich(pga_test_pt, t_r_xyz));
 
     std::cout << "Point(1,1,1) rotated around rotations around z, then y, then x axes "
               << rp << std::endl;
@@ -184,8 +188,10 @@ int main() {
     std::cout << "log_r_xyz: " << eval(log_r_xyz) << std::endl << "exp(log_r_xyz): " << eval(pga3::exp(log_r_xyz)) << std::endl;
     std::cout << "exp(log_r_x) * exp(log_r_y) * exp(log_r_z): "
               <<   eval(pga3::exp(log_r_x) * pga3::exp(log_r_y) * pga3::exp(log_r_z)) << std::endl;
-    std::cout << "normalize(exp(log_r_x) * exp(log_r_y) * exp(log_r_z)): "
-              <<   eval(::normalize(pga3::exp(log_r_x) * pga3::exp(log_r_y) * pga3::exp(log_r_z))) << std::endl;
+    auto RXYZ = eval(pga3::exp(log_r_x) * pga3::exp(log_r_y) * pga3::exp(log_r_z));
+    std::cout << "RXYZ = exp(log_r_x) * exp(log_r_y) * exp(log_r_z): "
+              <<  RXYZ  << std::endl;
+    std::cout << "(RXYZ * (~RXYZ)): " << (RXYZ * (~RXYZ)) << std::endl;
     std::cout << "r_x * r_y : " <<  eval(r_x * r_y)  << std::endl;
     std::cout << "log(r_x * r_y) : " <<  eval(pga3::log(r_x * r_y))  << std::endl;
     std::cout << "exp(log(r_x) + log(r_y)) : " <<  eval(pga3::exp(pga3::log(r_x) + pga3::log(r_y)))  << std::endl;
@@ -206,9 +212,9 @@ int main() {
             pga3::make_point(2., 3., 4.));
     std::cout << "Line from (1,1,1) to (2, 3, 4) " << eval(a_line) << std::endl;
 
-    auto l = pga3::as_line(a_line);
+    auto l = pga3::Line(a_line);
     std::cout << "Line from (1,1,1) to (2, 3, 4) " << l << ", " << std::endl;
-    std::cout << "Line from (1,1,1) to (2, 3, 4) " << eval(normalize(a_line)) << ", " << std::endl;
+    std::cout << "Line from (1,1,1) to (2, 3, 4) " << eval(pga3::normalize(a_line)) << ", " << std::endl;
     std::cout << "Line from (1,1,1) to (2, 3, 4) " << l.normalized() << std::endl;
 
     auto rotated_line = pga3::sandwich(a_line, r_xyz);
