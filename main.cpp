@@ -10,97 +10,91 @@
 #include "pga3_normalize.h"
 #include "pga3_logarithm.h"
 #include "pga3_exponential.h"
-#include "opencv2/opencv.hpp"
+#include "Eigen/Core"
 
 using namespace gaalet;
+using namespace Eigen;
 
-void rotation_around_x_axis(double angle, cv::OutputArray rotation_)
+void rotation_around_x_axis(double angle, Matrix4d& rotation_)
 {
     // Return the 4x4 rotation matrix for a rotation around the x-axis
 
     double c = cos(angle);
     double s = sin(angle);
-    cv::Mat rotation(4, 4, CV_64F);
-    rotation.row(0).col(0) = 1.;
-    rotation.row(0).col(1) = 0.;
-    rotation.row(0).col(2) = 0.;
-    rotation.row(0).col(3) = 0.;
-    rotation.row(1).col(0) = 0.;
-    rotation.row(1).col(1) = c;
-    rotation.row(1).col(2) = -s;
-    rotation.row(1).col(3) = 0.;
-    rotation.row(2).col(0) = 0.;
-    rotation.row(2).col(1) = s;
-    rotation.row(2).col(2) = c;
-    rotation.row(2).col(3) = 0.;
-    rotation.row(3).col(0) = 0.;
-    rotation.row(3).col(1) = 0.;
-    rotation.row(3).col(2) = 0.;
-    rotation.row(3).col(3) = 1.;
-    rotation_.assign(rotation);
+		Matrix2d rotation;
+    rotation_(0, 0) = 1.;
+    rotation_(0, 1) = 0.;
+    rotation_(0, 2) = 0.;
+    rotation_(0, 3) = 0.;
+    rotation_(1, 0) = 0.;
+    rotation_(1, 1) = c;
+    rotation_(1, 2) = -s;
+    rotation_(1, 3) = 0.;
+    rotation_(2, 0) = 0.;
+    rotation_(2, 1) = s;
+    rotation_(2, 2) = c;
+    rotation_(2, 3) = 0.;
+    rotation_(3, 0) = 0.;
+    rotation_(3, 1) = 0.;
+    rotation_(3, 2) = 0.;
+    rotation_(3, 3) = 1.;
 }
 
-void rotation_around_y_axis(double angle, cv::OutputArray rotation_)
+void rotation_around_y_axis(double angle, Matrix4d& rotation_)
 {
 // Return the 4x4 rotation matrix for a rotation around the y-axis
 
     double c = cos(angle);
     double s = sin(angle);
-    cv::Mat rotation(4, 4, CV_64F);
-    rotation.row(0).col(0) = c;
-    rotation.row(0).col(1) = 0.;
-    rotation.row(0).col(2) = s;
-    rotation.row(0).col(3) = 0.;
-    rotation.row(1).col(0) = 0;
-    rotation.row(1).col(1) = 1.;
-    rotation.row(1).col(2) = 0.;
-    rotation.row(1).col(3) = 0.;
-    rotation.row(2).col(0) = -s;
-    rotation.row(2).col(1) = 0.;
-    rotation.row(2).col(2) = c;
-    rotation.row(2).col(3) = 0.;
-    rotation.row(3).col(0) = 0.;
-    rotation.row(3).col(1) = 0.;
-    rotation.row(3).col(2) = 0.;
-    rotation.row(3).col(3) = 1.;
-
-    rotation_.assign(rotation);
+    rotation_(0, 0) = c;
+    rotation_(0, 1) = 0.;
+    rotation_(0, 2) = s;
+    rotation_(0, 3) = 0.;
+    rotation_(1, 0) = 0;
+    rotation_(1, 1) = 1.;
+    rotation_(1, 2) = 0.;
+    rotation_(1, 3) = 0.;
+    rotation_(2, 0) = -s;
+    rotation_(2, 1) = 0.;
+    rotation_(2, 2) = c;
+    rotation_(2, 3) = 0.;
+    rotation_(3, 0) = 0.;
+    rotation_(3, 1) = 0.;
+    rotation_(3, 2) = 0.;
+    rotation_(3, 3) = 1.;
 }
 
-void rotation_around_z_axis(double angle, cv::OutputArray rotation_)
+void rotation_around_z_axis(double angle, Matrix4d& rotation_)
 {
 // Return the 4x4 rotation matrix for a rotation around the z-axis
 
     double c = cos(angle);
     double s = sin(angle);
-    cv::Mat rotation(4, 4, CV_64F);
-    rotation.row(0).col(0) = c;
-    rotation.row(0).col(1) = -s;
-    rotation.row(0).col(2) = 0.;
-    rotation.row(0).col(3) = 0.;
-    rotation.row(1).col(0) = s;
-    rotation.row(1).col(1) = c;
-    rotation.row(1).col(2) = 0.;
-    rotation.row(1).col(3) = 0.;
-    rotation.row(2).col(0) = 0.;
-    rotation.row(2).col(1) = 0.;
-    rotation.row(2).col(2) = 1.;
-    rotation.row(2).col(3) = 0.;
-    rotation.row(3).col(0) = 0.;
-    rotation.row(3).col(1) = 0.;
-    rotation.row(3).col(2) = 0.;
-    rotation.row(3).col(3) = 1.;
-    rotation_.assign(rotation);
+    rotation_(0, 0) = c;
+    rotation_(0, 1) = -s;
+    rotation_(0, 2) = 0.;
+    rotation_(0, 3) = 0.;
+    rotation_(1, 0) = s;
+    rotation_(1, 1) = c;
+    rotation_(1, 2) = 0.;
+    rotation_(1, 3) = 0.;
+    rotation_(2, 0) = 0.;
+    rotation_(2, 1) = 0.;
+    rotation_(2, 2) = 1.;
+    rotation_(2, 3) = 0.;
+    rotation_(3, 0) = 0.;
+    rotation_(3, 1) = 0.;
+    rotation_(3, 2) = 0.;
+    rotation_(3, 3) = 1.;
 }
 
-void translation(cv::Vec3d t, cv::OutputArray t_matrix_)
+void translation(Vector3d t, Matrix4d& t_matrix_)
 {
     // Return the 4x4 translation matrix
-    cv::Mat tm = cv::Mat::eye(4, 4, CV_64F);
-    tm.row(0).col(3) = t[0];
-    tm.row(1).col(3) = t[1];
-    tm.row(2).col(3) = t[2];
-    t_matrix_.assign(tm);
+		t_matrix_.setIdentity();
+    t_matrix_(0, 3) = t[0];
+    t_matrix_(1, 3) = t[1];
+    t_matrix_(2, 3) = t[2];
 }
 
 double degrees2radians(double x) {
@@ -114,36 +108,35 @@ int main() {
     double y_rotation_angle = 32.0;
     double z_rotation_angle = 68.0;
 
-    cv::Mat test_point(4, 1, CV_64F);
-    test_point.row(0).col(0) = 1.0;
-    test_point.row(1).col(0) = 2.0;
-    test_point.row(2).col(0) = 3.0;
-    test_point.row(3).col(0) = 1.0;
+		Vector4d test_point;
+    test_point(0) = 1.0;
+    test_point(1) = 2.0;
+    test_point(2) = 3.0;
+    test_point(3) = 1.0;
 
-    pga3::Point_t pga_test_pt = pga3::make_point(test_point.at<double>(0,0),
-            test_point.at<double>(1,0), test_point.at<double>(2,0));
+    pga3::Point_t pga_test_pt = pga3::make_point(test_point(0), test_point(1), test_point(2));
 
     pga3::Point_t pga_test_pt2 = pga3::make_point(3., 4.5, -16);
     std::cout << "pga_test_pt2: " << pga3::Point(pga_test_pt2) << std::endl;
 
-    cv::Mat rm_x;
+		Matrix4d rm_x;
     rotation_around_x_axis(degrees2radians(x_rotation_angle), rm_x);
     std::cout << "rm_x: " << std::endl << rm_x * test_point << std::endl;
-    cv::Mat rm_y;
+		Matrix4d rm_y;
     rotation_around_y_axis(degrees2radians(y_rotation_angle), rm_y);
     std::cout << "rm_y: " << std::endl << rm_y * test_point << std::endl;
-    cv::Mat rm_z;
+		Matrix4d rm_z;
     rotation_around_z_axis(degrees2radians(z_rotation_angle), rm_z);
     std::cout << "rm_z * (1, 1, 1).T: " << std::endl << rm_z * test_point << std::endl;
 
-    cv::Mat trans;
-    translation(cv::Vec3d(3., 7., 9.), trans);
+		Matrix4d trans;
+    translation(Vector3d (3., 7., 9.), trans);
     std::cout << trans << std::endl;
 
-    cv::Mat rm = rm_x * rm_y * rm_z;
+		Matrix4d rm = rm_x * rm_y * rm_z;
     std::cout << "rotated with rm: " << std::endl << rm * test_point << std::endl;
 
-    cv::Mat tr_rm = trans * rm_x * rm_y * rm_z;
+		Matrix4d tr_rm = trans * rm_x * rm_y * rm_z;
     std::cout << "translated and rotated with rm: " << std::endl << tr_rm * test_point << std::endl;
 
     auto r_x = pga3::rotor(pga3::k, degrees2radians(x_rotation_angle));

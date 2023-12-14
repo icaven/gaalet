@@ -11,7 +11,6 @@
 #include <cstdarg>
 #include <cassert>
 #include <vector>
-#include <opencv2/core/matx.hpp>
 
 #include "gaalet.h"
 #include "pga3.h"
@@ -249,15 +248,17 @@ public:
 		return ELEMENT(euc_pt[0]) * E1 + ELEMENT(euc_pt[1]) * E2 + ELEMENT(euc_pt[2]) * E3;
 	}
 
-	Point up(const cv::Vec3d& euc_pt) const
+/*
+	Point up(const Eigen::Vector3d& euc_pt) const
 	{
 		return E0 + ELEMENT(euc_pt[0]) * E1 + ELEMENT(euc_pt[1]) * E2 + ELEMENT(euc_pt[2]) * E3;
 	}
 
-	Point up(const cv::Vec4d& euc_pt) const
+	Point up(const Eigen::Vector4d& euc_pt) const
 	{
 		return E0 + ELEMENT(euc_pt[0]) * E1 + ELEMENT(euc_pt[1]) * E2 + ELEMENT(euc_pt[2]) * E3;
 	}
+*/
 
 	template <class E>
 	auto dual(const E& x) const

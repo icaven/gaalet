@@ -24,9 +24,12 @@ set_property(TARGET ${test_prefix} PROPERTY CXX_STANDARD 14)
   endif(${test_source} STREQUAL "Ginac.cpp")
 endforeach (test_source)
 
+# If the GINAC library (https://www.ginac.de/) has been installed, the next variable may be set to ON
+set(GINAC_INSTALLED OFF)
+if (GINAC_INSTALLED)
 message("Adding Ginac.cpp")
 add_executable(Ginac Ginac.cpp)
 set_property(TARGET Ginac PROPERTY CXX_STANDARD 14)
 target_link_libraries(Ginac ginac cln dl)
-
+endif(GINAC_INSTALLED)
 
