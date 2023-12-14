@@ -2,8 +2,8 @@
 // Declare functions to convert "clifford" python package CGA3 objects to/from cga3<double> objects.
 //
 
-#ifndef DISPARITY_TO_3D_CLIFFORDINTERFACE_H
-#define DISPARITY_TO_3D_CLIFFORDINTERFACE_H
+#ifndef CLIFFORDINTERFACE_H
+#define CLIFFORDINTERFACE_H
 
 #pragma once
 
@@ -174,4 +174,4 @@ template py::object CliffordInterface::to_ConformalMVArray<cga3<double>::Line>(c
 template py::object CliffordInterface::to_ConformalMVArray<cga3<double>::PointPair>(const std::vector<cga3<double>::PointPair> &elements);
 
 
-#endif //DISPARITY_TO_3D_CLIFFORDINTERFACE_H
+#endif //CLIFFORDINTERFACE_H
